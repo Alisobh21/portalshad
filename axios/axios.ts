@@ -73,16 +73,82 @@ axiosPrivate.interceptors.request.use(
 
 axiosPrivate.interceptors.response.use(
   (response: AxiosResponse<ApiResponse>) => {
-    const msg = response?.data?.message; // ✅ TypeScript يفهمه تمام
-    const success = response?.data?.success;
-    const validationErrors = response?.data?.errors;
+    const msg = response.data?.message;
+    const successRes = response.data?.success;
+    const validationErrors = response.data?.errors;
 
-    if (success && msg) {
-      if (response?.config?.method === "POST") {
-        toast(<SuccessToast msg={msg} />);
+    if (successRes && msg) {
+      if (response.config.method?.toLowerCase() !== "get") {
+        toast(
+          (<SuccessToast msg={msg} />) as JSX.Element,
+          response.config.url?.includes("login")
+            ? { position: "bottom-right" }
+            : undefined
+        );
+      }
+    } else if (!successRes) {
+      if (!validationErrors) {
+        toast(<ErrorToast msg="Something went wrong!" />);
+      } else if (typeof validationErrors !== "string") {
+        Object.keys(validationErrors).forEach((key) => {
+          const errorMsg = Array.isArray(validationErrors[key])
+            ? validationErrors[key].join(", ")
+            : "Something went wrong!";
+          toast(<ErrorToast msg={errorMsg} />);
+        });
       }
     }
+
     return response;
+  },
+  async (error: AxiosError<ApiResponse>) => {
+    if (!error.response) {
+      return Promise.reject({ message: "Network Error" });
+    }
+
+    const { status, data } = error.response;
+
+    if (
+      status === 401 ||
+      (status === 403 &&
+        data?.message === "Please, Login first to one of customer accounts")
+    ) {
+      try {
+        toast(<ErrorToast msg="🔒 Unauthorized: You need to log in." />);
+        await axiosInternal.post("/api/logout");
+        window.location.href = "/login";
+      } catch (err) {
+        console.error(err);
+      }
+    } else if (status === 422) {
+      const errorData = data?.data;
+      if (!errorData || Object.keys(errorData).length === 0) {
+        toast(<ErrorToast msg={data?.message || "Validation error"} />);
+      } else {
+        Object.keys(errorData)
+          .map((key) => errorData[key])
+          .flat()
+          .forEach((errMsg: string) => toast(<ErrorToast msg={errMsg} />));
+      }
+    } else if (status === 400) {
+      toast(
+        <ErrorToast
+          msg={`${data?.errors?.[0] || data?.message || "Bad Request"}`}
+        />
+      );
+    } else if (status === 403) {
+      updateUser();
+    } else {
+      toast(
+        <ErrorToast
+          msg={`⚠️ Unexpected Error (${status}): ${
+            data?.message || "Unknown error."
+          }`}
+        />
+      );
+    }
+
+    return Promise.reject(error);
   }
 );
 
