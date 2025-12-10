@@ -80,7 +80,7 @@ axiosPrivate.interceptors.response.use(
     if (successRes && msg) {
       if (response.config.method?.toLowerCase() !== "get") {
         toast(
-          (<SuccessToast msg={msg} />) as JSX.Element,
+          <SuccessToast msg={msg} />,
           response.config.url?.includes("login")
             ? { position: "bottom-right" }
             : undefined
