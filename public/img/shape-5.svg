@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="746.014" height="351.75" viewBox="0 0 746.014 351.75">
+  <g id="shape-5" transform="translate(-18.358 -762.463)">
+    <circle id="Ellipse_4" data-name="Ellipse 4" cx="8.418" cy="8.418" r="8.418" transform="translate(419.82 868.543)" fill="#e3b8d5"/>
+    <circle id="Ellipse_5" data-name="Ellipse 5" cx="8.418" cy="8.418" r="8.418" transform="translate(437.843 850.52)" fill="#e3b8d5"/>
+    <path id="Path_3" data-name="Path 3" d="M-14.19,314.215l81.97-81.969a47.057,47.057,0,0,1,66.549,0h0a47.057,47.057,0,0,1,0,66.549L97,336.128a20.66,20.66,0,0,0,0,29.217h0a20.658,20.658,0,0,0,29.216,0l8.116-8.116a42.467,42.467,0,0,1,60.057,0h0a42.467,42.467,0,0,1,0,60.057l-33.275,33.275a9.183,9.183,0,0,0,0,12.985h0a9.182,9.182,0,0,0,12.986,0l81.158-81.158a36.728,36.728,0,0,1,51.941,0h0a36.728,36.728,0,0,1,0,51.941l-21.913,21.913a8.035,8.035,0,0,0,0,11.362h0a8.033,8.033,0,0,0,11.362,0l1.817-1.817a98.432,98.432,0,0,1,139.2,0l37.15,47.824H-193.642S-15.2,314.494-14.19,314.215Z" transform="translate(212 544)" fill="#e3d6b8"/>
+    <circle id="Ellipse_29" data-name="Ellipse 29" cx="7.794" cy="7.794" r="7.794" transform="translate(436.69 940.627)" fill="#f690c0"/>
+    <line id="Line_4" data-name="Line 4" y1="129.257" x2="129.257" transform="translate(198.526 831.784)" fill="none" stroke="#fff" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+    <line id="Line_6" data-name="Line 6" y1="115.855" x2="115.855" transform="translate(135.05 872.06)" fill="none" stroke="#fff" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+    <circle id="Ellipse_34" data-name="Ellipse 34" cx="20.454" cy="20.454" r="20.454" transform="translate(265.278 915.617)" fill="#fff"/>
+    <path id="Path_17" data-name="Path 17" d="M482.416,430.287a69.963,69.963,0,1,0,69.956,69.956A70.044,70.044,0,0,0,482.416,430.287Zm0,126.125a56.169,56.169,0,1,1,56.169-56.169A56.172,56.172,0,0,1,482.416,556.412Z" transform="translate(212 544)" fill="#afa58e"/>
+    <path id="Path_18" data-name="Path 18" d="M30.4,507.348c1.415-.472,54.867-54.505,75.313-75.209a11.1,11.1,0,0,1,15.748-.044h0a11.105,11.105,0,0,1,0,15.7l-16.8,16.8a5.57,5.57,0,0,0,0,7.878h0a5.57,5.57,0,0,0,7.878,0l7-7a12.172,12.172,0,0,1,17.215,0h0a12.171,12.171,0,0,1,0,17.214h0a5.159,5.159,0,0,0,0,7.3l19.695,19.7H28.648" transform="translate(212 547.818)" fill="#d4c8ad"/>
+    <line id="Line_7" data-name="Line 7" y1="142.579" x2="142.421" transform="translate(513.5 914.921)" fill="none" stroke="#31346b" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+    <line id="Line_8" data-name="Line 8" y1="64.093" x2="64.084" transform="translate(200.5 993.407)" fill="none" stroke="#31346b" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+    <line id="Line_11" data-name="Line 11" y1="28.211" x2="28.212" transform="translate(602.708 972.017)" fill="none" stroke="#31346b" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3"/>
+  </g>
+</svg>

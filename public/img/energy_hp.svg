@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="31.42" height="34.833" viewBox="0 0 31.42 34.833">
+  <g id="energy_hp" transform="translate(-2.29 -0.583)">
+    <path id="Path_1" data-name="Path 1" d="M27.623,31.833c-6.917,0-11.667,3.583-15,3.583S2.29,33.5,2.29,18.167,11.707.583,15.373.583C32.54.583,39.873,31.833,27.623,31.833Z" fill="#efefef"/>
+    <g id="Group_1" data-name="Group 1">
+      <path id="Path_2" data-name="Path 2" d="M3.821,3.143h1v2h-1Z" transform="translate(-1.665 4.27) rotate(-45)" fill="#a4afc1"/>
+      <path id="Path_3" data-name="Path 3" d="M2.967,7.533h2v1h-2Z" transform="translate(-4.518 5.158) rotate(-45)" fill="#a4afc1"/>
+      <path id="Path_4" data-name="Path 4" d="M7.033,3.467h2v1h-2Z" transform="translate(-0.452 6.842) rotate(-45)" fill="#a4afc1"/>
+    </g>
+    <path id="Path_5" data-name="Path 5" d="M19.25,11.75l-4.5,6.5H17.5l-.75,6,4.5-7.5H18.5Z" fill="#f7a45d"/>
+    <path id="Path_6" data-name="Path 6" d="M18.628,15.9l.622-4.149-4.5,6.5H17Z" fill="#dd7b26"/>
+    <path id="Path_7" data-name="Path 7" d="M19.75,18.25H17.5l-.75,6,2.842-4.737Z" fill="#dd7b26"/>
+    <path id="Path_8" data-name="Path 8" d="M16.75,25a.773.773,0,0,1-.245-.041.751.751,0,0,1-.5-.8L16.65,19h-1.9a.749.749,0,0,1-.617-1.176l4.5-6.5a.75.75,0,0,1,1.358.538L19.371,16H21.25a.75.75,0,0,1,.643,1.136l-4.5,7.5A.751.751,0,0,1,16.75,25Zm-.568-7.5H17.5a.751.751,0,0,1,.745.843l-.309,2.475,1.99-3.317H18.5a.75.75,0,0,1-.741-.862l.271-1.809Z"/>
+    <path id="Path_9" data-name="Path 9" d="M8.059,30.009,8,24.759A.751.751,0,0,1,8.75,24H14v1.5H9.508l.05,4.491Z"/>
+    <path id="Path_10" data-name="Path 10" d="M27.25,12H22V10.5h4.5V6H28v5.25A.75.75,0,0,1,27.25,12Z"/>
+    <path id="Path_11" data-name="Path 11" d="M6.512,21.466A12,12,0,0,1,18,6a11.862,11.862,0,0,1,9.379,4.536l-1.179.928A10.369,10.369,0,0,0,18,7.5,10.5,10.5,0,0,0,7.948,21.034Z"/>
+    <path id="Path_12" data-name="Path 12" d="M18,30a11.862,11.862,0,0,1-9.379-4.536L9.8,24.536A10.369,10.369,0,0,0,18,28.5,10.5,10.5,0,0,0,28.052,14.966l1.437-.432A12,12,0,0,1,18,30Z"/>
+  </g>
+</svg>
