@@ -7,6 +7,8 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { AppProvider } from "@/store/AppProvider";
 import "../globals.css";
 import { ibmPlex, rubik } from "@/config/fonts";
+import ConditionalLayout from "./ConditionalLayout";
+import { Providers } from "./provider";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -49,9 +51,15 @@ export default async function LocaleLayout({
         className={`${geistSans.variable} bg-background ${rubik.variable} ${ibmPlex.variable} font-rubik rtl:font-ibmPlex ${geistMono.variable} antialiased`}
       >
         <ThemeProvider>
-          <NextIntlClientProvider messages={messages}>
-            <AppProvider>{children}</AppProvider>
-          </NextIntlClientProvider>
+          <AppProvider>
+            <Providers
+              themeProps={{ attribute: "class", defaultTheme: "dark" }}
+            >
+              <NextIntlClientProvider messages={messages}>
+                <ConditionalLayout>{children}</ConditionalLayout>
+              </NextIntlClientProvider>
+            </Providers>
+          </AppProvider>
         </ThemeProvider>
       </body>
     </html>

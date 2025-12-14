@@ -6,8 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocale } from "next-intl";
 import { usePathname } from "next/navigation";
 import { ToastContainer, cssTransition } from "react-toastify";
-import "animate.css";
-import "nprogress/nprogress.css";
 
 import AuthFetcher from "@/components/AuthFetcher";
 import Navbar from "@/components/Navbar";
