@@ -6,6 +6,9 @@ import { useLocale, useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "./ui/button";
+import { ThemeSwitch } from "./ThemeSwitch";
+import { HiOutlineBars3BottomLeft } from "react-icons/hi2";
+
 import {
   Dialog,
   DialogContent,
@@ -37,6 +40,15 @@ import { ErrorToast, SuccessToast } from "@/components/Toasts";
 import LogoutBtn from "@/components/logoutBtn";
 import AppLogo from "@/icons/AppLogo";
 import { _toggleSidebar } from "@/store/slices/appSlice";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface RootState {
   auth: {
@@ -102,88 +114,90 @@ export default function Navbar() {
   return (
     <>
       {/* NAVBAR */}
-      <header className="fixed top-0 z-50 w-full bg-background/80 backdrop-blur border-b">
-        <div className="container flex h-14 items-center justify-between">
-          {/* LEFT */}
-          <div className="flex items-center gap-3">
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => dispatch(_toggleSidebar())}
-            >
-              <Menu size={20} />
-            </Button>
+      <header className="fixed w-full px-0 pb-0 pt-2 bg-transparent z-[50] ">
+        <Card className="relative bg-white/90 dark:bg-default-50/80 w-full p-1  ">
+          <div className="container flex h-14 items-center justify-between">
+            {/* LEFT */}
+            <div className="flex items-center gap-3">
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => dispatch(_toggleSidebar())}
+              >
+                <HiOutlineBars3BottomLeft size={20} />
+              </Button>
 
-            <AppLogo width="70px" height="30px" />
-          </div>
+              <AppLogo width="70px" height="30px" />
+            </div>
 
-          {/* RIGHT */}
-          <div className="flex items-center gap-2">
-            <Button size="icon" variant="ghost" onClick={() => setOpen(true)}>
-              <Search size={18} />
-            </Button>
+            {/* RIGHT */}
+            <div className="flex items-center gap-2">
+              <Button size="icon" variant="ghost" onClick={() => setOpen(true)}>
+                <Search size={18} />
+              </Button>
 
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => router.push(`/${locale}/orders/create-order`)}
-            >
-              <ShoppingCart size={18} />
-            </Button>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => router.push(`/${locale}/orders/create-order`)}
+              >
+                <ShoppingCart size={18} />
+              </Button>
 
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => router.push(`/${locale}/products/add-product`)}
-            >
-              <PackagePlus size={18} />
-            </Button>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => router.push(`/${locale}/products/add-product`)}
+              >
+                <PackagePlus size={18} />
+              </Button>
 
-            {/* USER MENU */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Avatar className="cursor-pointer">
-                  <AvatarFallback>
-                    <User size={16} />
-                  </AvatarFallback>
-                </Avatar>
-              </DropdownMenuTrigger>
+              {/* USER MENU */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Avatar className="cursor-pointer">
+                    <AvatarFallback>
+                      <User size={16} />
+                    </AvatarFallback>
+                  </Avatar>
+                </DropdownMenuTrigger>
 
-              <DropdownMenuContent align="end" className="w-56">
-                <div className="px-3 py-2 text-sm">
-                  <div className="font-medium">
-                    {user?.maskLogin
-                      ? `Mask Login - ${user?.name}`
-                      : user?.name}
+                <DropdownMenuContent align="end" className="w-56">
+                  <div className="px-3 py-2 text-sm">
+                    <div className="font-medium">
+                      {user?.maskLogin
+                        ? `Mask Login - ${user?.name}`
+                        : user?.name}
+                    </div>
+                    <div className="text-muted-foreground text-xs">
+                      {user?.email}
+                    </div>
                   </div>
-                  <div className="text-muted-foreground text-xs">
-                    {user?.email}
-                  </div>
-                </div>
 
-                <Separator />
+                  <Separator />
 
-                <Tabs
-                  defaultValue={locale}
-                  onValueChange={changeLocale}
-                  className="px-2 py-2"
-                >
-                  <TabsList className="grid grid-cols-2">
-                    <TabsTrigger value="ar">العربية</TabsTrigger>
-                    <TabsTrigger value="en">English</TabsTrigger>
-                  </TabsList>
-                </Tabs>
+                  <Tabs
+                    defaultValue={locale}
+                    onValueChange={changeLocale}
+                    className="px-2 py-2"
+                  >
+                    <TabsList className="grid grid-cols-2">
+                      <TabsTrigger value="ar">العربية</TabsTrigger>
+                      <TabsTrigger value="en">English</TabsTrigger>
+                    </TabsList>
+                  </Tabs>
 
-                <Separator />
+                  <Separator />
 
-                <DropdownMenuItem className="text-red-500">
-                  <LogOut size={16} className="mr-2" />
-                  <LogoutBtn />
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  <DropdownMenuItem className="text-red-500">
+                    <LogOut size={16} className="mr-2" />
+                    <LogoutBtn />
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
-        </div>
+        </Card>
       </header>
 
       {/* SEARCH MODAL */}
