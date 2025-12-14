@@ -38,7 +38,7 @@ export const ThemeSwitch: React.FC<ThemeSwitchProps> = ({ className }) => {
         className
       )}
     >
-      {isDark ? <SunFilledIcon size={20} /> : <MoonFilledIcon size={20} />}
+      {isDark ? <SunFilledIcon size={20} /> : <MoonFilledIcon size={18} />}
     </button>
   );
 };

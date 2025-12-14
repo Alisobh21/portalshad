@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button } from "./ui/button";
 import { ThemeSwitch } from "./ThemeSwitch";
 import { HiOutlineBars3BottomLeft } from "react-icons/hi2";
+import { RiUser4Fill } from "react-icons/ri";
 
 import {
   Dialog,
@@ -21,12 +22,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import {
-  Menu,
   Search,
   ShoppingCart,
   PackagePlus,
@@ -40,15 +39,9 @@ import { ErrorToast, SuccessToast } from "@/components/Toasts";
 import LogoutBtn from "@/components/logoutBtn";
 import AppLogo from "@/icons/AppLogo";
 import { _toggleSidebar } from "@/store/slices/appSlice";
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
+import { HiMiniShoppingCart } from "react-icons/hi2";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 interface RootState {
   auth: {
@@ -114,14 +107,16 @@ export default function Navbar() {
   return (
     <>
       {/* NAVBAR */}
-      <header className="fixed w-full px-0 pb-0 pt-2 bg-transparent z-[50] ">
-        <Card className="relative bg-white/90 dark:bg-default-50/80 w-full p-1  ">
-          <div className="container flex h-14 items-center justify-between">
+
+      <header className="fixed w-full px-2 pt-2 z-50">
+        <Card className="bg-white/90 dark:bg-neutral-900/80 border-none backdrop-blur">
+          <div className="flex h-4 items-center justify-between px-3">
             {/* LEFT */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <Button
-                size="icon"
                 variant="ghost"
+                size="icon"
+                className="sm:hidden rounded-full bg-muted/50"
                 onClick={() => dispatch(_toggleSidebar())}
               >
                 <HiOutlineBars3BottomLeft size={20} />
@@ -130,62 +125,124 @@ export default function Navbar() {
               <AppLogo width="70px" height="30px" />
             </div>
 
-            {/* RIGHT */}
-            <div className="flex items-center gap-2">
-              <Button size="icon" variant="ghost" onClick={() => setOpen(true)}>
-                <Search size={18} />
-              </Button>
+            {/* DESKTOP */}
+            <div className="hidden sm:flex items-center gap-2">
+              <ThemeSwitch />
 
               <Button
                 size="icon"
                 variant="ghost"
-                onClick={() => router.push(`/${locale}/orders/create-order`)}
+                className="bg-muted/20"
+                onClick={() =>
+                  router.push(
+                    `/${locale}/purchase-orders/create-purchase-order`
+                  )
+                }
               >
-                <ShoppingCart size={18} />
+                <HiMiniShoppingCart size={17} />
               </Button>
 
               <Button
                 size="icon"
                 variant="ghost"
+                className="rounded-full bg-muted/20"
                 onClick={() => router.push(`/${locale}/products/add-product`)}
               >
                 <PackagePlus size={18} />
               </Button>
 
-              {/* USER MENU */}
+              <Button
+                size="icon"
+                variant="ghost"
+                className="rounded-full bg-muted/20"
+                onClick={() => setOpen(true)}
+              >
+                <Search size={18} />
+              </Button>
+              <Separator
+                orientation="vertical"
+                className="mx-2 self-center min-h-6 min-w-[2px]"
+              />
+
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Avatar className="cursor-pointer">
+                  <div className="flex items-center gap-2 cursor-pointer rounded-md px-2 py-1 hover:bg-muted/20">
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="rounded-full bg-muted/20 pointer-events-none"
+                    >
+                      <RiUser4Fill size={16} />
+                    </Button>
+
+                    <div className="text-sm font-medium">
+                      {user?.maskLogin
+                        ? `Mask Login - ${user?.name}`
+                        : user?.name}
+                      <div className="text-muted-foreground text-xs">
+                        {user?.email}
+                      </div>
+                    </div>
+                  </div>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent
+                  side="bottom"
+                  align="start"
+                  className="w-56"
+                >
+                  <DropdownMenuItem asChild>
+                    <LanguageSwitcher showText />
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem asChild>
+                    {/* <LogOut size={16} className="mr-2" /> */}
+                    <LogoutBtn />
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            {/* MOBILE */}
+            <div className="flex sm:hidden items-center gap-1">
+              <Button
+                size="icon"
+                variant="ghost"
+                className="rounded-full bg-muted/50"
+                onClick={() => setOpen(true)}
+              >
+                <Search size={18} />
+              </Button>
+
+              <ThemeSwitch />
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Avatar className="h-8 w-8 bg-muted cursor-pointer">
                     <AvatarFallback>
                       <User size={16} />
                     </AvatarFallback>
                   </Avatar>
                 </DropdownMenuTrigger>
 
-                <DropdownMenuContent align="end" className="w-56">
-                  <div className="px-3 py-2 text-sm">
-                    <div className="font-medium">
-                      {user?.maskLogin
-                        ? `Mask Login - ${user?.name}`
-                        : user?.name}
-                    </div>
-                    <div className="text-muted-foreground text-xs">
-                      {user?.email}
-                    </div>
-                  </div>
-
-                  <Separator />
-
-                  <Tabs
-                    defaultValue={locale}
-                    onValueChange={changeLocale}
-                    className="px-2 py-2"
+                <DropdownMenuContent align="end" className="w-52">
+                  <DropdownMenuItem
+                    onClick={() =>
+                      router.push(`/${locale}/orders/create-order`)
+                    }
                   >
-                    <TabsList className="grid grid-cols-2">
-                      <TabsTrigger value="ar">العربية</TabsTrigger>
-                      <TabsTrigger value="en">English</TabsTrigger>
-                    </TabsList>
-                  </Tabs>
+                    <ShoppingCart size={16} className="mr-2" />
+                    Create Order
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() =>
+                      router.push(`/${locale}/products/add-product`)
+                    }
+                  >
+                    <PackagePlus size={16} className="mr-2" />
+                    Add Product
+                  </DropdownMenuItem>
 
                   <Separator />
 

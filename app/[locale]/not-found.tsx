@@ -10,8 +10,8 @@ export default function NotFoundPage(): JSX.Element {
   const t = useTranslations("NotFound");
 
   return (
-    <div className="flex h-screen flex-col items-center justify-center space-y-5 px-6 text-center">
-      <div className="relative w-full">
+    <div className="flex min-h-screen w-full flex-col items-center justify-center gap-5 px-6 text-center">
+      <div className="flex w-full justify-center">
         <Image
           src="/monster.svg"
           alt="Monster"
@@ -22,13 +22,15 @@ export default function NotFoundPage(): JSX.Element {
         />
       </div>
 
-      <div className="relative z-10 flex flex-col items-center space-y-2">
+      <div className="relative z-10 flex flex-col items-center gap-2">
         <p className="mt-5 text-[25px] lg:text-[30px]">{t("page_not_found")}</p>
 
         <p className="text-lg text-muted-foreground">{t("maybe_lost")}</p>
 
-        <Button asChild>
-          <Link href="/">{t("go_home")}</Link>
+        <Button asChild variant={"primary"}>
+          <Link className="text-white" href="/">
+            {t("go_home")}
+          </Link>
         </Button>
       </div>
     </div>

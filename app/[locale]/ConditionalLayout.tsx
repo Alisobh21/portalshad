@@ -131,7 +131,7 @@ export default function ConditionalLayout({
           className={`pb-3 ps-2 pt-[75px] transition duration-300 ease-in-out pe-3 ${
             !expandSidebar
               ? "sm:max-w-[calc(100%-100px)] w-full"
-              : "sm:max-w-[calc(100%-210px)] w/full"
+              : "sm:max-w-[calc(100%-210px)] w-full"
           } overflow-visible ms-auto`}
         >
           {children}
