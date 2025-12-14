@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { AppProvider } from "@/store/AppProvider";
 import "../globals.css";
 import { ibmPlex, rubik } from "@/config/fonts";
 const geistSans = Geist({
@@ -49,7 +50,7 @@ export default async function LocaleLayout({
       >
         <ThemeProvider>
           <NextIntlClientProvider messages={messages}>
-            {children}
+            <AppProvider>{children}</AppProvider>
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>

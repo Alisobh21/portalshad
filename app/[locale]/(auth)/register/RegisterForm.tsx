@@ -31,7 +31,7 @@ type RegisterFormData = z.infer<typeof RegisterSchema>;
 export default function RegisterForm() {
   const tGeneral = useTranslations("General");
   const locale = useLocale();
-
+  const t = useTranslations("General");
   const [passVisible, setPassVisible] = useState(false);
 
   const {

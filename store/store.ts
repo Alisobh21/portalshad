@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import appReducer from "./slices/appSlice";
+import authSlice from "./slices/authSlice";
 
 export const store = configureStore({
   reducer: {
     app: appReducer,
+    auth: authSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -11,5 +13,8 @@ export const store = configureStore({
     }),
   devTools: process.env.NODE_ENV !== "production",
 });
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
 export default store;

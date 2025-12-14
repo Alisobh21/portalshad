@@ -15,12 +15,13 @@ import { PiEyeClosedBold, PiEyeBold } from "react-icons/pi";
 import { RiDoorOpenFill, RiUserAddLine } from "react-icons/ri";
 
 import { useLocale, useTranslations } from "next-intl";
-import { Link, useRouter } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 import { useDispatch } from "react-redux";
 
-// import axiosPrivate, { axiosInternal } from "@/app/axios/axios";
-// import lsSecure from "@/helpers/Secure";
-// import { _getAuthUser, _setToken } from "@/store/slices/authSlice";
+import axiosPrivate, { axiosInternal } from "@/axios/axios";
+import lsSecure from "@/helpers/Secure";
+import { _getAuthUser, _setToken } from "../../../../store/slices/authSlice";
+import { AppDispatch } from "../../../../store/store";
 // import InvalidFeedback from "@/components/InvalidFeedback";
 
 // -------------------------
@@ -41,8 +42,7 @@ export default function LoginForm() {
   const tGeneral = useTranslations("General");
 
   const locale = useLocale();
-  const router = useRouter();
-  //   const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const [passVisible, setPassVisible] = useState(false);
   const [loginLoading, setLoginLoading] = useState<
@@ -55,7 +55,7 @@ export default function LoginForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: {},
   } = useForm<LoginFormData>({
     resolver: zodResolver(LoginSchema),
   });
@@ -63,35 +63,37 @@ export default function LoginForm() {
   // -------------------------
   //      SUBMIT LOGIN
   // -------------------------
-  //   const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
-  //     setLoginLoading("loading");
+  const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
+    setLoginLoading("loading");
 
-  //     try {
-  //       const response = await axiosPrivate.post("/login", {
-  //         email: data.email,
-  //         password: data.password,
-  //       });
+    try {
+      const response = await axiosPrivate.post("/login", {
+        email: data.email,
+        password: data.password,
+      });
 
-  //       if (response?.data?.success) {
-  //         const { token, user } = response.data.data;
+      if (response?.data?.success) {
+        const { token, user } = response.data.data;
 
-  //         dispatch(_getAuthUser(user));
-  //         lsSecure.set("auth_token", token);
+        dispatch(_getAuthUser(user));
+        if (lsSecure) {
+          lsSecure.set("auth_token", token);
+        }
 
-  //         const loginRes = await axiosInternal.post("/api/set-auth", { user });
+        const loginRes = await axiosInternal.post("/api/set-auth", { user });
 
-  //         if (loginRes?.data?.success) {
-  //           dispatch(_setToken(token));
-  //           window.location.href = "/";
-  //         }
-  //       }
+        if (loginRes?.data?.success) {
+          dispatch(_setToken(token));
+          window.location.href = "/";
+        }
+      }
 
-  //       setLoginLoading("redirect");
-  //     } catch (err) {
-  //       console.error(err);
-  //       setLoginLoading(null);
-  //     }
-  //   };
+      setLoginLoading("redirect");
+    } catch (err) {
+      console.error(err);
+      setLoginLoading(null);
+    }
+  };
 
   return (
     <section className="lg:py-5 w-full lg:p-5">
@@ -160,7 +162,7 @@ export default function LoginForm() {
         {/*     FORM */}
         {/* ------------------------- */}
         <form
-          //   onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-3 pb-3 mt-3"
           noValidate
         >
