@@ -47,6 +47,7 @@ export default function LogoutBtn(): JSX.Element {
   return (
     <Button
       disabled={Boolean(logoutLoading)}
+      variant="outline"
       onClick={handleLogout}
       className="w-full flex justify-start gap-2"
       aria-busy={isLoading}

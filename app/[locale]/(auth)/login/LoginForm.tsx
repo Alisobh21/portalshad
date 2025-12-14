@@ -232,6 +232,7 @@ export default function LoginForm() {
           {/* SUBMIT */}
           <Button
             type="submit"
+            variant="primary"
             disabled={!!loginLoading}
             className="w-full btn-primary text-white py-5.5"
           >

@@ -104,7 +104,7 @@ export default function ConditionalLayout({
   if (inactiveRoutes.some((route) => routeWithoutLocale.includes(route))) {
     return (
       <>
-        <div className="relative">
+        <div className="relative ">
           <AuthFetcher />
           <div className="absolute top-0 left-0 w-full">
             <Navbar />
@@ -118,13 +118,13 @@ export default function ConditionalLayout({
   }
 
   return (
-    <div className="relative">
+    <div className="relative bg-[#f5f3f2]">
       <AuthFetcher />
       <FetchInitData />
       <div className="absolute top-0 left-0 w-full">
         <Navbar />
       </div>
-      <main className="relative flex h-screen overflow-visible">
+      <main className="relative flex overflow-visible">
         <Sidebar variant="desktop" />
         <Sidebar variant="mobile" />
         <div

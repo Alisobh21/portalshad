@@ -10,7 +10,7 @@ export default function NotFoundPage(): JSX.Element {
   const t = useTranslations("NotFound");
 
   return (
-    <div className="flex min-h-screen w-full flex-col items-center justify-center gap-5 px-6 text-center">
+    <div className="flex min-h-[calc(100dvh-90px)] w-full flex-col items-center justify-center gap-5 px-6 text-center">
       <div className="flex w-full justify-center">
         <Image
           src="/monster.svg"
