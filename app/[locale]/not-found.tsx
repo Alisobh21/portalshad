@@ -6,7 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import type { JSX } from "react";
 
-export default function NotFound(): JSX.Element {
+export default function NotFoundPage(): JSX.Element {
   const t = useTranslations("NotFound");
 
   return (
