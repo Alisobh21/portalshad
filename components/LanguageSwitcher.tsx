@@ -30,12 +30,12 @@ export default function LanguageSwitcher({
 
   return (
     <Tabs value={locale} onValueChange={changeLocale} className={className}>
-      <TabsList className="flex items-center gap-1 rounded-md bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600/50">
+      <TabsList className="flex items-center gap-1  rounded-md bg-neutral-100 dark:bg-neutral-800 border border-neutral-00 dark:border-neutral-600/50">
         {/* Arabic */}
         <TabsTrigger
           value="ar"
-          className="flex items-center gap-2 px-2 py-1 rounded-md transition
-                     data-[state=active]:bg-neutral-50 dark:data-[state=active]:bg-neutral-700"
+          className="flex items-center gap-2 p-2 rounded-sm transition
+                     data-[state=active]:bg-white dark:data-[state=active]:bg-neutral-700"
         >
           <Image
             src="/flag.png"
@@ -52,8 +52,8 @@ export default function LanguageSwitcher({
         {/* English */}
         <TabsTrigger
           value="en"
-          className="flex items-center gap-2 px-2 py-1 rounded-md transition
-                     data-[state=active]:bg-neutral-50 dark:data-[state=active]:bg-neutral-700"
+          className="flex items-center gap-2 p-2 rounded-sm transition
+                     data-[state=active]:bg-white dark:data-[state=active]:bg-neutral-700"
         >
           <Image
             src="/united-states.png"

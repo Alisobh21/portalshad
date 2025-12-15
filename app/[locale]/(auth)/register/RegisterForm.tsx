@@ -30,8 +30,8 @@ type RegisterFormData = z.infer<typeof RegisterSchema>;
 
 export default function RegisterForm() {
   const tGeneral = useTranslations("General");
+  const t = useTranslations("Login");
   const locale = useLocale();
-  const t = useTranslations("General");
   const [passVisible, setPassVisible] = useState(false);
 
   const {
@@ -49,14 +49,14 @@ export default function RegisterForm() {
           <h1
             className={
               locale === "en"
-                ? "lg:text-[50px] max-w-[300px]"
+                ? "lg:text-[50px] "
                 : "font-bold lg:text-[50px] leading-[1.2]"
             }
           >
-            {tGeneral("register")}
+            {t("welcome")}
           </h1>
           <p className="text-muted-foreground text-[15px] opacity-80">
-            {t("createAccount")}
+            {t("secureAccess")}
           </p>
         </div>
 
@@ -176,6 +176,7 @@ export default function RegisterForm() {
 
           <Button
             type="submit"
+            variant="primary"
             className="w-full btn-primary text-white py-5.5"
           >
             {tGeneral("register")}

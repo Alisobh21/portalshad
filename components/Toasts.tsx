@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { IoCloseOutline } from "react-icons/io5";
+import { CheckCircle2Icon } from "lucide-react";
 
 interface ToastProps {
   msg: string;
@@ -26,13 +27,11 @@ export function ErrorToast({ msg }: ToastProps) {
 // Success Toast
 export function SuccessToast({ msg }: ToastProps) {
   return (
-    <Alert
-      variant="default"
-      className="w-full mb-2 backdrop-blur-[20px] dark:bg-green-100/50"
-    >
+    <Alert className="w-full bg-green-500/40 text-green-900">
+      <CheckCircle2Icon />
+
       <div className="flex items-start justify-between w-full">
         <AlertTitle className="dark:text-green-600">{msg}</AlertTitle>
-        <IoCloseOutline className="h-4 w-4 cursor-pointer" />
       </div>
     </Alert>
   );

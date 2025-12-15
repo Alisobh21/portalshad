@@ -105,7 +105,7 @@ export default function LoginForm() {
           <h1
             className={
               locale === "en"
-                ? "lg:text-[50px] max-w-[300px]"
+                ? "lg:text-[50px] max-w-[600px]"
                 : "font-bold lg:text-[50px] leading-[1.2]"
             }
           >

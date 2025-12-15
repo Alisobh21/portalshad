@@ -11,6 +11,13 @@ export const rubik = Rubik({
   display: "swap",
 });
 
+const rubik1 = Noto_Kufi_Arabic({
+  variable: "--font-rubik",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "700"],
+});
+
 export const ibmPlex = Noto_Kufi_Arabic({
   subsets: ["arabic"],
   variable: "--font-ibmPlex",

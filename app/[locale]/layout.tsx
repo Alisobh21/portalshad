@@ -9,6 +9,7 @@ import "../globals.css";
 import { ibmPlex, rubik } from "@/config/fonts";
 import ConditionalLayout from "./ConditionalLayout";
 import { Providers } from "./provider";
+import { Toaster } from "@/components/ui/sonner";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -48,7 +49,7 @@ export default async function LocaleLayout({
       suppressHydrationWarning
     >
       <body
-        className={`${geistSans.variable} bg-background ${rubik.variable} ${ibmPlex.variable} font-rubik rtl:font-ibmPlex ${geistMono.variable} antialiased`}
+        className={`${rubik.variable} bg-background ${rubik.variable} ${ibmPlex.variable} font-rubik rtl:font-ibmPlex  antialiased`}
       >
         <ThemeProvider>
           <AppProvider>
@@ -57,6 +58,7 @@ export default async function LocaleLayout({
             >
               <NextIntlClientProvider messages={messages}>
                 <ConditionalLayout>{children}</ConditionalLayout>
+                <Toaster richColors closeButton expand />
               </NextIntlClientProvider>
             </Providers>
           </AppProvider>

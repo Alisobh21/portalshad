@@ -32,6 +32,7 @@ import {
   LogOut,
   User,
   Loader2,
+  LucideSearch,
 } from "lucide-react";
 import { toast } from "react-toastify";
 import axiosPrivate from "@/axios/axios";
@@ -42,6 +43,13 @@ import { _toggleSidebar } from "@/store/slices/appSlice";
 import { Card } from "@/components/ui/card";
 import { HiMiniShoppingCart } from "react-icons/hi2";
 import LanguageSwitcher from "./LanguageSwitcher";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { AiFillProduct } from "react-icons/ai";
+import { FaCartPlus } from "react-icons/fa6";
 
 interface RootState {
   auth: {
@@ -108,7 +116,7 @@ export default function Navbar() {
     <>
       {/* NAVBAR */}
 
-      <header className="fixed w-full px-2 pt-2 z-50">
+      <header className="fixed w-full px-2 pt-2 z-50 ">
         <Card className="bg-white/90 dark:bg-neutral-900/80 border-none backdrop-blur">
           <div className="flex h-4 items-center justify-between px-3">
             {/* LEFT */}
@@ -126,39 +134,49 @@ export default function Navbar() {
             </div>
 
             {/* DESKTOP */}
-            <div className="hidden sm:flex items-center gap-2">
+            <div className="hidden sm:flex items-center justify-center gap-2">
               <ThemeSwitch />
 
-              <Button
-                size="icon"
-                variant="ghost"
-                className="bg-muted/20"
-                onClick={() =>
-                  router.push(
-                    `/${locale}/purchase-orders/create-purchase-order`
-                  )
-                }
-              >
-                <HiMiniShoppingCart size={17} />
-              </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button size="icon" variant="icon">
+                    <HiMiniShoppingCart size={17} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>{t("createP")}</TooltipContent>
+              </Tooltip>
 
-              <Button
-                size="icon"
-                variant="ghost"
-                className="rounded-full bg-muted/20"
-                onClick={() => router.push(`/${locale}/products/add-product`)}
-              >
-                <PackagePlus size={18} />
-              </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button size="icon" variant="icon">
+                    <AiFillProduct size={17} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>{t("add")}</TooltipContent>
+              </Tooltip>
 
-              <Button
-                size="icon"
-                variant="ghost"
-                className="rounded-full bg-muted/20"
-                onClick={() => setOpen(true)}
-              >
-                <Search size={18} />
-              </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button size="icon" variant="icon">
+                    <FaCartPlus size={17} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>{t("createO")}</TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="icon"
+                    variant="icon"
+                    onClick={() => setOpen(true)}
+                  >
+                    <LucideSearch size={17} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>{t("searchIcon")}</TooltipContent>
+              </Tooltip>
+
               <Separator
                 orientation="vertical"
                 className="mx-2 self-center min-h-6 min-w-[2px]"
@@ -167,11 +185,7 @@ export default function Navbar() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <div className="flex items-center gap-2 cursor-pointer rounded-md px-2 py-1 hover:bg-muted/20">
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="rounded-full bg-muted/20 pointer-events-none"
-                    >
+                    <Button size="icon" variant="icon" className="rounded-full">
                       <RiUser4Fill size={16} />
                     </Button>
 
@@ -189,7 +203,7 @@ export default function Navbar() {
                 <DropdownMenuContent
                   side="bottom"
                   align="start"
-                  className="w-56"
+                  className="w-56 mt-3 backdrop-blur-md"
                 >
                   <DropdownMenuItem asChild>
                     <LanguageSwitcher showText />

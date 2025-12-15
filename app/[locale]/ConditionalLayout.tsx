@@ -118,7 +118,7 @@ export default function ConditionalLayout({
   }
 
   return (
-    <div className="relative bg-[#f5f3f2]">
+    <div className="relative bg-[#f5f3f2] dark:bg-background">
       <AuthFetcher />
       <FetchInitData />
       <div className="absolute top-0 left-0 w-full">

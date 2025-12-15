@@ -1,6 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import lsSecure from "@/helpers/Secure";
 import { ErrorToast, SuccessToast } from "@/components/Toasts";
 import { AxiosError, AxiosResponse } from "axios";
@@ -79,12 +79,11 @@ axiosPrivate.interceptors.response.use(
 
     if (successRes && msg) {
       if (response.config.method?.toLowerCase() !== "get") {
-        toast(
-          <SuccessToast msg={msg} />,
-          response.config.url?.includes("login")
-            ? { position: "bottom-right" }
-            : undefined
-        );
+        toast.success(msg, {
+          position: response.config.url?.includes("login")
+            ? "bottom-right"
+            : "top-center",
+        });
       }
     } else if (!successRes) {
       if (!validationErrors) {

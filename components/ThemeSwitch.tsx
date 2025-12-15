@@ -30,7 +30,7 @@ export const ThemeSwitch: React.FC<ThemeSwitchProps> = ({ className }) => {
       className={clsx(
         `
         h-9 w-9 flex items-center justify-center rounded-full 
-        bg-neutral-200 dark:bg-neutral-700
+        bg-accent  text-accent-foreground dark:bg-neutral-700
         hover:bg-neutral-300 dark:hover:bg-neutral-600
         transition-colors duration-200
         shadow-sm dark:shadow-none
