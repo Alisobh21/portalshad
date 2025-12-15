@@ -139,7 +139,7 @@ export default function Navbar() {
 
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button size="icon" variant="icon">
+                  <Button size="icon" variant="icon" className="cursor-pointer">
                     <HiMiniShoppingCart size={17} />
                   </Button>
                 </TooltipTrigger>
@@ -148,7 +148,7 @@ export default function Navbar() {
 
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button size="icon" variant="icon">
+                  <Button size="icon" variant="icon" className="cursor-pointer">
                     <AiFillProduct size={17} />
                   </Button>
                 </TooltipTrigger>
@@ -157,7 +157,7 @@ export default function Navbar() {
 
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button size="icon" variant="icon">
+                  <Button size="icon" variant="icon" className="cursor-pointer">
                     <FaCartPlus size={17} />
                   </Button>
                 </TooltipTrigger>
@@ -170,6 +170,7 @@ export default function Navbar() {
                     size="icon"
                     variant="icon"
                     onClick={() => setOpen(true)}
+                    className="cursor-pointer"
                   >
                     <LucideSearch size={17} />
                   </Button>
@@ -185,7 +186,11 @@ export default function Navbar() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <div className="flex items-center gap-2 cursor-pointer rounded-md px-2 py-1 hover:bg-muted/20">
-                    <Button size="icon" variant="icon" className="rounded-full">
+                    <Button
+                      size="icon"
+                      variant="icon"
+                      className="rounded-full cursor-pointer"
+                    >
                       <RiUser4Fill size={16} />
                     </Button>
 
