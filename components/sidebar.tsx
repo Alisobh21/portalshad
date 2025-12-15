@@ -200,29 +200,34 @@ function SidebarInner({ variant }: { variant: SidebarVariant }) {
             return (
               <Link
                 key={link.key}
-                href={link.url}
+                href={isRestricted ? "#" : link.url} // لو restricted نخلي الرابط مش شغال
                 onClick={(e) => {
                   if (isRestricted) {
-                    // e.preventDefault();
-                    e.stopPropagation();
+                    e.preventDefault(); // يمنع التنقل
                     toast.error("You are not allowed to visit this route");
                     return;
                   }
                   if (variant === "mobile") dispatch(_toggleSidebar());
                 }}
-                className={`flex ${isRestricted ? "opacity-60" : ""} ${
-                  expandSidebar ? "flex-row px-3 py-2" : "flex-col py-2 px-1"
-                } items-center gap-2 w-full rounded-lg hover:bg-gray-100 dark:hover:bg-default-100 transition-[background] duration-300 ease-in ${
+                className={`flex items-center gap-2 w-full rounded-lg transition-[background] duration-300 ease-in
+                ${expandSidebar ? "flex-row px-3 py-2" : "flex-col py-2 px-1"}
+                ${
+                  isRestricted
+                    ? "opacity-60 pointer-events-none cursor-not-allowed"
+                    : ""
+                }
+                ${
                   (!activeRoute && link.key === "home") ||
                   activeRoute === link.key
-                    ? `${activeClass} pointer-events-none`
+                    ? `${activeClass}`
                     : ""
-                }`}
+                }
+              `}
               >
                 {link.icon}
                 <span
                   className={`${
-                    expandSidebar ? "text-[14px]" : "text-center text-[12px] "
+                    expandSidebar ? "text-[14px]" : "text-center text-[12px]"
                   } ${
                     (!activeRoute && link.key === "home") ||
                     activeRoute === link.key
@@ -399,7 +404,7 @@ export default function Sidebar({ variant }: { variant: SidebarVariant }) {
       {variant === "desktop" && (
         <div
           className={`p-2 transition duration-300 ease-in-out sm:flex h-[calc(100%-75px)] justify-center ${
-            expandSidebar ? "w-[210px]" : "w-[100px]"
+            expandSidebar ? "w-[210px]" : "w-[110px]"
           } fixed top-[75px] hidden`}
         >
           <div
