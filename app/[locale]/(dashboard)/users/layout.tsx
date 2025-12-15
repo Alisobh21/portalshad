@@ -23,7 +23,7 @@ export default function UsersLayout({ children }: UsersLayoutProps) {
   return (
     <section className="py-[10px]">
       <Card className="mb-4">
-        <CardContent className="p-[30px] relative z-[20] backdrop-blur-sm bg-white/80 dark:bg-background/80">
+        <CardContent className="p-[30px] relative z-[20] backdrop-blur-sm">
           <PageHeader />
         </CardContent>
       </Card>

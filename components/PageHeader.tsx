@@ -37,12 +37,9 @@ export default function PageHeader({ hideBreadcrumb }: PageHeaderProps) {
     <div className="max-h-4 flex flex-col gap-2 justify-center">
       <div>{!hideBreadcrumb && <BreadCrumb currentPage={title} />}</div>
 
-      {subtitle && <p className="font-bold">{subtitle}</p>}
-
-      <h1 className="font-bold">{title}</h1>
-
+      <h1 className="font-black">{title}</h1>
+      {subtitle && <p className="">{subtitle}</p>}
       {subheading && <p className="text-muted">{subheading}</p>}
-
       {customContent && customContent}
     </div>
   );

@@ -36,7 +36,7 @@ export default function BreadCrumb({ currentPage }: BreadCrumbProps) {
   }, [currentPage, dispatch]);
 
   return (
-    <Breadcrumb className="bg-transparent dark:bg-gray-100/10">
+    <Breadcrumb>
       {pathSegments.map((segment, index) => {
         const isLast = index === pathSegments.length - 1;
         const pathTo = `/${pathSegments.slice(0, index + 1).join("/")}`;
@@ -44,7 +44,7 @@ export default function BreadCrumb({ currentPage }: BreadCrumbProps) {
         return (
           <BreadcrumbItem key={segment}>
             {isLast ? (
-              <BreadcrumbPage className="inline-flex items-center rounded-md border bg-muted px-3 py-1 text-sm text-foreground cursor-not-allowed">
+              <BreadcrumbPage className="inline-flex items-center rounded-sm border bg-muted  px-2 py-1 text-sm text-foreground cursor-not-allowed">
                 {formatDashedName(formatSegment(segment))}
               </BreadcrumbPage>
             ) : (
