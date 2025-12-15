@@ -3,17 +3,26 @@
 import type { JSX } from "react";
 import { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FaHome, FaBoxes, FaUserCog, FaCartArrowDown } from "react-icons/fa";
+import {
+  FaBoxes,
+  FaUserCog,
+  FaCartArrowDown,
+  FaUsersCog,
+} from "react-icons/fa";
 import { RiBarChartBoxAiFill, RiInboxFill } from "react-icons/ri";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { TbReceiptFilled } from "react-icons/tb";
-import { HiReceiptRefund, HiDocumentText } from "react-icons/hi";
+import {
+  HiReceiptRefund,
+  HiDocumentText,
+  HiDocumentReport,
+} from "react-icons/hi";
 import { MdPendingActions } from "react-icons/md";
 import { GoSidebarExpand } from "react-icons/go";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 import { Link, useRouter } from "@/i18n/navigation";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -25,9 +34,9 @@ import {
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import AppLogo from "@/icons/AppLogo";
-import { ErrorToast } from "./Toasts";
 import { _expandSidebar, _toggleSidebar } from "@/store/slices/appSlice";
 import type { RootState } from "@/store/store";
+import { FaHouseChimneyWindow } from "react-icons/fa6";
 
 type SidebarVariant = "desktop" | "mobile";
 
@@ -54,6 +63,7 @@ function SidebarInner({ variant }: { variant: SidebarVariant }) {
     ? (user.roles as { name?: string }[])
     : [];
   const isAdmin = roles.some((role) => role?.name === "admin");
+  console.log(isAdmin, "isAdmin");
   const isMaskLogin = Boolean(
     (user as { maskLogin?: boolean } | null)?.maskLogin
   );
@@ -76,19 +86,19 @@ function SidebarInner({ variant }: { variant: SidebarVariant }) {
         title: t("home"),
         key: "home",
         url: "/",
-        icon: <FaHome size={20} className="dark:opacity-60" />,
+        icon: <FaHouseChimneyWindow size={20} className="dark:opacity-60" />,
       },
       {
         title: t("users"),
         key: "users",
         url: "/users",
-        icon: <FaUserCog size={20} className="dark:opacity-60" />,
+        icon: <FaUsersCog size={20} className="dark:opacity-60" />,
       },
       {
         title: "COD Reporting Tool",
         key: "cod-reports",
         url: "/cod-reports",
-        icon: <HiDocumentText size={20} className="dark:opacity-60" />,
+        icon: <HiDocumentReport size={20} className="dark:opacity-60" />,
       },
       {
         title: t("pendingOrders"),
@@ -185,9 +195,7 @@ function SidebarInner({ variant }: { variant: SidebarVariant }) {
         .filter((link) => (isAdmin ? true : !adminRoutes.includes(link.key)))
         .map((link) => {
           const isRestricted =
-            isAdmin && !adminRoutes.includes(link.key)
-              ? false
-              : !isAdmin && adminRoutes.includes(link.key);
+            isAdmin && !adminRoutes.includes(link.key) ? true : false;
           if (!link.children) {
             return (
               <Link
@@ -195,11 +203,9 @@ function SidebarInner({ variant }: { variant: SidebarVariant }) {
                 href={link.url}
                 onClick={(e) => {
                   if (isRestricted) {
-                    e.preventDefault();
+                    // e.preventDefault();
                     e.stopPropagation();
-                    toast(
-                      <ErrorToast msg="You are not allowed to visit this route" />
-                    );
+                    toast.error("You are not allowed to visit this route");
                     return;
                   }
                   if (variant === "mobile") dispatch(_toggleSidebar());
@@ -216,7 +222,7 @@ function SidebarInner({ variant }: { variant: SidebarVariant }) {
                 {link.icon}
                 <span
                   className={`${
-                    expandSidebar ? "text-[14px]" : "text-center text-[12px]"
+                    expandSidebar ? "text-[14px]" : "text-center text-[12px] "
                   } ${
                     (!activeRoute && link.key === "home") ||
                     activeRoute === link.key
@@ -235,7 +241,7 @@ function SidebarInner({ variant }: { variant: SidebarVariant }) {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className={`w-full ${
+                  className={`w-full text-wrap px-3 h-auto ${
                     expandSidebar
                       ? "justify-start px-3 py-2"
                       : "flex-col py-2 px-1"
@@ -244,14 +250,17 @@ function SidebarInner({ variant }: { variant: SidebarVariant }) {
                   } ${isRestricted ? "opacity-60 pointer-events-none" : ""}`}
                   onClick={(e) => {
                     if (isRestricted) {
-                      e.preventDefault();
-                      toast(
-                        <ErrorToast msg="You don't have access to this module" />
-                      );
+                      // e.preventDefault();
+                      toast.error("You don't have access to this module");
                     }
                   }}
+                  disabled={isRestricted}
                 >
-                  <span className="flex items-center gap-2 w-full">
+                  <div
+                    className={`flex items-center gap-2 w-full text-wrap ${
+                      expandSidebar ? "flex-row" : "flex-col"
+                    }`}
+                  >
                     {link.icon}
                     <span
                       className={`${
@@ -272,7 +281,7 @@ function SidebarInner({ variant }: { variant: SidebarVariant }) {
                         size={14}
                       />
                     )}
-                  </span>
+                  </div>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start">
