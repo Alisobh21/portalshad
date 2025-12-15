@@ -121,15 +121,6 @@ export default function Navbar() {
           <div className="flex h-4 items-center justify-between px-3">
             {/* LEFT */}
             <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="sm:hidden rounded-full bg-muted/50"
-                onClick={() => dispatch(_toggleSidebar())}
-              >
-                <HiOutlineBars3BottomLeft size={20} />
-              </Button>
-
               <AppLogo width="70px" height="30px" />
             </div>
 
@@ -215,7 +206,6 @@ export default function Navbar() {
                   </DropdownMenuItem>
 
                   <DropdownMenuItem asChild>
-                    {/* <LogOut size={16} className="mr-2" /> */}
                     <LogoutBtn />
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -225,48 +215,41 @@ export default function Navbar() {
             {/* MOBILE */}
             <div className="flex sm:hidden items-center gap-1">
               <Button
+                variant="icon"
                 size="icon"
-                variant="ghost"
-                className="rounded-full bg-muted/50"
-                onClick={() => setOpen(true)}
+                className="sm:hidden "
+                onClick={() => dispatch(_toggleSidebar())}
               >
+                <HiOutlineBars3BottomLeft size={20} />
+              </Button>
+              <Button size="icon" variant="icon" onClick={() => setOpen(true)}>
                 <Search size={18} />
               </Button>
-
               <ThemeSwitch />
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Avatar className="h-8 w-8 bg-muted cursor-pointer">
-                    <AvatarFallback>
-                      <User size={16} />
-                    </AvatarFallback>
-                  </Avatar>
+                  <div className="flex items-center gap-2 cursor-pointer rounded-md px-2 py-1 hover:bg-muted/20">
+                    <Button
+                      size="icon"
+                      variant="icon"
+                      className="rounded-full cursor-pointer"
+                    >
+                      <RiUser4Fill size={16} />
+                    </Button>
+                  </div>
                 </DropdownMenuTrigger>
 
-                <DropdownMenuContent align="end" className="w-52">
-                  <DropdownMenuItem
-                    onClick={() =>
-                      router.push(`/${locale}/orders/create-order`)
-                    }
-                  >
-                    <ShoppingCart size={16} className="mr-2" />
-                    Create Order
+                <DropdownMenuContent
+                  side="bottom"
+                  align="start"
+                  className="w-56 mt-3 backdrop-blur-md"
+                >
+                  <DropdownMenuItem asChild>
+                    <LanguageSwitcher showText />
                   </DropdownMenuItem>
 
-                  <DropdownMenuItem
-                    onClick={() =>
-                      router.push(`/${locale}/products/add-product`)
-                    }
-                  >
-                    <PackagePlus size={16} className="mr-2" />
-                    Add Product
-                  </DropdownMenuItem>
-
-                  <Separator />
-
-                  <DropdownMenuItem className="text-red-500">
-                    <LogOut size={16} className="mr-2" />
+                  <DropdownMenuItem asChild>
                     <LogoutBtn />
                   </DropdownMenuItem>
                 </DropdownMenuContent>

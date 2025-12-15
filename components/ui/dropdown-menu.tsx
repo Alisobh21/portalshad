@@ -7,9 +7,23 @@ import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 function DropdownMenu({
+  dir,
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
-  return <DropdownMenuPrimitive.Root data-slot="dropdown-menu" {...props} />;
+  // Default direction to the current document direction so overlays honor RTL.
+  const resolvedDir =
+    dir ??
+    (typeof document !== "undefined" && document?.documentElement?.dir === "rtl"
+      ? "rtl"
+      : "ltr");
+
+  return (
+    <DropdownMenuPrimitive.Root
+      data-slot="dropdown-menu"
+      dir={resolvedDir}
+      {...props}
+    />
+  );
 }
 
 function DropdownMenuPortal({
