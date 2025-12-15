@@ -23,20 +23,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import {
-  Search,
-  ShoppingCart,
-  PackagePlus,
-  LogOut,
-  User,
-  Loader2,
-  LucideSearch,
-} from "lucide-react";
-import { toast } from "react-toastify";
+import { Search, Loader2, LucideSearch } from "lucide-react";
+import { toast } from "sonner";
 import axiosPrivate from "@/axios/axios";
-import { ErrorToast, SuccessToast } from "@/components/Toasts";
 import LogoutBtn from "@/components/logoutBtn";
 import AppLogo from "@/icons/AppLogo";
 import { _toggleSidebar } from "@/store/slices/appSlice";
@@ -98,15 +88,15 @@ export default function Navbar() {
       const orderId = res?.data?.orders?.data?.edges?.[0]?.node?.id;
 
       if (orderId) {
-        toast(<SuccessToast msg={t("orderdirect")} />);
+        toast.success(t("orderdirect"));
         router.push(`/${locale}/orders/show/${orderId}`);
         setOpen(false);
         reset();
       } else {
-        toast(<ErrorToast msg={t("ordernotfound")} />);
+        toast.error(t("ordernotfound"));
       }
     } catch {
-      toast(<ErrorToast msg="Something went wrong" />);
+      toast.error(t("somethingwentwrong"));
     } finally {
       setLoading(false);
     }
@@ -261,9 +251,9 @@ export default function Navbar() {
 
       {/* SEARCH MODAL */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-3xl">
+        <DialogContent className="backdrop-blur-md flex flex-col gap-4 dark:bg-neutral-900/80">
           <DialogHeader>
-            <DialogTitle>{t("searchIcon")}</DialogTitle>
+            <DialogTitle className="text-center">{t("searchIcon")}</DialogTitle>
           </DialogHeader>
 
           <form
@@ -286,6 +276,7 @@ export default function Navbar() {
 
             <Button
               type="submit"
+              variant="search"
               disabled={loading}
               aria-busy={loading}
               className="flex items-center gap-2"

@@ -58,7 +58,7 @@ export default async function LocaleLayout({
             >
               <NextIntlClientProvider messages={messages}>
                 <ConditionalLayout>{children}</ConditionalLayout>
-                <Toaster richColors closeButton expand />
+                <Toaster richColors closeButton expand position="top-center" />
               </NextIntlClientProvider>
             </Providers>
           </AppProvider>
