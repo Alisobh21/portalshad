@@ -174,7 +174,8 @@ function SidebarInner({ variant }: { variant: SidebarVariant }) {
     [t, tAwbs]
   );
 
-  const activeClass = "from-[#ea7831] to-[#c64813] text-white bg-gradient-to-l";
+  const activeClass =
+    "from-[#ea7831] to-[#c64813] text-white bg-gradient-to-l hover:text-white";
   const activeChildClass = "text-[#ffffff]";
 
   return (

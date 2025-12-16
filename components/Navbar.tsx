@@ -106,7 +106,7 @@ export default function Navbar() {
     <>
       {/* NAVBAR */}
 
-      <header className="fixed w-full px-2 pt-2 z-50 ">
+      <header className="fixed w-full px-2 pt-2 z-50 backdrop-blur-md">
         <Card className="bg-white/90 dark:bg-neutral-900/80 border-none backdrop-blur">
           <div className="flex h-4 items-center justify-between px-3">
             {/* LEFT */}
