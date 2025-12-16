@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import CurrentPageFetcher from "@/components/CurrentPageFetcher";
 import TableCard from "@/components/TableCard";
+import CreateForm from "./CreateForm";
 
 const page = async () => {
   const t = await getTranslations("CreateOrder");
@@ -9,8 +10,8 @@ const page = async () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <CurrentPageFetcher page={t("Create")} />
-      <TableCard className="p-5 dark:bg-default-50/70 overflow-visible static">
-        {/* <UsersTable /> */}
+      <TableCard className="p-5 overflow-visible static">
+        <CreateForm />
       </TableCard>
     </Suspense>
   );

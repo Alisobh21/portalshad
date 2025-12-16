@@ -251,6 +251,12 @@ const CountrySlice = createSlice({
     getProducts: (state, action: PayloadAction<Product[]>) => {
       state.productsQuery = action.payload;
     },
+    clearTargetArray: (state, action: PayloadAction<TargetArray>) => {
+      const targetArray = action.payload;
+      if (Array.isArray(state[targetArray])) {
+        state[targetArray] = [];
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -292,6 +298,7 @@ export const {
   addProductsListToEdit,
   updateOrderQuantityEdite,
   updateQuantity,
+  clearTargetArray,
 } = CountrySlice.actions;
 
 export default CountrySlice.reducer;

@@ -7,7 +7,7 @@ export default function TableCard({
   className,
 }: PropsWithChildren<{ className?: string }>): ReactElement {
   const baseClassName =
-    "p-5 shadow-medium rounded-large bg-background/80 dark:bg-default-50/70 dark:bg-default-50/70 overflow-visible static";
+    "p-5 shadow-medium rounded-large overflow-visible static";
 
   return (
     <div
