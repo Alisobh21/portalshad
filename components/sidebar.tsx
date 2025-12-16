@@ -63,7 +63,6 @@ function SidebarInner({ variant }: { variant: SidebarVariant }) {
     ? (user.roles as { name?: string }[])
     : [];
   const isAdmin = roles.some((role) => role?.name === "admin");
-  console.log(isAdmin, "isAdmin");
   const isMaskLogin = Boolean(
     (user as { maskLogin?: boolean } | null)?.maskLogin
   );
@@ -140,7 +139,12 @@ function SidebarInner({ variant }: { variant: SidebarVariant }) {
         title: t("purchaseOrders"),
         key: "purchase-orders",
         url: "/purchase-orders",
-        icon: <FaCartArrowDown size={20} className="dark:opacity-60" />,
+        icon: (
+          <FaCartArrowDown
+            size={20}
+            className="dark:opacity-60 dark:text-white"
+          />
+        ),
         children: [
           { title: t("purchaseOrders"), key: "all-po", url: "/status/all-po" },
           {
@@ -209,7 +213,7 @@ function SidebarInner({ variant }: { variant: SidebarVariant }) {
                   }
                   if (variant === "mobile") dispatch(_toggleSidebar());
                 }}
-                className={`flex items-center gap-2 w-full rounded-lg transition-[background] duration-300 ease-in
+                className={`flex items-center gap-2 w-full rounded-lg transition-[background] duration-300 ease-in opacity-90
                 ${expandSidebar ? "flex-row px-3 py-2" : "flex-col py-2 px-1"}
                 ${
                   isRestricted
@@ -250,7 +254,7 @@ function SidebarInner({ variant }: { variant: SidebarVariant }) {
                     expandSidebar
                       ? "justify-start px-3 py-2"
                       : "flex-col py-2 px-1"
-                  } items-center gap-2 rounded-lg hover:bg-gray-100 dark:hover:bg-default-100 transition-[background] duration-300 ease-in ${
+                  } items-center gap-2 rounded-lg hover:bg-gray-100 dark:hover:bg-default-100 transition-[background] duration-300 ease-in opacity-90 ${
                     activeRoute === link.key ? activeClass : ""
                   } ${isRestricted ? "opacity-60 pointer-events-none" : ""}`}
                   onClick={(e) => {
@@ -281,7 +285,7 @@ function SidebarInner({ variant }: { variant: SidebarVariant }) {
                     {expandSidebar && (
                       <IoChevronForward
                         className={`ms-auto rtl:rotate-180 ${
-                          activeRoute === link.key ? "text-white" : "text-muted"
+                          activeRoute === link.key ? "text-white" : ""
                         }`}
                         size={14}
                       />
@@ -326,7 +330,7 @@ function SidebarInner({ variant }: { variant: SidebarVariant }) {
             }}
             className={`flex ${
               expandSidebar ? "flex-row px-3 py-2" : "flex-col py-2"
-            } items-center gap-2 w-full rounded-lg hover:bg-gray-100 dark:hover:bg-default-100 transition-[background] duration-300 ease-in ${
+            } items-center gap-2 w-full rounded-lg hover:bg-gray-100 dark:hover:bg-default-100 transition-[background] duration-300 ease-in opacity-90 ${
               activeRoute === "users"
                 ? `${activeClass} pointer-events-none`
                 : ""
@@ -404,17 +408,17 @@ export default function Sidebar({ variant }: { variant: SidebarVariant }) {
       {variant === "desktop" && (
         <div
           className={`p-2 transition duration-300 ease-in-out sm:flex h-[calc(100%-75px)] justify-center ${
-            expandSidebar ? "w-[210px]" : "w-[110px]"
+            expandSidebar ? "w-[210px]" : "w-[110px] z-[9999]"
           } fixed top-[75px] hidden`}
         >
           <div
-            className="sm:flex w-[12px] h-[30px] items-center justify-start bg-white cursor-pointer dark:bg-default-50 rounded-e-full rounded-s-none border-s-none absolute top-[50%] end-[-4px] border-e border-content3 z-99 hidden"
+            className="sm:flex w-[12px] h-[30px] items-center justify-start bg-white cursor-pointer dark:bg-neutral-900/80  rounded-e-full rounded-s-none border-s-none absolute top-[50%] end-[-4px] border-e border-content3 z-99 hidden"
             onClick={() => dispatch(_expandSidebar())}
           >
             {expandSidebar ? (
-              <IoChevronBack className="rtl:rotate-180" />
+              <IoChevronBack className="rtl:rotate-180 " />
             ) : (
-              <IoChevronForward className="rtl:rotate-180" />
+              <IoChevronForward className="rtl:rotate-180 " />
             )}
           </div>
           <SidebarInner variant="desktop" />

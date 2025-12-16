@@ -16,7 +16,25 @@ interface ApiResponse<T = any> {
   errors?: Record<string, any>;
 }
 
-const axiosPrivate = axios.create({
+export const axiosTable = axios.create({
+  baseURL: API_URL,
+  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+    // ln: (() => {
+    //   if (typeof document !== "undefined") {
+    //     const match = document.cookie.match(
+    //       new RegExp("(^| )NEXT_LOCALE=([^;]+)")
+    //     );
+    //     return match ? decodeURIComponent(match[2]) : undefined;
+    //   }
+    //   return undefined;
+    // })(),
+    ln: Cookies.get("NEXT_LOCALE"),
+  },
+});
+
+export const axiosPrivate = axios.create({
   baseURL: API_URL,
   headers: {
     "Content-Type": "application/json",
@@ -26,6 +44,15 @@ const axiosPrivate = axios.create({
 
 export const axiosInternal = axios.create({
   baseURL: APP_URL,
+  headers: {
+    "Content-Type": "application/json",
+    ln: Cookies.get("NEXT_LOCALE"),
+  },
+});
+
+export const internalAxios = axios.create({
+  baseURL: APP_URL,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
     ln: Cookies.get("NEXT_LOCALE"),

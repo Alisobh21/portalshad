@@ -1,30 +1,59 @@
+import { toast } from "sonner";
 export type WithKeyLabel<T> = T & { key: unknown; label: unknown };
 
-export function attachKeyLabel<T extends Record<string, unknown>>(
-  arr: T[] | null | undefined,
-  key: keyof T,
-  label: keyof T
-): Array<WithKeyLabel<T>> | null | undefined {
-  if (!arr || !Array.isArray(arr)) {
-    return arr as Array<WithKeyLabel<T>> | null | undefined;
+// export function attachKeyLabel<T extends Record<string, unknown>>(
+//   arr: T[] | null | undefined,
+//   key: keyof T,
+//   label: keyof T
+// ): Array<WithKeyLabel<T>> | null | undefined {
+//   if (!arr || !Array.isArray(arr)) {
+//     return arr as Array<WithKeyLabel<T>> | null | undefined;
+//   }
+
+//   return arr.map((item) => ({
+//     ...item,
+//     key: item[key],
+//     label: item[label],
+//   }));
+// }
+
+export function attachKeyLabel(arr: any, key: any, label: any) {
+  if (!arr && !Array.isArray(arr)) {
+    return arr;
   }
 
-  return arr.map((item) => ({
+  return arr?.map((item: any) => ({
     ...item,
     key: item[key],
     label: item[label],
   }));
 }
 
-export function downloadBlob(
-  data: BlobPart | BlobPart[],
-  filename = "downloaded-file",
-  mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-): void {
-  const blobParts = Array.isArray(data) ? data : [data];
-  const blob = new Blob(blobParts, { type: mimeType });
-  const url = window.URL.createObjectURL(blob);
+// export function downloadBlob(
+//   data: BlobPart | BlobPart[],
+//   filename = "downloaded-file",
+//   mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+// ): void {
+//   const blobParts = Array.isArray(data) ? data : [data];
+//   const blob = new Blob(blobParts, { type: mimeType });
+//   const url = window.URL.createObjectURL(blob);
 
+//   const a = document.createElement("a");
+//   a.href = url;
+//   a.download = filename;
+//   document.body.appendChild(a);
+//   a.click();
+
+//   window.URL.revokeObjectURL(url);
+//   document.body.removeChild(a);
+// }
+
+export function downloadBlob(data: any, filename = "downloaded-file") {
+  var blob = new Blob([data], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+
+  const url = window.URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
   a.download = filename;
@@ -35,30 +64,30 @@ export function downloadBlob(
   document.body.removeChild(a);
 }
 
-export function truncateFromStart(text: string, maxLength: number): string {
+export function truncateFromStart(text: string, maxLength: number) {
   if (text.length <= maxLength) {
     return text;
   }
-  return `${text.slice(text.length - maxLength)}…`;
+  return text.slice(text.length - maxLength) + "…";
 }
 
-export const scrollUpOnePixel = (): void => {
-  if (typeof window !== "undefined") {
-    window.scrollBy(0, -1);
-  }
-};
+// export const scrollUpOnePixel = (): void => {
+//   if (typeof window !== "undefined") {
+//     window.scrollBy(0, -1);
+//   }
+// };
 
-export function formatDashedName(str?: string | null): string {
-  return (
-    str
-      ?.trim()
-      ?.replace(/_/g, " ")
-      ?.split(" ")
-      ?.filter(Boolean)
-      ?.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      ?.join(" ") || ""
-  );
-}
+// export function formatDashedName(str?: string | null): string {
+//   return (
+//     str
+//       ?.trim()
+//       ?.replace(/_/g, " ")
+//       ?.split(" ")
+//       ?.filter(Boolean)
+//       ?.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+//       ?.join(" ") || ""
+//   );
+// }
 
 export function formatDateNoTime(
   timestamp: string | number | Date,
@@ -123,7 +152,11 @@ const phoneRules: Record<string, PhoneRule> = {
     length: 9,
     errorKey: "phoneUAEInvalid",
   },
-  البحرين: { pattern: /^3\d{7}$/, length: 8, errorKey: "phoneBahrainInvalid" },
+  البحرين: {
+    pattern: /^3\d{7}$/,
+    length: 8,
+    errorKey: "phoneBahrainInvalid",
+  },
   قطر: { pattern: /^3\d{7}$/, length: 8, errorKey: "phoneQatarInvalid" },
   الكويت: {
     pattern: /^[569]\d{7}$/,
@@ -199,3 +232,76 @@ export const countryData: Record<string, CountryData> = {
   مصر: { code: "+20", flag: "https://flagcdn.com/w20/eg.png" },
   الأردن: { code: "+962", flag: "https://flagcdn.com/w20/jo.png" },
 };
+
+export function downloadPDF(url: string, filename = "downloaded-file") {
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.setAttribute("target", "_blank");
+  a.click();
+  document.body.removeChild(a);
+}
+
+export const scrollUpOnePixel = () => {
+  window.scrollBy(0, -1);
+};
+
+export function formatDashedName(str: string) {
+  return str
+    ?.trim()
+    ?.replace(/_/g, " ")
+    ?.split(" ")
+    ?.filter(Boolean)
+    ?.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    ?.join(" ");
+}
+
+export function convertToISOString(dateObj: {
+  year: number;
+  month: number;
+  day: number;
+  era: string;
+}) {
+  if (dateObj.era !== "AD") {
+    throw new Error("Only AD era is supported.");
+  }
+
+  const { year, month, day } = dateObj;
+
+  // Create a date in UTC
+  const utcDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+
+  return utcDate.toISOString(); // e.g., "2025-06-18T00:00:00.000Z"
+}
+
+export function downloadURL(url: string, name: string) {
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${name}`;
+  document.body.appendChild(link);
+  link.setAttribute("target", "_blank");
+  link.click();
+  URL.revokeObjectURL(url);
+  document.body.removeChild(link);
+}
+
+export function formateIsoDate(date: string = "") {
+  return date?.split("T")[0] || date;
+}
+
+export function pushWSMessage(payload: any) {
+  const ding = new Audio("/ding.mp3");
+  ding.currentTime = 0;
+  ding.play().catch(() => {});
+  toast(payload?.notification?.title || "New Notification", {
+    description: payload?.notification?.body,
+    className: "custom-fcm-toast",
+    position: "bottom-right",
+    duration: 1 * 60 * 1000,
+    classNames: {
+      description: "custom-fcm-toast-description",
+      title: "custom-fcm-toast-title",
+    },
+  });
+}

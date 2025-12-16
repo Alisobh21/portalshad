@@ -20,6 +20,8 @@ const buttonVariants = cva(
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
         icon: "bg-accent hover:bg-neutral-300 text-accent-foreground",
+        normal:
+          "bg-neutral-300 hover:bg-neutral-200 text-accent-foreground p-5 dark:bg-neutral-700 dark:hover:bg-neutral-600",
         primary: "text-white bg-gradient-to-r from-[#ea7831] to-[#c64813]",
         search:
           "bg-neutral-300 hover:bg-neutral-200 text-accent-foreground dark:bg-neutral-700 dark:hover:bg-neutral-600",
