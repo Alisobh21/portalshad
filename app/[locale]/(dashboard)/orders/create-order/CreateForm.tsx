@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { RiBarChartBoxAiFill } from "react-icons/ri";
 import { MdCreateNewFolder } from "react-icons/md";
 import AddressForm from "./AddressForm";
+import ShippingForm from "./ShippingForm";
 
 interface OrderProduct {
   name: string;
@@ -54,6 +55,15 @@ export default function CreateForm(): ReactElement {
   const methods = useForm<CreateOrderFormValues>({
     defaultValues: {
       products: [],
+      order_number: "",
+      s_first_name: "",
+      s_last_name: "",
+      s_country: "",
+      s_city: "",
+      s_address1: "",
+      s_email: "",
+      s_phone: "",
+      sa_short_address: "",
       shipping: 0,
       discount: 0,
       vat: 0,
@@ -211,7 +221,7 @@ export default function CreateForm(): ReactElement {
                   <h2 className="text-lg font-semibold pb-2">
                     {t("shipping_method")}
                   </h2>
-                  {/* <ShippingForm /> */}
+                  <ShippingForm />
                 </Card>
               </div>
 

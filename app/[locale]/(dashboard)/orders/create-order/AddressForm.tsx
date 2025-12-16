@@ -341,7 +341,10 @@ export default function AddressForm({
                 </FormLabel>
                 <div className="relative">
                   <FormControl>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value ?? ""}
+                    >
                       <SelectTrigger className="pl-8 rtl:pr-8 w-full">
                         <SelectValue placeholder={t("countryplaceholder")} />
                       </SelectTrigger>
