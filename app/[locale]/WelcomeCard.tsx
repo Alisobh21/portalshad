@@ -13,6 +13,7 @@ import type { RootState } from "@/store/store";
 import { GrSettingsOption } from "react-icons/gr";
 import { TbCopyCheckFilled } from "react-icons/tb";
 import { MdFreeCancellation, MdPendingActions } from "react-icons/md";
+import TableWeek from "./Tableweek";
 
 interface WelcomeCardItem {
   title: string;
@@ -81,7 +82,7 @@ export default function WelcomeCard(): ReactElement {
   return (
     <>
       {/* Welcome Header */}
-      <Card className="mb-4 backdrop-blur-sm bg-white/90 dark:bg-neutral-900/80 flex flex-col items-center text-center">
+      <Card className="mb-2 backdrop-blur-sm bg-white/90 dark:bg-neutral-900/80 flex flex-col items-center text-center">
         <CardContent className="p-[30px] flex flex-col items-center text-center">
           <div className="flex flex-col lg:flex-row lg:justify-between gap-2 w-full">
             <div>
@@ -89,7 +90,7 @@ export default function WelcomeCard(): ReactElement {
               <h1 className="font-bold text-[25px]">
                 {String(user?.name ?? "")}
               </h1>
-              <p className="text-muted-foreground mb-5">
+              <p className="text-muted-foreground mb-3">
                 {t("welcomeSubheading")}
               </p>
             </div>
@@ -139,7 +140,9 @@ export default function WelcomeCard(): ReactElement {
           ))}
         </div>
 
-        <div className="flex-1">{/* <TableWeek /> */}</div>
+        <div className="flex-1">
+          <TableWeek />
+        </div>
       </div>
     </>
   );

@@ -6,6 +6,7 @@ import geolocationSlice from "./slices/geolocationSlice";
 import integrationSlice from "./slices/integrationSlice";
 import CountrySlice from "./slices/CountrySlice";
 import awbsSlice from "./slices/awbsSlice";
+import homeSlice from "./slices/homeSlice";
 export const store = configureStore({
   reducer: {
     app: appReducer,
@@ -15,6 +16,7 @@ export const store = configureStore({
     integration: integrationSlice,
     country: CountrySlice,
     awbs: awbsSlice,
+    home: homeSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
