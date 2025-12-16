@@ -218,7 +218,7 @@ function SidebarInner({ variant }: { variant: SidebarVariant }) {
                 ${expandSidebar ? "flex-row px-3 py-2" : "flex-col py-2 px-1"}
                 ${
                   isRestricted
-                    ? "opacity-60 pointer-events-none cursor-not-allowed"
+                    ? "opacity-60 pointer-events-none cursor-not-allowed text-muted-foreground"
                     : ""
                 }
                 ${
