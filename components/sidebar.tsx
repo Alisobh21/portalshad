@@ -293,7 +293,12 @@ function SidebarInner({ variant }: { variant: SidebarVariant }) {
                   </div>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start">
+              <DropdownMenuContent
+                align="center"
+                side="right"
+                sideOffset={12}
+                className="min-w-[180px] rounded-2xl border border-neutral-200 bg-white/90 p-2 text-right shadow-xl backdrop-blur-md dark:border-neutral-800 dark:bg-neutral-900/90"
+              >
                 {link.children?.map((childLink) => (
                   <DropdownMenuItem
                     key={childLink.key}
