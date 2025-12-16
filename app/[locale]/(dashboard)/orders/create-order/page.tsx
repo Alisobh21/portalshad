@@ -10,7 +10,7 @@ const page = async () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <CurrentPageFetcher page={t("Create")} />
-      <TableCard className="p-5 overflow-visible static">
+      <TableCard className="overflow-visible static">
         <CreateForm />
       </TableCard>
     </Suspense>
