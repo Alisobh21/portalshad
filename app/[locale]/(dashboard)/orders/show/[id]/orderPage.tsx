@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { _addOrder } from "@/store/slices/orderSlice";
 import axiosPrivate from "@/axios/axios";
-// import Addressing from './Addressing';
 // import Packaging from './Packaging';
 // import OrderHistory from './OrderHistory';
 import { PiShieldWarningFill } from "react-icons/pi";
@@ -19,6 +18,7 @@ import CtaButtons from "./CtaButtons";
 import TableProducts from "./TableProducts";
 import OrderDetail from "./orderDetail";
 import Shipping from "./Shipping";
+import Addressing from "./Addressing";
 
 interface OrderPageProps {
   params: {
@@ -140,7 +140,6 @@ export default function OrderPage({ params }: OrderPageProps) {
         </div>
       )}
 
-      {/* Uncomment these when components are ready */}
       {delivered && (
         <ReturnAwbsBtn
           id={params?.id}
@@ -173,7 +172,7 @@ export default function OrderPage({ params }: OrderPageProps) {
       </Card>
 
       <Card className="dark:bg-default-50/70">
-        {/* <Addressing fetchOrder={fetchOrder} id={params?.id} status={status} /> */}
+        <Addressing fetchOrder={fetchOrder} id={params?.id} status={status} />
       </Card>
 
       <Card className="md:col-span-2 xl:col-span-3 dark:bg-default-50/70">
