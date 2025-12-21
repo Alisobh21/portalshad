@@ -29,7 +29,10 @@ function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
     <thead
       data-slot="table-header"
       dir={locale === "ar" ? "rtl" : "ltr"}
-      className={cn("[&_tr]:border-b bg-neutral-100 rounded-md", className)}
+      className={cn(
+        "[&_tr]:border-b bg-neutral-100 dark:bg-neutral-800 rounded-md",
+        className
+      )}
       {...props}
     />
   );

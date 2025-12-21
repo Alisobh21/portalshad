@@ -21,6 +21,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Spinner } from "@/components/ui/spinner";
 import ReturnAwbsBtn from "./ReturnAwbsBtn";
 import CtaButtons from "./CtaButtons";
+import TableProducts from "./TableProducts";
 
 interface OrderPageProps {
   params: {
@@ -159,7 +160,11 @@ export default function OrderPage({ params }: OrderPageProps) {
       />
 
       <Card className="md:col-span-2 xl:col-span-3 dark:bg-default-50/70">
-        {/* <TableProducts fetchOrder={fetchOrder} id={params?.id} status={status} /> */}
+        <TableProducts
+          fetchOrder={fetchOrder}
+          id={params?.id}
+          status={status}
+        />
       </Card>
 
       <Card className="dark:bg-default-50/70">{/* <OrderDetail /> */}</Card>

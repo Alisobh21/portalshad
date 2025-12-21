@@ -29,6 +29,8 @@ const buttonVariants = cva(
         green:
           "bg-green text-green-foreground dark:bg-green-500 dark:text-green-50",
         red: "bg-red-100 text-red-600",
+        darkred: "bg-[#f31260] text-white",
+        darkgreen: "bg-[#17c964] text-black",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
