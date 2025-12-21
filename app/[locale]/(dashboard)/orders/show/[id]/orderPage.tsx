@@ -4,8 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { _addOrder } from "@/store/slices/orderSlice";
 import axiosPrivate from "@/axios/axios";
-// import Packaging from './Packaging';
-// import OrderHistory from './OrderHistory';
 import { PiShieldWarningFill } from "react-icons/pi";
 
 import { useTranslations } from "next-intl";
@@ -20,6 +18,7 @@ import OrderDetail from "./orderDetail";
 import Shipping from "./Shipping";
 import Addressing from "./Addressing";
 import OrderHistory from "./OrderHistory";
+import Packaging from "./Packging";
 
 interface OrderPageProps {
   params: {
@@ -181,7 +180,7 @@ export default function OrderPage({ params }: OrderPageProps) {
       </Card>
 
       <Card className="md:col-span-2 xl:col-span-3 dark:bg-default-50/70">
-        {/* <Packaging fetchOrder={fetchOrder} id={params?.id} status={status} /> */}
+        <Packaging fetchOrder={fetchOrder} id={params?.id} status={status} />
       </Card>
     </div>
   );
