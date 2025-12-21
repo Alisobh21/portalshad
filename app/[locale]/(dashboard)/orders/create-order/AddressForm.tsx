@@ -15,7 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import InvalidFeedback from "@/components/InvalidFeedback";
 import axiosPrivate from "@/axios/axios";
 import { validatePhoneByCountry, countryData } from "@/helpers/utils";
 import type { RootState } from "@/store/store";
@@ -71,14 +70,8 @@ export default function AddressForm({
 
   const t = useTranslations("CreateOrder");
 
-  const {
-    watch,
-    setValue,
-    clearErrors,
-    trigger,
-    control,
-    formState: { errors },
-  } = useFormContext<AddressFormValues>();
+  const { watch, setValue, clearErrors, trigger, control } =
+    useFormContext<AddressFormValues>();
 
   const shortAddress = watch("sa_short_address");
   const country = watch("s_country");
@@ -243,13 +236,6 @@ export default function AddressForm({
               </FormItem>
             )}
           />
-          {errors?.order_number && (
-            <InvalidFeedback
-              error={String(
-                errors.order_number.message ?? "Order number is required"
-              )}
-            />
-          )}
         </div>
 
         <div>
@@ -283,11 +269,6 @@ export default function AddressForm({
               </FormItem>
             )}
           />
-          {errors?.s_first_name && (
-            <InvalidFeedback
-              error={String(errors.s_first_name.message ?? "")}
-            />
-          )}
         </div>
 
         {/* Last name */}
@@ -322,10 +303,6 @@ export default function AddressForm({
               </FormItem>
             )}
           />
-
-          {errors?.s_last_name && (
-            <InvalidFeedback error={String(errors.s_last_name.message ?? "")} />
-          )}
         </div>
 
         {/* Country */}
@@ -366,10 +343,6 @@ export default function AddressForm({
               </FormItem>
             )}
           />
-
-          {errors?.s_country && (
-            <InvalidFeedback error={String(errors.s_country.message ?? "")} />
-          )}
         </div>
 
         {/* City */}
@@ -440,11 +413,6 @@ export default function AddressForm({
                 </FormItem>
               )}
             />
-            {errors?.sa_short_address && (
-              <InvalidFeedback
-                error={String(errors.sa_short_address.message ?? "")}
-              />
-            )}
           </div>
         )}
 
@@ -475,9 +443,6 @@ export default function AddressForm({
               </FormItem>
             )}
           />
-          {errors?.s_address1 && (
-            <InvalidFeedback error={String(errors.s_address1.message ?? "")} />
-          )}
         </div>
 
         {/* Email */}
@@ -516,9 +481,6 @@ export default function AddressForm({
               </FormItem>
             )}
           />
-          {errors?.s_email && (
-            <InvalidFeedback error={String(errors.s_email.message ?? "")} />
-          )}
         </div>
 
         {/* Phone */}

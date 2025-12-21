@@ -16,6 +16,7 @@ import { RiBarChartBoxAiFill } from "react-icons/ri";
 import { MdCreateNewFolder } from "react-icons/md";
 import AddressForm from "./AddressForm";
 import ShippingForm from "./ShippingForm";
+import OrderProductsTable from "./OrderProductsTable";
 
 interface OrderProduct {
   name: string;
@@ -232,7 +233,7 @@ export default function CreateForm(): ReactElement {
                     {t("products")}
                   </h2>
 
-                  {/* <NewTableForm /> */}
+                  <OrderProductsTable />
 
                   <div className="mt-4">
                     <Button

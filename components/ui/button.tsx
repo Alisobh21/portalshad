@@ -25,6 +25,7 @@ const buttonVariants = cva(
         primary: "text-white bg-gradient-to-r from-[#ea7831] to-[#c64813]",
         search:
           "bg-neutral-300 hover:bg-neutral-200 text-accent-foreground dark:bg-neutral-700 dark:hover:bg-neutral-600",
+        modal: "bg-[#fbe4d6] text-[#a3480f]",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
