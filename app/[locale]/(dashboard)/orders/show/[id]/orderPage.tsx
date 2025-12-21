@@ -4,14 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { _addOrder } from "@/store/slices/orderSlice";
 import axiosPrivate from "@/axios/axios";
-// import TableProducts from './TableProducts';
-// import Shipping from './Shipping';
 // import Addressing from './Addressing';
-// import OrderDetail from './OrderDetail';
 // import Packaging from './Packaging';
-// import CtaButtons from './CtaButtons';
 // import OrderHistory from './OrderHistory';
-// import ReturnAwbsBtn from './ReturnAwbsBtn';
 import { PiShieldWarningFill } from "react-icons/pi";
 
 import { useTranslations } from "next-intl";
@@ -23,6 +18,7 @@ import ReturnAwbsBtn from "./ReturnAwbsBtn";
 import CtaButtons from "./CtaButtons";
 import TableProducts from "./TableProducts";
 import OrderDetail from "./orderDetail";
+import Shipping from "./Shipping";
 
 interface OrderPageProps {
   params: {
@@ -173,7 +169,7 @@ export default function OrderPage({ params }: OrderPageProps) {
       </Card>
 
       <Card className="dark:bg-default-50/70">
-        {/* <Shipping fetchOrder={fetchOrder} id={params?.id} status={status} /> */}
+        <Shipping fetchOrder={fetchOrder} id={params?.id} status={status} />
       </Card>
 
       <Card className="dark:bg-default-50/70">
