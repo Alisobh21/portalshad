@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/select";
 
 import type { ProductsQueryEdge, Warehouse as UIWarehouse } from "./types";
-import type { StoreOrderProduct } from "@/store/slices/orderSlice";
+import type { OrderProduct } from "@/store/slices/orderSlice";
 import { useTranslations } from "next-intl";
 
 interface AddProductDialogProps {
@@ -41,7 +41,7 @@ interface AddProductDialogProps {
   warehouses: UIWarehouse[];
   loading: boolean;
   productEdges: ProductsQueryEdge[];
-  orderProducts: StoreOrderProduct[];
+  orderProducts: OrderProduct[];
   handleAdd: (node: ProductsQueryEdge["node"]) => void;
   pageInfo?: { hasNextPage?: boolean; endCursor?: string };
   setCursor: (cursor: string | null) => void;
