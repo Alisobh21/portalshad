@@ -22,6 +22,7 @@ import { Spinner } from "@/components/ui/spinner";
 import ReturnAwbsBtn from "./ReturnAwbsBtn";
 import CtaButtons from "./CtaButtons";
 import TableProducts from "./TableProducts";
+import OrderDetail from "./orderDetail";
 
 interface OrderPageProps {
   params: {
@@ -167,7 +168,9 @@ export default function OrderPage({ params }: OrderPageProps) {
         />
       </Card>
 
-      <Card className="dark:bg-default-50/70">{/* <OrderDetail /> */}</Card>
+      <Card className="dark:bg-default-50/70">
+        <OrderDetail />
+      </Card>
 
       <Card className="dark:bg-default-50/70">
         {/* <Shipping fetchOrder={fetchOrder} id={params?.id} status={status} /> */}

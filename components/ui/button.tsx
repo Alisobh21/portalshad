@@ -27,8 +27,8 @@ const buttonVariants = cva(
           "bg-neutral-300 hover:bg-neutral-200 text-accent-foreground dark:bg-neutral-700 dark:hover:bg-neutral-600",
         modal: "bg-[#fbe4d6] text-[#a3480f]",
         green:
-          "bg-green text-green-foreground dark:bg-green-500 dark:text-green-50",
-        red: "bg-red-100 text-red-600",
+          "bg-[#d1f4e0] text-green-foreground dark:bg-[#123623] dark:text-[#15a554]",
+        red: "bg-[#fdd0df] text-[#d44a7a] dark:bg-[#3e1122] dark:text-[#f8adac]",
         darkred: "bg-[#f31260] text-white",
         darkgreen: "bg-[#17c964] text-black",
       },
