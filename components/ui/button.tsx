@@ -26,6 +26,9 @@ const buttonVariants = cva(
         search:
           "bg-neutral-300 hover:bg-neutral-200 text-accent-foreground dark:bg-neutral-700 dark:hover:bg-neutral-600",
         modal: "bg-[#fbe4d6] text-[#a3480f]",
+        green:
+          "bg-green text-green-foreground dark:bg-green-500 dark:text-green-50",
+        red: "bg-red-100 text-red-600",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

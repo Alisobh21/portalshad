@@ -12,12 +12,15 @@ import axiosPrivate from "@/axios/axios";
 // import CtaButtons from './CtaButtons';
 // import OrderHistory from './OrderHistory';
 // import ReturnAwbsBtn from './ReturnAwbsBtn';
+import { PiShieldWarningFill } from "react-icons/pi";
 
 import { useTranslations } from "next-intl";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Alert } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Spinner } from "@/components/ui/spinner";
+import ReturnAwbsBtn from "./ReturnAwbsBtn";
+import CtaButtons from "./CtaButtons";
 
 interface OrderPageProps {
   params: {
@@ -26,9 +29,9 @@ interface OrderPageProps {
 }
 
 // Commented out until CtaButtons component is uncommented
-// interface HoldStates {
-//   [key: string]: boolean;
-// }
+interface HoldStates {
+  [key: string]: boolean;
+}
 
 interface OneOrder {
   fulfillment_status?: string;
@@ -50,7 +53,7 @@ export default function OrderPage({ params }: OrderPageProps) {
 
   const [loading, setLoading] = useState<boolean>(true);
   // Commented out until CtaButtons component is uncommented
-  // const [holdStates, setHoldStates] = useState<HoldStates>({});
+  const [holdStates, setHoldStates] = useState<HoldStates>({});
 
   // Fetch order from API
   const fetchOrder = async () => {
@@ -58,10 +61,7 @@ export default function OrderPage({ params }: OrderPageProps) {
     try {
       console.log("Fetching order with ID:", params?.id);
       const response = await axiosPrivate(`/orders/show/${params?.id}`);
-      console.log("API Response:", response);
-      console.log("Response Data:", response?.data);
 
-      console.log("Order data received:", response?.data?.data?.order);
       if (response?.data?.success && response?.data?.data?.order) {
         dispatch(_addOrder(response.data.data.order));
       } else if (response?.data?.data?.order) {
@@ -77,8 +77,8 @@ export default function OrderPage({ params }: OrderPageProps) {
   };
 
   // Determine status flags (commented out until components are uncommented)
-  // const status = oneOrder?.fulfillment_status === "pending";
-  // const delivered = oneOrder?.fulfillment_status === "fulfilled";
+  const status = oneOrder?.fulfillment_status === "pending";
+  const delivered = oneOrder?.fulfillment_status === "fulfilled";
 
   // Show banner if holds exist
   const showBanner = useMemo(() => {
@@ -124,22 +124,39 @@ export default function OrderPage({ params }: OrderPageProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
       {showBanner && (
-        <Card className="col-span-1 md:col-span-2 xl:col-span-3 p-5 lg:p-7 dark:bg-default-50/70">
-          <Alert variant="destructive">
-            <div className="flex flex-col gap-2">
-              <p>{t("alert")}</p>
-              <div className="flex items-center gap-1">
-                <strong>{t("holdReason")}:</strong>
-                <span className="underline">{oneOrder?.hold_reason}</span>
+        <div className="col-span-1 md:col-span-2 xl:col-span-3">
+          <Alert variant="default" className="flex gap-2">
+            <PiShieldWarningFill />
+
+            <AlertDescription className="text-amber-900 dark:text-amber-200">
+              <div className="flex flex-col gap-1">
+                <p className="font-medium">{t("alert")}</p>
+
+                <div className="flex items-center gap-1.5 text-sm">
+                  <span className="font-semibold">{t("holdReason")}:</span>
+                  <span className="underline">{oneOrder?.hold_reason}</span>
+                </div>
               </div>
-            </div>
+            </AlertDescription>
           </Alert>
-        </Card>
+        </div>
       )}
 
       {/* Uncomment these when components are ready */}
-      {/* {delivered && <ReturnAwbsBtn />} */}
-      {/* <CtaButtons setHoldStates={setHoldStates} holdStates={holdStates} fetchOrder={fetchOrder} id={params?.id} status={status} /> */}
+      {delivered && (
+        <ReturnAwbsBtn
+          id={params?.id}
+          fetchOrder={fetchOrder}
+          status={status}
+        />
+      )}
+      <CtaButtons
+        setHoldStates={setHoldStates}
+        holdStates={holdStates}
+        fetchOrder={fetchOrder}
+        id={params?.id}
+        status={status}
+      />
 
       <Card className="md:col-span-2 xl:col-span-3 dark:bg-default-50/70">
         {/* <TableProducts fetchOrder={fetchOrder} id={params?.id} status={status} /> */}

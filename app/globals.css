@@ -36,6 +36,8 @@
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
+  --color-green: var(--green);
+  --color-green-foreground: var(--green-foreground);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
@@ -49,6 +51,10 @@
 :root {
   --radius: 0.625rem;
   --primary: oklch(0.73 0.201 56.94);
+  --green: oklch(0.9366 0.0452 160.37);
+  --green-foreground: oklch(0.5636 0.1233 154.13);
+  --red: #ff837f;
+  --red-foreground: #ff211a;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -115,6 +121,10 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --green: oklch(0.5636 0.1233 154.13);
+  --green-foreground: #d1f4e0;
+  --red: #ff837f;
+  --red-foreground: #ffe2e1;
 }
 
 @font-face {
