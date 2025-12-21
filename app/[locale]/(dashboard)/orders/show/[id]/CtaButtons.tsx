@@ -3,10 +3,10 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslations } from "next-intl";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 import axiosPrivate from "@/axios/axios";
-import { SuccessToast } from "@/components/Toasts";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,6 @@ import { Switch } from "@/components/ui/switch";
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -30,6 +29,26 @@ interface CtaButtonsProps {
   setHoldStates: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
 }
 
+interface RootState {
+  orders: {
+    oneOrder: {
+      line_items?: {
+        edges?: Array<{ node?: { id?: string } }>;
+      };
+      holds?: Record<string, boolean>;
+      hold_reason?: string;
+      tags?: string[];
+      [key: string]: unknown;
+    };
+  };
+  auth: {
+    user: {
+      maskLogin?: boolean;
+      [key: string]: unknown;
+    };
+  };
+}
+
 export default function CtaButtons({
   id,
   fetchOrder,
@@ -40,10 +59,11 @@ export default function CtaButtons({
   const dispatch = useDispatch();
   const t = useTranslations("ShowOrder");
 
-  const { oneOrder } = useSelector((state: any) => state.orders);
-  const { user } = useSelector((state: any) => state.auth);
+  const { oneOrder } = useSelector((state: RootState) => state.orders);
+  const { user } = useSelector((state: RootState) => state.auth);
 
-  const [loading, setLoading] = useState(false);
+  const [loadingReprocess, setLoadingReprocess] = useState(false);
+  const [loadingCancel, setLoadingCancel] = useState(false);
   const [loadingSwitch, setLoadingSwitch] = useState(false);
   const [showHoldControls, setShowHoldControls] = useState(false);
   const [open, setOpen] = useState(false);
@@ -59,13 +79,19 @@ export default function CtaButtons({
   ];
 
   const handleButtons = async (type: "cancel" | "reprocess") => {
-    setLoading(true);
+    if (type === "reprocess") {
+      setLoadingReprocess(true);
+    } else {
+      setLoadingCancel(true);
+    }
+
     try {
       if (type === "cancel") {
         const line_item_id =
           oneOrder?.line_items?.edges
-            ?.map((edge: any) => edge?.node?.id)
-            .filter((id: string) => !id?.includes("temp")) || [];
+            ?.map((edge: { node?: { id?: string } }) => edge?.node?.id)
+            .filter((id: string | undefined) => id && !id?.includes("temp")) ||
+          [];
 
         const response = await axiosPrivate.post("/orders/cancelOrder", {
           order_id: id,
@@ -89,7 +115,11 @@ export default function CtaButtons({
     } catch (err) {
       console.error(err);
     } finally {
-      setLoading(false);
+      if (type === "reprocess") {
+        setLoadingReprocess(false);
+      } else {
+        setLoadingCancel(false);
+      }
     }
   };
 
@@ -120,7 +150,8 @@ export default function CtaButtons({
 
         setHoldStates(response?.data?.data?.order?.holds);
       }
-    } catch (error) {
+    } catch (err) {
+      console.error(err);
       toast.error(t("somethingWentWrong"));
       setHoldStates((prev) => ({
         ...prev,
@@ -153,15 +184,18 @@ export default function CtaButtons({
             <Button
               variant="green"
               onClick={() => handleButtons("reprocess")}
-              disabled={loading}
+              disabled={loadingReprocess || loadingCancel}
             >
+              {loadingReprocess && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
               {t("reprocess")}
             </Button>
 
             <Button
               variant="red"
               onClick={() => setOpen(true)}
-              disabled={loading}
+              disabled={loadingReprocess || loadingCancel}
             >
               {t("cancelOrder")}
             </Button>
@@ -188,8 +222,8 @@ export default function CtaButtons({
                       handleSwitchChange(checked, key)
                     }
                   />
-                  <span className="text-sm">
-                    {label}: <b>{holdStates?.[key] ? t("on") : t("off")}</b>
+                  <span className="text-sm font-normal">
+                    {label}: {holdStates?.[key] ? t("on") : t("off")}
                   </span>
                 </div>
               ))}
@@ -208,12 +242,19 @@ export default function CtaButtons({
           <div className="grid grid-cols-2 gap-3 mt-3">
             <Button
               variant="red"
-              disabled={loading}
+              disabled={loadingCancel}
               onClick={() => handleButtons("cancel")}
             >
+              {loadingCancel && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
               {t("cancel")}
             </Button>
-            <Button variant="normal" onClick={() => setOpen(false)}>
+            <Button
+              variant="normal"
+              onClick={() => setOpen(false)}
+              disabled={loadingCancel}
+            >
               {t("dismiss")}
             </Button>
           </div>
