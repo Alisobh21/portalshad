@@ -19,6 +19,7 @@ import TableProducts from "./TableProducts";
 import OrderDetail from "./orderDetail";
 import Shipping from "./Shipping";
 import Addressing from "./Addressing";
+import OrderHistory from "./OrderHistory";
 
 interface OrderPageProps {
   params: {
@@ -176,7 +177,7 @@ export default function OrderPage({ params }: OrderPageProps) {
       </Card>
 
       <Card className="md:col-span-2 xl:col-span-3 dark:bg-default-50/70">
-        {/* <OrderHistory /> */}
+        <OrderHistory id={params?.id} fetchOrder={fetchOrder} status={status} />
       </Card>
 
       <Card className="md:col-span-2 xl:col-span-3 dark:bg-default-50/70">
