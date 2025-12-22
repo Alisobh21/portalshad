@@ -80,7 +80,7 @@ const RegularTablesExport: React.FC<RegularTablesExportProps> = ({
 
   return (
     <Button
-      variant="outline"
+      variant="normal"
       onClick={exportToExcel}
       className="flex items-center gap-2"
     >

@@ -36,7 +36,7 @@ const TableColumnsVisibility: React.FC = () => {
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
+          variant="normal"
           className="w-full sm:w-auto flex items-center gap-2"
         >
           <RiEyeCloseFill size={18} />

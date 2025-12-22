@@ -20,7 +20,7 @@ export default async function OrdersStatusPage({
     <Suspense fallback={<PageSkeleton />}>
       <CurrentPageFetcher page={t("orders")} />
       <TableCard className="overflow-visible static">
-        <Card>
+        <Card className="p-4">
           <AllOrders status={resolvedParams.status} />
         </Card>
       </TableCard>
