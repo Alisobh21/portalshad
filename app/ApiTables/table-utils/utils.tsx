@@ -520,7 +520,7 @@ export function formatTableColumns(
   colIdentifier: string;
   data_src: string;
   type: string;
-  minWidth: string;
+  width: string;
   selector: (row: Row) => any;
   cell: (row: Row) => React.ReactElement;
 }> {
@@ -533,7 +533,7 @@ export function formatTableColumns(
         colIdentifier: col?.data_src,
         data_src: col?.data_src,
         type: col?.type,
-        minWidth:
+        width:
           col?.type !== "link" && col?.type !== "barcode"
             ? calculateColMinWidth(
                 tableRowWithLongestField(tbData, col?.data_src),
