@@ -339,7 +339,7 @@ export default function ProductForm() {
               </svg>
               <span className="text-xs font-medium ">
                 {t("images")} —{" "}
-                <span className=" underline text-primary-400">
+                <span className=" underline text-orange-600">
                   {tGeneral("browse")}
                 </span>{" "}
                 {tGeneral("drop")}
