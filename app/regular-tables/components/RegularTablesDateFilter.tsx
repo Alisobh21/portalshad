@@ -255,8 +255,10 @@ const RegularTablesDateFilter: React.FC<RegularTablesDateFilterProps> = ({
               <Select
                 value={field.value || "25"}
                 onValueChange={(val: string) => {
+                  if (!val) return; // ⛔ امنع القيمة الفاضية
                   const params = new URLSearchParams(window.location.search);
                   params.set("per_page", val);
+                  params.delete("cursor");
                   window.location.href = `${
                     window.location.origin
                   }/${pathname}?${params.toString()}`;

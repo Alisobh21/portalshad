@@ -51,13 +51,16 @@ export default function OrdersColumns({ tableData }: OrdersColumnsProps) {
         return <Badge variant="orange">{t("statusOutstanding")}</Badge>;
       } else if (status === "inPreparation" || status === "pending") {
         return <Badge variant="orange">{t("statusPending")}</Badge>;
+      } else if (status === "High-Priority") {
+        return <Badge variant="highPriority">{t("highPriority")}</Badge>;
       }
-      return null;
+      return <Badge variant="other">{status}</Badge>;
     }
 
     return [
       {
         id: "order_number",
+
         title: t("orderNumber"),
         name: t("orderNumber"),
         width: calculateMinWidth(

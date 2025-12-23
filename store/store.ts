@@ -8,6 +8,8 @@ import CountrySlice from "./slices/CountrySlice";
 import awbsSlice from "./slices/awbsSlice";
 import homeSlice from "./slices/homeSlice";
 import orderSlice from "./slices/orderSlice";
+import inventorySlice from "./slices/inventorySlice";
+import productsSlice from "./slices/productsSlice";
 export const store = configureStore({
   reducer: {
     app: appReducer,
@@ -19,6 +21,8 @@ export const store = configureStore({
     awbs: awbsSlice,
     home: homeSlice,
     orders: orderSlice,
+    inventory: inventorySlice,
+    products: productsSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

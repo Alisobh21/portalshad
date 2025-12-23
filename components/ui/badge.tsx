@@ -22,6 +22,10 @@ const badgeVariants = cva(
         red: "bg-[#fdd0df] text-[#c20e4d] px-4 py-2 rounded-md border-none",
         orange: "bg-[#fdedd3] text-[#946417] px-4 py-2 rounded-md border-none",
         green: "bg-[#d1f4e0] text-[#0f793d] px-4 py-2 rounded-md border-none",
+        highPriority:
+          "bg-[#b8daff] text-[#063970] px-4 py-2 rounded-md border-none",
+        other:
+          "bg-neutral-200 text-neutral-700 px-4 py-2 rounded-md border-none",
       },
     },
     defaultVariants: {
