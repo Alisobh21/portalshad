@@ -557,3 +557,172 @@
     }
   }
 }
+
+.rdt_Table {
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  background-color: var(--secondary) !important;
+  overflow: hidden;
+}
+
+.rdt_TableHead {
+  border-radius: 0.5rem;
+  background-color: white;
+  color: black;
+  font-size: 14px;
+}
+
+.dark .rdt_TableHead {
+  background-color: var(--background);
+  color: var(--foreground);
+  margin-bottom: 5px;
+}
+
+.rdt_TableHeadRow {
+  border-radius: 0.5rem;
+  border-bottom-width: 3px;
+  border-color: var(--secondary);
+  background-color: white;
+}
+
+.dark .rdt_TableHeadRow {
+  background-color: var(--background);
+  border-radius: 0.5rem;
+  border-bottom-width: 3px;
+}
+
+input:-webkit-autofill {
+  box-shadow: 0 0 0px 1000px white inset !important;
+  -webkit-text-fill-color: black !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+input:-webkit-autofill:focus {
+  box-shadow: 0 0 0px 1000px white inset !important;
+  -webkit-text-fill-color: black !important;
+}
+
+.rdt_TableCol {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  text-align: left;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.rdt_TableRow {
+  border-radius: 0.5rem;
+  border-bottom-width: 4px;
+  border-color: var(--secondary) !important;
+  background-color: white;
+  color: black;
+  transition: background-color 0.3s;
+}
+
+.dark .rdt_TableRow {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.rdt_TableRow:hover {
+  background-color: color-mix(
+    in oklch,
+    var(--muted-foreground) 5%,
+    transparent
+  ) !important;
+}
+
+.dark .rdt_TableRow:hover {
+  background-color: color-mix(
+    in oklch,
+    var(--muted-foreground) 5%,
+    transparent
+  ) !important;
+}
+
+[data-sonner-toast] {
+  font-family: var(--font-rubik), sans-serif !important;
+}
+
+[class*="indicatorContainer"] svg {
+  font-size: 0.7rem !important;
+  width: 15px;
+  height: 15px;
+  opacity: 0.8 !important;
+  /* fill: none; */
+}
+
+.rdt_TableCell {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+  white-space: nowrap;
+}
+
+.rdt_TableCell:first-of-type {
+  border-radius: 0.5rem;
+}
+
+.text-primary-600 {
+  color: var(--tw-text-primary-600);
+}
+
+.dark .text-primary-600 {
+  color: var(--tw-text-primary-100);
+}
+
+.text-danger-600 {
+  color: var(--tw-text-danger-600);
+}
+
+.dark .text-danger-600 {
+  color: #fecaca; /* red-100 */
+}
+
+button[data-testid*="expander-button"] {
+  background-color: #f6ece7;
+  margin-inline-start: 0.75rem;
+  color: #a3480f;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.3s ease-in;
+}
+
+.dark button[data-testid*="expander-button"] {
+  color: #a3480f;
+  background-color: #f6ece7;
+}
+
+button[data-testid*="expander-button"]:hover {
+  color: #f6ece7;
+  background-color: #a3480f;
+}
+
+button[data-testid*="expander-button"] svg {
+  width: 20px;
+  height: 20px;
+}
+button[data-testid*="expander-button"] {
+  height: 2.2rem !important;
+  width: 2.2rem !important;
+  border-radius: 0.5rem !important;
+  background-color: #f6ece7 !important;
+  color: #a3480f !important;
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
+    -webkit-backdrop-filter !important;
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter !important;
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter, -webkit-backdrop-filter !important;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition-duration: 0.3s !important;
+  transition-timing-function: cubic-bezier(0.4, 0, 1, 1) !important;
+  margin-inline-start: 0.75rem !important;
+}

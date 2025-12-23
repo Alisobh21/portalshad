@@ -7,29 +7,23 @@ type AnyObject = Record<string, any>;
  * @param data - Array of objects to flatten
  * @returns Array of flattened objects
  */
-export const flattenData = (data: AnyObject[]): AnyObject[] => {
-  // Safety check: ensure data is an array
-  if (!Array.isArray(data)) {
-    return [];
-  }
-  
-  return data.map((item) => {
-    const flattenedItem: AnyObject = {};
-    const flatten = (obj: AnyObject, parentKey: string = ""): void => {
-      for (const key in obj) {
+export const flattenData = (data: unknown): Record<string, unknown>[] => {
+  if (!Array.isArray(data)) return [];
+  return data.map((item: any) => {
+    const flattenedItem: Record<string, unknown> = {};
+    const flatten = (obj: any, parentKey = "") => {
+      for (let key in obj) {
         const propName = parentKey
-          ? `${parentKey}.${key}`?.split(".")?.at(-1)
+          ? `${parentKey}.${key}`.split(".").at(-1)
           : key;
         if (
           typeof obj[key] === "object" &&
           obj[key] !== null &&
           parentKey !== "shipments"
         ) {
-          flatten(obj[key], propName || "");
+          flatten(obj[key], propName);
         } else {
-          if (propName) {
-            flattenedItem[propName] = obj[key];
-          }
+          flattenedItem[propName] = obj[key];
         }
       }
     };

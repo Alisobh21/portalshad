@@ -17,7 +17,7 @@ import {
 } from "react-icons/bs";
 import { Button } from "@/components/ui/button";
 import { useLocale, useTranslations } from "next-intl";
-import type { RootState } from "@/store/store";
+import { store, type RootState } from "@/store/store";
 import type { TablePagination } from "@/app/regular-tables/RegularTable";
 import type { OrderProduct } from "@/store/slices/orderSlice";
 
@@ -65,7 +65,9 @@ function CardHeader({ heading, subHeading, icon }: CardHeaderProps) {
       </div>
       <div className="me-2">
         <h2 className="text-2xl font-bold mb-0">{heading}</h2>
-        <p className="text-neutral-700/80 text-sm mb-2">{subHeading}</p>
+        <p className="text-neutral-700/80 dark:text-neutral-300/80 text-sm mb-2">
+          {subHeading}
+        </p>
         <Button variant="modal" asChild className="px-5">
           <Link href="/orders/create-order">
             <MdCreateNewFolder size={17} />
@@ -80,9 +82,12 @@ function CardHeader({ heading, subHeading, icon }: CardHeaderProps) {
 }
 
 export default function AllOrders({ status }: AllOrdersProps) {
-  const { ordersCursor } = useSelector((state: RootState) => state.orders);
+  const { ordersCursor, orders } = useSelector(
+    (state: RootState) => state.orders
+  );
+  // const { orders, ordersCursor } = store.getState().orders.orders as any;
   const [loadingTbdata, setLoadingTbdata] = useState(false);
-  const [ordersResponse, setOrdersResponse] = useState<OrdersResponse>({});
+  // const [ordersResponse, setOrdersResponse] = useState<OrdersResponse>({});
   const tOrders = useTranslations("Orders");
   const tHome = useTranslations("Homepage");
   const tTabs = useTranslations("Tabs");
@@ -130,14 +135,7 @@ export default function AllOrders({ status }: AllOrdersProps) {
         const response = await axiosPrivate(url, { signal });
         if (response?.data?.success) {
           // Store the full response structure for OrderTable
-          setOrdersResponse(response?.data?.orders || {});
-          // Also store in Redux for backward compatibility if needed
-          if (response?.data?.orders?.data?.edges) {
-            const ordersArray = response.data.orders.data.edges.map(
-              (edge: OrderEdge) => edge.node
-            );
-            dispatch(_getOrders(ordersArray));
-          }
+          dispatch(_getOrders(response?.data?.orders));
           setLoadingTbdata(false);
         }
       } catch (err) {
@@ -256,7 +254,7 @@ export default function AllOrders({ status }: AllOrdersProps) {
       <RegularTablesProvider>
         <OrdersTable
           manageCursor={manageOrdersCursor}
-          orders={ordersResponse}
+          orders={orders as any}
           tbLoading={loadingTbdata}
         />
       </RegularTablesProvider>

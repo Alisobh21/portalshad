@@ -21,17 +21,22 @@ const ExpandedRowComponent: FC<ExpandedRowComponentProps> = ({
   columns,
 }) => {
   return (
-    <div className="p-4 bg-content2">
+    <div className="p-4 bg-content2 bg-neutral-100 dark:bg-neutral-800">
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
         <div className="col-xl-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             {columns?.map((col, index) => (
               <div className="text-small" key={index}>
                 <div className="flex gap-1">
-                  <TbCircleCheckFilled className="text-muted mt-1" />
+                  <TbCircleCheckFilled
+                    size={14}
+                    className="text-neutral-500 dark:text-neutral-400 mt-1"
+                  />
                   <div className="me-2 text-foreground">
-                    <strong className="mb-2 inline-block">{col?.name}</strong>
-                    <div>{col?.cell(data)}</div>
+                    <strong className="mb-2 inline-block font-bold">
+                      {col?.name}
+                    </strong>
+                    <div className="font-normal text-sm">{col?.cell(data)}</div>
                   </div>
                 </div>
               </div>

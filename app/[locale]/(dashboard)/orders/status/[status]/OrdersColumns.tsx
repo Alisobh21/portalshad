@@ -44,28 +44,13 @@ export default function OrdersColumns({ tableData }: OrdersColumnsProps) {
   const columns = useMemo(() => {
     function checkStatusVariant(status: string) {
       if (status === "canceled") {
-        return (
-          <Badge variant="outline" className="border-red-500 text-red-500">
-            {t("statusCanceled")}
-          </Badge>
-        );
+        return <Badge variant="red">{t("statusCanceled")}</Badge>;
       } else if (status === "fulfilled") {
-        return (
-          <Badge variant="outline" className="border-green-500 text-green-500">
-            {t("statusFulfilled")}
-          </Badge>
-        );
+        return <Badge variant="green">{t("statusFulfilled")}</Badge>;
       } else if (status === "outstanding") {
-        return <Badge variant="outline">{t("statusOutstanding")}</Badge>;
+        return <Badge variant="orange">{t("statusOutstanding")}</Badge>;
       } else if (status === "inPreparation" || status === "pending") {
-        return (
-          <Badge
-            variant="outline"
-            className="border-yellow-500 text-yellow-500"
-          >
-            {t("statusPending")}
-          </Badge>
-        );
+        return <Badge variant="orange">{t("statusPending")}</Badge>;
       }
       return null;
     }
@@ -320,7 +305,7 @@ export default function OrdersColumns({ tableData }: OrdersColumnsProps) {
   useEffect(() => {
     // Create a stable key from column identifiers to detect actual changes
     const columnsKey = columns.map((col) => col.id).join(",");
-    
+
     // Only dispatch if the column structure actually changed
     if (columnsKey && columnsKey !== prevColumnsKeyRef.current) {
       dispatch(_setTableColumns(columns));

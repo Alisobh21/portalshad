@@ -60,9 +60,8 @@ function RegularTableComponent<T>({
 
   const t = useTranslations("General");
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const flattenedData = useMemo(
-    () => flattenData(tableData as any[]),
+    () => flattenData(tableData?.rows || []),
     [tableData]
   );
 

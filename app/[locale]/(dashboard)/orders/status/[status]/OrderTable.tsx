@@ -8,6 +8,7 @@ import { usePathname } from "@/i18n/navigation";
 import type { RootState } from "@/app/regular-tables/provider/store";
 import type { OrderProduct } from "@/store/slices/orderSlice";
 import type { TablePagination } from "@/app/regular-tables/RegularTable";
+import store from "@/store/store";
 
 interface OrderRow {
   id: string | number;
@@ -42,20 +43,20 @@ interface OrdersData {
   pageInfo?: TablePagination;
 }
 
-interface OrdersResponse {
-  data?: OrdersData;
-}
+// interface OrdersResponse {
+//   data?: OrdersData;
+// }
 
 interface OrdersTableProps {
-  orders: OrdersResponse;
+  orders: any;
   tbLoading?: boolean;
   manageCursor?: (cursor: string | null) => void;
 }
 
 export default function OrdersTable({
-  orders,
   tbLoading,
   manageCursor,
+  orders,
 }: OrdersTableProps) {
   const { filterText } = useSelector(
     (state: RootState) => state.regularTablesSlice
@@ -63,42 +64,35 @@ export default function OrdersTable({
   const pathname = usePathname();
   const ordersStatus = pathname?.split("/")?.at(-1) || "";
 
-  const filteredOrders = useMemo(() => {
+  const filteredOrders = useMemo<OrderEdge[]>(() => {
     if (!orders?.data?.edges) return [];
-    const { edges } = orders.data;
 
-    const searchInOrder = (item: OrderEdge): boolean => {
-      const node = item.node;
-      const searchableData = {
-        ...node?.shipping_address,
-        ...node,
-      };
+    if (!filterText) return orders.data.edges;
 
-      return Object.values(searchableData || {}).some((value) => {
+    const search = filterText.toLowerCase();
+
+    return orders.data.edges.filter((item: OrderEdge) =>
+      Object.values({
+        ...item.node?.shipping_address,
+        ...item.node,
+      }).some((value: any): any => {
         if (typeof value === "string") {
-          return value.toLowerCase().includes(filterText?.toLowerCase() || "");
+          return value.toLowerCase().includes(search);
         }
+
         if (typeof value === "number") {
-          return value
-            .toString()
-            .toLowerCase()
-            .includes(filterText?.toLowerCase() || "");
+          return value.toString().includes(search);
         }
+
         return false;
-      });
-    };
-
-    return edges.filter(searchInOrder);
-  }, [orders, filterText]);
-
-  // Extract node data from edges for OrdersColumns
-  const tableData = filteredOrders.map((edge) => edge.node as OrderRow);
-
+      })
+    );
+  }, [orders, filterText, ordersStatus]);
   return (
     <>
-      <OrdersColumns tableData={tableData} />
+      <OrdersColumns tableData={filteredOrders as any} />
       <RegularTable
-        tableData={{ rows: tableData } as { rows: unknown[] }}
+        tableData={{ rows: filteredOrders } as any}
         tablePagination={orders?.data?.pageInfo}
         exportFileName={`Orders - ${ordersStatus}`}
         hasDateFilter={true}
