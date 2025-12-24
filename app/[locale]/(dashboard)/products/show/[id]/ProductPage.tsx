@@ -16,6 +16,7 @@ import ProductDetails from "./ProductDetails";
 
 import { Card } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
+import ImageCard from "./ImageCard";
 
 /* ================= TYPES ================= */
 
@@ -58,7 +59,6 @@ const ProductPage: React.FC<Props> = ({ params }) => {
       const response = await axiosPrivate.get(
         `/products/${encodeURIComponent(params?.id)}`
       );
-      console.log(response.data);
 
       if (response?.data?.success) {
         dispatch(_addOneProduct(response?.data?.data?.product));
@@ -105,7 +105,11 @@ const ProductPage: React.FC<Props> = ({ params }) => {
       <div className="w-full flex flex-col gap-4 mt-4">
         {/* <Inventory /> */}
 
-        {/* {oneProduct?.images && <Card><ImageCard /></Card>} */}
+        {oneProduct?.images && (
+          <Card>
+            <ImageCard />
+          </Card>
+        )}
       </div>
     </>
   );
