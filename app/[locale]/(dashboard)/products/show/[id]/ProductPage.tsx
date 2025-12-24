@@ -17,6 +17,7 @@ import ProductDetails from "./ProductDetails";
 import { Card } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import ImageCard from "./ImageCard";
+import { Inventory } from "./Inventory";
 
 /* ================= TYPES ================= */
 
@@ -103,7 +104,7 @@ const ProductPage: React.FC<Props> = ({ params }) => {
 
       {/* Inventory + Images */}
       <div className="w-full flex flex-col gap-4 mt-4">
-        {/* <Inventory /> */}
+        <Inventory />
 
         {oneProduct?.images && (
           <Card>
