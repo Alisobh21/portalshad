@@ -46,16 +46,18 @@ export default function ProductsColumns({ tableData }: ProductsColumnsProps) {
         identifier: "name",
         sortable: true,
         omit: false,
-        cell: (row: ProductRow) => (
-          <Link
-            href={`/products/show/${row?.id}`}
-            className="anchor-reset font-en fw-normal text-wrap"
-          >
-            <span className="d-block" style={{ direction: "ltr" }}>
+
+        cell: (row: ProductRow) => {
+          const productId = row?.id?.toString().split("-")[0];
+          return (
+            <Link
+              href={`/products/show/${productId}`}
+              className="anchor-reset font-en fw-normal text-wrap"
+            >
               {row?.name}
-            </span>
-          </Link>
-        ),
+            </Link>
+          );
+        },
       },
       {
         id: "on_hand",

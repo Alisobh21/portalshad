@@ -46,6 +46,12 @@ export interface ProductsTableProps {
   manageCursor?: (cursor: string | null) => void;
   getFilteredData?: (...args: any) => void;
 }
+interface FormattedProduct extends WarehouseProduct {
+  id: string;
+  name: string;
+  sku: string;
+  warehouse_name?: string;
+}
 
 export default function ProductsTable({
   products,
@@ -77,6 +83,7 @@ export default function ProductsTable({
     );
   }, [products, warehouses]);
 
+  console.log(formattedArray);
   // Filter products by search text
   const filteredProducts = useMemo(() => {
     if (!products?.edges) return [];

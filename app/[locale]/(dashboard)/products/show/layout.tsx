@@ -6,7 +6,7 @@ import type { ReactElement, ReactNode } from "react";
 
 export const metadata = {
   title: {
-    default: `Orders | ${siteConfig.name}`,
+    default: `Products | ${siteConfig.name}`,
     template: `%s - ${siteConfig.name}`,
   },
   description: siteConfig.description,
@@ -15,13 +15,13 @@ export const metadata = {
   },
 };
 
-type OrdersLayoutProps = {
+type ProductsLayoutProps = {
   children: ReactNode;
 };
 
-export default function OrdersLayout({
+export default function ProductsLayout({
   children,
-}: OrdersLayoutProps): ReactElement {
+}: ProductsLayoutProps): ReactElement {
   return (
     <section className="py-[10px]">
       <Card className="mb-4">
@@ -29,7 +29,6 @@ export default function OrdersLayout({
           <PageHeader hideBreadcrumb={true} />
         </CardContent>
       </Card>
-
       {children}
     </section>
   );

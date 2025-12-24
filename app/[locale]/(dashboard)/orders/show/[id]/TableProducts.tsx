@@ -88,10 +88,11 @@ export default function TableProducts({
         </div>
 
         {status && (
-          <div className="absolute top-[-20px] end-[4px]">
+          <div className="">
             <Button
               size="icon"
               variant="normal"
+              className="absolute top-[-20px] end-[4px]"
               onClick={() => setEditMode((prev) => !prev)}
             >
               {editMode ? <IoClose /> : <BiEditAlt size={17} />}
