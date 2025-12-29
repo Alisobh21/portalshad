@@ -64,6 +64,7 @@ export default function ProductsTable({
     (state: RootState) => state.regularTablesSlice
   );
 
+  console.log(warehouses, "warehouses");
   // Flatten products with warehouse info
   const formattedArray = useMemo(() => {
     return (

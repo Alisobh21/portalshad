@@ -10,6 +10,7 @@ import homeSlice from "./slices/homeSlice";
 import orderSlice from "./slices/orderSlice";
 import inventorySlice from "./slices/inventorySlice";
 import productsSlice from "./slices/productsSlice";
+import purchaseSlice from "./slices/purchaseSlice";
 export const store = configureStore({
   reducer: {
     app: appReducer,
@@ -23,6 +24,7 @@ export const store = configureStore({
     orders: orderSlice,
     inventory: inventorySlice,
     products: productsSlice,
+    purchase: purchaseSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
