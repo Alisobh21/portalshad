@@ -104,15 +104,15 @@ export default function PurchasedForm() {
     }
   };
 
-  const getList = <T, K extends keyof T>(array: T[], key: K): T[K][] =>
-    array.map((item) => item[key]);
+  function getList<T, K extends keyof T>(array: T[], key: K): T[K][] {
+    return array.map((item) => item[key]);
+  }
 
   const onSubmit = async (data: FieldValues) => {
     setLoading(true);
     const li_product_name = getList(shippingProducts, "name");
     const li_sku = getList(shippingProducts, "sku");
     const li_quantity = getList(shippingProducts, "quantity");
-    console.log(li_quantity, li_sku, li_product_name);
     const li_warehouse_id = getList(
       shippingProducts,
       "warehouse_products"
@@ -135,7 +135,7 @@ export default function PurchasedForm() {
 
     try {
       const response = await axiosPrivate.post(
-        "/purchase-orders/store",
+        "/purchase-orders/store'",
         payload
       );
       if (response.data.success) {
@@ -194,8 +194,8 @@ export default function PurchasedForm() {
                     </SelectTrigger>
                     <SelectContent>
                       {suppliers?.map((s) => (
-                        <SelectItem key={s.node.id} value={s.node.name}>
-                          {s.node.name}
+                        <SelectItem key={s?.node?.id} value={s?.node?.name}>
+                          {s?.node?.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -218,8 +218,8 @@ export default function PurchasedForm() {
                     </SelectTrigger>
                     <SelectContent>
                       {warehousesList?.map((w) => (
-                        <SelectItem key={w.identifier} value={w.identifier}>
-                          {w.name}
+                        <SelectItem key={w?.identifier} value={w?.identifier}>
+                          {w?.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -231,6 +231,7 @@ export default function PurchasedForm() {
             {/* Add Product Button */}
             <Button
               size="md"
+              type="button"
               variant="normal"
               onClick={() => setModalOpen(true)}
             >
@@ -265,6 +266,7 @@ export default function PurchasedForm() {
                     <TableCell>
                       <Button
                         variant="destructive"
+                        type="button"
                         onClick={() =>
                           dispatch(
                             removeFromOrder({
@@ -284,6 +286,7 @@ export default function PurchasedForm() {
 
             <Button
               size="md"
+              type="submit"
               disabled={loading || shippingProducts.length === 0}
             >
               {loading ? TModel("saving") : TModel("addingPurchaseOrder")}
@@ -384,6 +387,7 @@ export default function PurchasedForm() {
                       <TableCell>
                         <Button
                           size="sm"
+                          type="button"
                           variant="modal"
                           disabled={added}
                           onClick={() => handleAddProduct(p.node)}
@@ -404,6 +408,8 @@ export default function PurchasedForm() {
           <div className="flex gap-2 justify-center items-center m-4">
             {productsQuery.pageInfo?.hasNextPage && (
               <Button
+                type="button"
+                variant="normal"
                 onClick={() =>
                   setCursor(productsQuery.pageInfo?.endCursor ?? null)
                 }
@@ -411,7 +417,13 @@ export default function PurchasedForm() {
                 {TModel("next")}
               </Button>
             )}
-            <Button onClick={() => setModalOpen(false)}>{tTable("end")}</Button>
+            <Button
+              type="button"
+              onClick={() => setModalOpen(false)}
+              variant="closeModal"
+            >
+              {tTable("end")}
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

@@ -25,13 +25,15 @@ const buttonVariants = cva(
         primary: "text-white bg-gradient-to-r from-[#ea7831] to-[#c64813]",
         search:
           "bg-neutral-300 hover:bg-neutral-200 text-accent-foreground dark:bg-neutral-700 dark:hover:bg-neutral-600",
-        modal: "bg-[#fbe4d6] text-[#a3480f]",
+        modal:
+          "bg-[#fbe4d6] text-[#a3480f] dark:bg-[#492d21] dark:text-[#f0c6ab]",
         green:
           "bg-[#d1f4e0] text-green-foreground dark:bg-[#123623] dark:text-[#15a554]",
         red: "bg-[#fdd0df] text-[#d44a7a] dark:bg-[#3e1122] dark:text-[#f8adac]",
         darkred: "bg-[#f31260] text-white",
         darkgreen: "bg-[#17c964] text-black",
         lightOragne: "bg-[#fbe4d6] text-[#a54c14]",
+        closeModal: "bg-[#ea7830] text-white",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
