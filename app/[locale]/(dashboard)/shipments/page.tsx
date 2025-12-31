@@ -15,7 +15,7 @@ export default async function ShipmentsPage() {
       <CurrentPageFetcher page={t("shipments")} />
       <TableCard className="overflow-visible static">
         <PullShipments />
-        {/* <ShippingLabelsTable /> */}
+        <ShippingLabelsTable />
       </TableCard>
     </Suspense>
   );
