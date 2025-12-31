@@ -5,6 +5,7 @@ import TableCard from "@/components/TableCard";
 import PageSkeleton from "@/components/PageSkeleton";
 import { Card } from "@/components/ui/card";
 import PullShipments from "./PullShipments";
+import ShippingLabelsTable from "./ShippingLabelsTable";
 
 export default async function ShipmentsPage() {
   const t = await getTranslations("Sidebar");
@@ -14,6 +15,7 @@ export default async function ShipmentsPage() {
       <CurrentPageFetcher page={t("shipments")} />
       <TableCard className="overflow-visible static">
         <PullShipments />
+        {/* <ShippingLabelsTable /> */}
       </TableCard>
     </Suspense>
   );
