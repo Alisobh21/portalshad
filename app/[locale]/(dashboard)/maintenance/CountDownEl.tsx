@@ -2,7 +2,6 @@
 
 import { FC, ReactElement } from "react";
 import { useTranslations } from "next-intl";
-// @ts-expect-error - react-countdown doesn't have proper TypeScript types
 import Countdown from "react-countdown";
 
 /* ================= Types ================= */

@@ -223,7 +223,7 @@ export default function LoginForm() {
 
             <Link
               href="/reset"
-              className="text-sm mt-3 text-primary hover:underline"
+              className="text-sm mt-3 text-[#ea7831] hover:underline"
             >
               {t("resetPasswordButton")}
             </Link>
