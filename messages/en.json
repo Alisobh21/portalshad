@@ -414,7 +414,9 @@
     "canceled": "Canceled",
     "canceledDescription": "All canceled purchase orders.",
     "viewPurchaseOrders": "View Purchased Orders",
-    "view": "View"
+    "view": "View",
+    "noteAddedSuccess": "Note added successfully",
+    "updateFailed": "Update failed"
   },
   "PurchaseOrdersColumns": {
     "purchaseOrderNumber": "Purchase Order Number",

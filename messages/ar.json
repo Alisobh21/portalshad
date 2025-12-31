@@ -506,7 +506,9 @@
     "canceled": "ملغاة",
     "canceledDescription": "كل طلبات الشراء الملغاة.",
     "viewPurchaseOrders": "عرض طلبات الشراء",
-    "view": " عرض"
+    "view": " عرض",
+    "noteAddedSuccess": "تم اضافة الملاحظة بنجاح",
+    "updateFailed": "فشل التحديث"
   },
   "PurchaseOrdersColumns": {
     "purchaseOrderNumber": "رقم أمر التسليم",

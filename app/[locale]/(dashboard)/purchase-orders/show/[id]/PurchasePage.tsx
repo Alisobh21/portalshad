@@ -84,16 +84,16 @@ export default function PurchasePage({ params }: PurchasePageProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-      <Card className="md:col-span-2 xl:col-span-3 dark:bg-default-50/70">
+    <div>
+      <Card>
         <PurchaseDetails />
       </Card>
 
-      <Card className="md:col-span-2 xl:col-span-3 dark:bg-default-50/70">
+      <Card className="mt-5">
         <TableDetails />
       </Card>
 
-      <Card className="md:col-span-1 xl:col-span-1 dark:bg-default-50/70">
+      <Card className="mt-5 lg:max-w-[50%] justify-center">
         <PackagingPurchase fetchPurchaseOrder={fetchPurchaseOrder} />
       </Card>
     </div>

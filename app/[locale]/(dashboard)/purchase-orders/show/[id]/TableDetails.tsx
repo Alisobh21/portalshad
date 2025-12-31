@@ -60,10 +60,10 @@ const TableDetails: FC<TableDetailsProps> = ({ params }) => {
   const lineItems = onePurchaseOrder?.data?.line_items?.edges ?? [];
 
   return (
-    <div className="w-full overflow-x-auto">
+    <div className="w-full overflow-x-auto lg:px-4 px-2">
       <Table className="min-w-full">
-        <TableHeader>
-          <TableRow>
+        <TableHeader className="dark:text-white">
+          <TableRow className="dark:text-white text-xs font-bold">
             <TableHead>{t("status")}</TableHead>
             <TableHead>{t2("productName")}</TableHead>
             <TableHead>{t2("BySku")}</TableHead>

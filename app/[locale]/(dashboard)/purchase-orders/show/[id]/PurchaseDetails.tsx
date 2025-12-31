@@ -47,64 +47,64 @@ const PurchaseDetails: FC = () => {
     <div className="w-full">
       <header className="mb-4 flex justify-between px-2 lg:px-4">
         <div className="flex items-center gap-2">
-          <div className="w-[40px] h-[40px] rounded-xl flex items-center justify-center bg-[#f6e1d5] text-[#a3480f]">
-            <FaClipboardList size={20} />
-          </div>
+          <FaClipboardList size={24} />
           <h1 className="text-2xl font-semibold">
             {t("purchaseOrderDetails")}
           </h1>
         </div>
       </header>
 
-      <div className="grid grid-cols-1 gap-3 px-2 lg:px-4">
-        <div className="flex flex-col gap-2">
-          <span className="">{t("receiptOrderNumber")}</span>
-          <div className="rounded-md px-4 py-2 bg-neutral-100 dark:bg-neutral-700 flex items-center gap-2">
-            <FaClipboardList />
-            <span className="text-sm">
-              {onePurchaseOrder?.data?.legacy_id || "-"}
-            </span>
-          </div>
+      <div className="flex lg:flex-row  flex-col w-full gap-2 lg:px-4 px-2">
+        <div className="flex items-center gap-2  p-3 bg-gray-50 border border-gray-300 rounded-md dark:bg-neutral-700/40 dark:text-white dark:border-neutral-700">
+          <span className="text-gray-900 font-medium dark:text-white">
+            {t("receiptOrderNumber")}
+          </span>
+          <FaClipboardList className="text-gray-500 dark:text-white" />
+          <span className="text-sm text-gray-700 dark:text-white">
+            {onePurchaseOrder?.data?.legacy_id}{" "}
+          </span>
+        </div>
+        <div className="flex items-center gap-2  p-3 bg-gray-50 border border-gray-300 rounded-md dark:bg-neutral-700/40 dark:text-white dark:border-neutral-700">
+          <span className="text-gray-900 font-medium dark:text-white">
+            {t("status")}{" "}
+          </span>
+          <FaClipboardList className="text-gray-500 dark:text-white" />
+          <span className="text-sm text-gray-700 dark:text-white">
+            {" "}
+            {onePurchaseOrder?.data?.fulfillment_status}{" "}
+          </span>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <span className="">{t("status")}</span>
-          <div className="rounded-md px-4 py-2 bg-neutral-100 dark:bg-neutral-700 flex items-center gap-2">
-            <FaClipboardList />
-            <span className="text-sm">
-              {onePurchaseOrder?.data?.fulfillment_status || "-"}
-            </span>
-          </div>
+        <div className="flex items-center gap-2  p-3 bg-gray-50 border border-gray-300 rounded-md dark:bg-neutral-700/40 dark:text-white dark:border-neutral-700">
+          <span className="text-gray-900 font-medium dark:text-white">
+            {t("trackingNumber")}
+          </span>
+          <FaClipboardList className="text-gray-500 dark:text-white" />
+          <span className="text-sm text-gray-700 dark:text-white">
+            {" "}
+            {onePurchaseOrder?.data?.tracking_number}{" "}
+          </span>
         </div>
-
-        <div className="flex flex-col gap-2">
-          <span className="">{t("trackingNumber")}</span>
-          <div className="rounded-md px-4 py-2 bg-neutral-100 dark:bg-neutral-700 flex items-center gap-2">
-            <FaClipboardList />
-            <span className="text-sm">
-              {onePurchaseOrder?.data?.tracking_number || "-"}
-            </span>
-          </div>
+        <div className="flex items-center gap-2  p-3  bg-gray-50 border border-gray-300 rounded-md dark:bg-neutral-700/40 dark:text-white dark:border-neutral-700">
+          <span className="text-gray-900 font-medium dark:text-white">
+            {" "}
+            {t("warehouse")}
+          </span>
+          <FaClipboardList className="text-gray-500 dark:text-white" />
+          <span className="text-sm text-gray-700 dark:text-white">
+            {warehouse_name || onePurchaseOrder?.data?.warehouse_id}
+          </span>
         </div>
-
-        <div className="flex flex-col gap-2">
-          <span className="">{t("warehouse")}</span>
-          <div className="rounded-md px-4 py-2 bg-neutral-100 dark:bg-neutral-700 flex items-center gap-2">
-            <FaClipboardList />
-            <span className="text-sm">
-              {warehouse_name || onePurchaseOrder?.data?.warehouse_id || "-"}
-            </span>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <span className="">{t("date")}</span>
-          <div className="rounded-md px-4 py-2 bg-neutral-100 dark:bg-neutral-700 flex items-center gap-2">
-            <FaClipboardList />
-            <span className="text-sm">
-              {onePurchaseOrder?.data?.po_date || "-"}
-            </span>
-          </div>
+        <div className="flex items-center gap-2  p-3  bg-gray-50 border border-gray-300 rounded-md dark:bg-neutral-700/40 dark:text-white dark:border-neutral-700">
+          <span className="text-gray-900 font-medium dark:text-white">
+            {" "}
+            {t("date")}
+          </span>
+          <FaClipboardList className="text-gray-500 dark:text-white" />
+          <span className="text-sm text-gray-700 dark:text-white">
+            {" "}
+            {onePurchaseOrder?.data?.po_date}{" "}
+          </span>
         </div>
       </div>
     </div>

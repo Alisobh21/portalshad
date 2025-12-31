@@ -87,12 +87,10 @@ const PackagingPurchase: FC<PackagingPurchaseProps> = ({
   };
 
   return (
-    <div className="w-full relative">
+    <div className="w-full relative ">
       <header className="mb-4 flex justify-between px-2 lg:px-4">
         <div className="flex items-center gap-2">
-          <div className="w-[40px] h-[40px] rounded-xl flex items-center justify-center bg-[#f6e1d5] text-[#a3480f]">
-            <GrNotes size={20} />
-          </div>
+          <GrNotes size={20} />
           <h1 className="text-2xl font-semibold">{t("packingNoteTitle")}</h1>
         </div>
         <div>
