@@ -70,7 +70,7 @@ export default function PullShipments() {
   async function pullShipments() {
     setPullShipmentLoading(true);
     try {
-      const response = await axiosPrivate.post("/shipments/pull");
+      const response = await axiosPrivate.get("/shipments/pull");
       if (response?.data?.success) {
         updateUser();
       }
@@ -112,9 +112,9 @@ export default function PullShipments() {
                   {t("lastUpdateStatus")}
                 </span>
                 {userTyped?.last_shipments_update_status ? (
-                  <Badge variant="greeShip">{t("updateSuccessful")}</Badge>
+                  <Badge variant="green">{t("updateSuccessful")}</Badge>
                 ) : (
-                  <Badge variant="redShip">{t("updateFailed")}</Badge>
+                  <Badge variant="red">{t("updateFailed")}</Badge>
                 )}
               </div>
             )}
