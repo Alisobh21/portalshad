@@ -503,7 +503,8 @@
     "noShareLink": "No share link",
     "addressTipPrefix": "Tip: Use the",
     "addressTipSearch": "icon to find an address, or the",
-    "addressTipAdd": "icon to create a new one."
+    "addressTipAdd": "icon to create a new one.",
+    "loading": "⏳ Loading..."
   },
   "ShowOrder": {
     "paymentStatus": "Payment Status",

@@ -86,12 +86,9 @@ export default function Reset() {
 
         {emailSent ? (
           <>
-            <Alert className="text-center bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-600 dark:text-green-400">
-              <AlertDescription className="flex items-center justify-center gap-2">
-                <span>✅</span>
-                {tGeneral("resetMsg")}
-              </AlertDescription>
-            </Alert>
+            <div className="text-center text-[#269c5e] bg-[#e0feee] p-4 rounded-lg border border-[#c3efd6]">
+              ✅ {tGeneral("resetMsg")}
+            </div>
             <div className="text-center flex gap-4 mt-4">
               <Link
                 href="/login"
