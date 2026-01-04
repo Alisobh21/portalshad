@@ -17,7 +17,7 @@ interface ApiResponse<T = unknown> {
 
 export const axiosTable = axios.create({
   baseURL: API_URL,
-  withCredentials: true,
+  // withCredentials: true,
   headers: {
     "Content-Type": "application/json",
     // ln: (() => {
@@ -32,6 +32,20 @@ export const axiosTable = axios.create({
     ln: Cookies.get("NEXT_LOCALE"),
   },
 });
+
+axiosTable.interceptors.request.use(
+  (config) => {
+    if (typeof window !== "undefined" && lsSecure) {
+      const token = lsSecure.get("auth_token");
+      console.log("token_", token);
+      if (token) {
+        config.headers["Authorization"] = `Bearer ${token}`;
+      }
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 export const axiosPrivate = axios.create({
   baseURL: API_URL,
@@ -78,6 +92,7 @@ axiosPrivate.interceptors.request.use(
   (config) => {
     if (typeof window !== "undefined" && lsSecure) {
       const token = lsSecure.get("auth_token");
+      console.log("token_", token);
       if (token) {
         config.headers["Authorization"] = `Bearer ${token}`;
       }
@@ -88,6 +103,16 @@ axiosPrivate.interceptors.request.use(
 );
 
 axiosPrivate.interceptors.request.use(
+  (config) => {
+    if (config.url) {
+      config.url = config.url;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+axiosTable.interceptors.request.use(
   (config) => {
     if (config.url) {
       config.url = config.url;

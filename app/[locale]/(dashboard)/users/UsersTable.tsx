@@ -8,7 +8,7 @@ export default function UsersTable() {
   const { getTableStructure, tableStructure, tableStructureLoading } =
     useTableStructure();
   useEffect(() => {
-    getTableStructure({ table: "users" });
+    getTableStructure({ table: "/api-table/control-tables/load-table/users" });
   }, []);
   return (
     <Card className="p-5">

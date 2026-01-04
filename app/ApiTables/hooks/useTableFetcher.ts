@@ -107,7 +107,7 @@ const useTableFetcher = () => {
     try {
       const response = await axiosTable({
         method: "POST",
-        url: `/control-tables/query-table/${tableName}`,
+        url: `/api-table/control-tables/query-table/${tableName}`,
         data: {
           perPage: pageSize,
           page: currentPage,
