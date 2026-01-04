@@ -135,10 +135,11 @@ export default function PurchasedForm() {
 
     try {
       const response = await axiosPrivate.post(
-        "/purchase-orders/store'",
+        "/purchase-orders/store",
         payload
       );
       if (response.data.success) {
+        console.log(response.data, "response.data");
         dispatch(clearTargetArray("shippingProducts"));
         toast.success(t("msg"));
         router.push(
@@ -169,7 +170,7 @@ export default function PurchasedForm() {
             Icon={FaCartArrowDown}
             title={t("subtitlecreate")}
             desc={t("subcreate")}
-            link="/purchase-orders"
+            link="/purchase-orders/status/all-po"
             linkDes={t("backcreate")}
           />
 
@@ -194,7 +195,7 @@ export default function PurchasedForm() {
                     </SelectTrigger>
                     <SelectContent>
                       {suppliers?.map((s) => (
-                        <SelectItem key={s?.node?.id} value={s?.node?.name}>
+                        <SelectItem key={s?.node?.id} value={s?.node?.id}>
                           {s?.node?.name}
                         </SelectItem>
                       ))}

@@ -85,7 +85,7 @@ export default function AllPurchase({ status }: AllPurchaseProps) {
             {subHeading}
           </p>
           <Button variant="modal" asChild className="px-5">
-            <Link href="/orders/create-order">
+            <Link href="/purchase-orders/create-purchase-order">
               <MdCreateNewFolder size={17} />
               <span className="d-inline-block text-sm">{t("titlecreate")}</span>
             </Link>
