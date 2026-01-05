@@ -1,362 +1,324 @@
-// @ts-nocheck
-
 "use client";
 
-/* eslint-disable react-hooks/exhaustive-deps */
-import { Controller, useForm } from "react-hook-form";
-import { Autocomplete, AutocompleteItem, Button, Chip, Input, Select, SelectItem } from "@heroui/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 import { useSelector } from "react-redux";
-import { LuChevronsUpDown } from "react-icons/lu";
-import { MdWarehouse } from "react-icons/md";
-import { TbPencilCheck } from "react-icons/tb";
-import { HiBackspace } from "react-icons/hi2";
-import { requiredField } from "@/helpers/constants";
-import { AiOutlineProduct } from "react-icons/ai";
-import useUtilsProvider from "../../table-providers/useUtilsProvider";
-import { useEffect, useState } from "react";
-import axiosPrivate from "@/app/axios/axios";
-import { FaBoxArchive, FaBuilding, FaEnvelope, FaMobileButton, FaUser } from "react-icons/fa6";
+import { useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
-import InvalidFeedback from "@/components/InvalidFeedback";
+import { FaBuilding, FaEnvelope, FaMobileButton } from "react-icons/fa6";
 import { FaGlobeAsia, FaMapMarkerAlt } from "react-icons/fa";
 import { RiUserFill } from "react-icons/ri";
+import useUtilsProvider from "../../table-providers/useUtilsProvider";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
-export default function EditPendingOrder({ action, closeModal }) {
-    const { rowActionPostLoading } = useSelector((state) => state?.rowActions);
-    const t = useTranslations("Orders");
-    const tPending = useTranslations("Pending");
-    const { rowActionsPostHandler } = useUtilsProvider();
-    const {
-        register,
-        handleSubmit,
-        setValue,
-        formState: { errors },
-    } = useForm();
+interface ShippingAddress {
+  address1?: string;
+  address2?: string;
+  company?: string;
+  country?: string;
+  country_code?: string;
+  state?: string;
+  state_code?: string;
+  city?: string;
+  zip?: string;
+  email?: string;
+  first_name?: string;
+  last_name?: string;
+  phone?: string;
+}
 
-    useEffect(() => {
-        setValue("name", action?.payload?.name || 1);
-    }, [action?.payload?.name]);
+interface EditPendingOrderAction {
+  method: string;
+  url: string;
+  payload: {
+    id?: string | number;
+    name?: string;
+    shipping_address?: ShippingAddress;
+  };
+}
 
-    // --------------------------------------------------------------------
-    //    🎯  [ASYNC FUNCTION] HANDLE SUBMITTING
-    // --------------------------------------------------------------------
-    function submitCustomControlForm(data) {
-        rowActionsPostHandler(
-            action?.method,
-            action?.url?.replace("/api", ""),
-            { id: action?.payload?.id, shipping_address: { ...data } },
-            // { ...action?.payload, ...data },
-            action
-        );
+interface EditPendingOrderProps {
+  action: EditPendingOrderAction;
+  closeModal?: () => void;
+}
+
+interface RowActionsState {
+  rowActionPostLoading: boolean;
+}
+
+export default function EditPendingOrder({ action }: EditPendingOrderProps) {
+  const { rowActionPostLoading } = useSelector(
+    (state: { rowActions: RowActionsState }) => state?.rowActions
+  );
+  const t = useTranslations("Orders");
+  const tPending = useTranslations("Pending");
+  const { rowActionsPostHandler } = useUtilsProvider();
+
+  const shippingAddress = useMemo(
+    () => action?.payload?.shipping_address || {},
+    [action?.payload?.shipping_address]
+  );
+
+  // Build dynamic schema based on available fields
+  const formSchema = useMemo(() => {
+    const schemaFields: Record<string, z.ZodString> = {};
+
+    if (shippingAddress.address1) {
+      schemaFields.address1 = z.string().min(1, tPending("fieldRequired"));
+    }
+    if (shippingAddress.address2) {
+      schemaFields.address2 = z.string().min(1, tPending("fieldRequired"));
+    }
+    if (shippingAddress.company) {
+      schemaFields.company = z.string().min(1, tPending("fieldRequired"));
+    }
+    if (shippingAddress.country) {
+      schemaFields.country = z.string().min(1, tPending("fieldRequired"));
+    }
+    if (shippingAddress.country_code) {
+      schemaFields.country_code = z.string().min(1, tPending("fieldRequired"));
+    }
+    if (shippingAddress.state) {
+      schemaFields.state = z.string().min(1, tPending("fieldRequired"));
+    }
+    if (shippingAddress.state_code) {
+      schemaFields.state_code = z.string().min(1, tPending("fieldRequired"));
+    }
+    if (shippingAddress.city) {
+      schemaFields.city = z.string().min(1, tPending("fieldRequired"));
+    }
+    if (shippingAddress.zip) {
+      schemaFields.zip = z.string().min(1, tPending("fieldRequired"));
+    }
+    if (shippingAddress.email) {
+      schemaFields.email = z.string().min(1, tPending("fieldRequired"));
+    }
+    if (shippingAddress.first_name) {
+      schemaFields.first_name = z.string().min(1, tPending("fieldRequired"));
+    }
+    if (shippingAddress.last_name) {
+      schemaFields.last_name = z.string().min(1, tPending("fieldRequired"));
+    }
+    if (shippingAddress.phone) {
+      schemaFields.phone = z.string().min(1, "This field is required");
     }
 
-    return (
-        <>
-            <header className="pb-5 text-center">
-                <h5>{t("editOrder")}</h5>
-            </header>
-            <form onSubmit={handleSubmit(submitCustomControlForm)} noValidate className="pt-5 grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {action?.payload?.shipping_address?.address1 && (
-                    <div className="flex flex-col gap-2">
-                        <Input
-                            startContent={<FaMapMarkerAlt size={15} className="text-muted-2x" />}
-                            label={tPending("address1Label")}
-                            type="text"
-                            placeholder={`${tPending("enter")} ${tPending("address1Label")}`}
-                            variant="bordered"
-                            size="md"
-                            labelPlacement="outside"
-                            defaultValue={action?.payload?.shipping_address?.address1}
-                            {...requiredField}
-                            {...register("address1", {
-                                required: {
-                                    value: true,
-                                    message: tPending("fieldRequired"),
-                                },
-                            })}
-                        />
-                        {errors?.address1 && <InvalidFeedback error={errors?.address1?.message} />}
-                    </div>
-                )}
+    return z.object(schemaFields);
+  }, [shippingAddress, tPending]);
 
-                {action?.payload?.shipping_address?.address2 && (
-                    <div className="flex flex-col gap-2">
-                        <Input
-                            startContent={<FaMapMarkerAlt size={15} className="text-muted-2x" />}
-                            label={tPending("address2Label")}
-                            type="text"
-                            placeholder={`${tPending("enter")} ${tPending("address2Label")}`}
-                            variant="bordered"
-                            size="md"
-                            labelPlacement="outside"
-                            defaultValue={action?.payload?.shipping_address?.address2}
-                            {...requiredField}
-                            {...register("address2", {
-                                required: {
-                                    value: true,
-                                    message: tPending("fieldRequired"),
-                                },
-                            })}
-                        />
-                        {errors?.address2 && <InvalidFeedback error={errors?.address2?.message} />}
-                    </div>
-                )}
+  type FormValues = z.infer<typeof formSchema>;
 
-                {action?.payload?.shipping_address?.company && (
-                    <div className="flex flex-col gap-2">
-                        <Input
-                            startContent={<FaBuilding size={15} className="text-muted-2x" />}
-                            label={tPending("companyLabel")}
-                            type="text"
-                            placeholder={`${tPending("enter")} ${tPending("companyLabel")}`}
-                            variant="bordered"
-                            size="md"
-                            labelPlacement="outside"
-                            defaultValue={action?.payload?.shipping_address?.company}
-                            {...requiredField}
-                            {...register("company", {
-                                required: {
-                                    value: true,
-                                    message: tPending("fieldRequired"),
-                                },
-                            })}
-                        />
-                        {errors?.company && <InvalidFeedback error={errors?.company?.message} />}
-                    </div>
-                )}
+  const defaultValues = useMemo(() => {
+    const values: Record<string, string> = {};
+    if (shippingAddress.address1) values.address1 = shippingAddress.address1;
+    if (shippingAddress.address2) values.address2 = shippingAddress.address2;
+    if (shippingAddress.company) values.company = shippingAddress.company;
+    if (shippingAddress.country) values.country = shippingAddress.country;
+    if (shippingAddress.country_code)
+      values.country_code = shippingAddress.country_code;
+    if (shippingAddress.state) values.state = shippingAddress.state;
+    if (shippingAddress.state_code)
+      values.state_code = shippingAddress.state_code;
+    if (shippingAddress.city) values.city = shippingAddress.city;
+    if (shippingAddress.zip) values.zip = shippingAddress.zip;
+    if (shippingAddress.email) values.email = shippingAddress.email;
+    if (shippingAddress.first_name)
+      values.first_name = shippingAddress.first_name;
+    if (shippingAddress.last_name) values.last_name = shippingAddress.last_name;
+    if (shippingAddress.phone) values.phone = shippingAddress.phone;
+    return values;
+  }, [shippingAddress]);
 
-                {action?.payload?.shipping_address?.country && (
-                    <div className="flex flex-col gap-2">
-                        <Input
-                            startContent={<FaGlobeAsia size={15} className="text-muted-2x" />}
-                            label={tPending("countryLabel")}
-                            type="text"
-                            placeholder={`${tPending("enter")} ${tPending("countryLabel")}`}
-                            variant="bordered"
-                            size="md"
-                            labelPlacement="outside"
-                            defaultValue={action?.payload?.shipping_address?.country}
-                            {...requiredField}
-                            {...register("country", {
-                                required: {
-                                    value: true,
-                                    message: tPending("fieldRequired"),
-                                },
-                            })}
-                        />
-                        {errors?.country && <InvalidFeedback error={errors?.country?.message} />}
-                    </div>
-                )}
-                {action?.payload?.shipping_address?.country_code && (
-                    <div className="flex flex-col gap-2">
-                        <Input
-                            startContent={<FaGlobeAsia size={15} className="text-muted-2x" />}
-                            label={tPending("countryCodeLabel")}
-                            type="text"
-                            placeholder={`${tPending("enter")} ${tPending("countryCodeLabel")}`}
-                            variant="bordered"
-                            size="md"
-                            labelPlacement="outside"
-                            defaultValue={action?.payload?.shipping_address?.country_code}
-                            {...requiredField}
-                            {...register("country_code", {
-                                required: {
-                                    value: true,
-                                    message: tPending("fieldRequired"),
-                                },
-                            })}
-                        />
-                        {errors?.country_code && <InvalidFeedback error={errors?.country_code?.message} />}
-                    </div>
-                )}
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues,
+  });
 
-                {action?.payload?.shipping_address?.state && (
-                    <div className="flex flex-col gap-2">
-                        <Input
-                            startContent={<FaGlobeAsia size={15} className="text-muted-2x" />}
-                            label={tPending("stateLabel")}
-                            type="text"
-                            placeholder={`${tPending("enter")} ${tPending("stateLabel")}`}
-                            variant="bordered"
-                            size="md"
-                            labelPlacement="outside"
-                            defaultValue={action?.payload?.shipping_address?.state}
-                            {...requiredField}
-                            {...register("state", {
-                                required: {
-                                    value: true,
-                                    message: tPending("fieldRequired"),
-                                },
-                            })}
-                        />
-                        {errors?.state && <InvalidFeedback error={errors?.state?.message} />}
-                    </div>
-                )}
+  useEffect(() => {
+    Object.entries(defaultValues).forEach(([key, value]) => {
+      form.setValue(key as keyof FormValues, value);
+    });
+  }, [defaultValues, form]);
 
-                {action?.payload?.shipping_address?.state_code && (
-                    <div className="flex flex-col gap-2">
-                        <Input
-                            startContent={<FaGlobeAsia size={15} className="text-muted-2x" />}
-                            label={tPending("stateCodeLabel")}
-                            type="text"
-                            placeholder={`${tPending("enter")} ${tPending("stateCodeLabel")}`}
-                            variant="bordered"
-                            size="md"
-                            labelPlacement="outside"
-                            defaultValue={action?.payload?.shipping_address?.state_code}
-                            {...requiredField}
-                            {...register("state_code", {
-                                required: {
-                                    value: true,
-                                    message: tPending("fieldRequired"),
-                                },
-                            })}
-                        />
-                        {errors?.state_code && <InvalidFeedback error={errors?.state_code?.message} />}
-                    </div>
-                )}
-
-                {action?.payload?.shipping_address?.city && (
-                    <div className="flex flex-col gap-2">
-                        <Input
-                            startContent={<FaGlobeAsia size={15} className="text-muted-2x" />}
-                            label={tPending("cityLabel")}
-                            type="text"
-                            placeholder={`${tPending("enter")} ${tPending("cityLabel")}`}
-                            variant="bordered"
-                            size="md"
-                            labelPlacement="outside"
-                            defaultValue={action?.payload?.shipping_address?.city}
-                            {...requiredField}
-                            {...register("city", {
-                                required: {
-                                    value: true,
-                                    message: tPending("fieldRequired"),
-                                },
-                            })}
-                        />
-                        {errors?.city && <InvalidFeedback error={errors?.city?.message} />}
-                    </div>
-                )}
-
-                {action?.payload?.shipping_address?.zip && (
-                    <div className="flex flex-col gap-2">
-                        <Input
-                            startContent={<FaGlobeAsia size={15} className="text-muted-2x" />}
-                            label={tPending("postalCodeLabel")}
-                            type="text"
-                            placeholder={`${tPending("enter")} ${tPending("postalCodeLabel")}`}
-                            variant="bordered"
-                            size="md"
-                            labelPlacement="outside"
-                            defaultValue={action?.payload?.shipping_address?.zip}
-                            {...requiredField}
-                            {...register("zip", {
-                                required: {
-                                    value: true,
-                                    message: tPending("fieldRequired"),
-                                },
-                            })}
-                        />
-                        {errors?.zip && <InvalidFeedback error={errors?.zip?.message} />}
-                    </div>
-                )}
-
-                {action?.payload?.shipping_address?.email && (
-                    <div className="flex flex-col gap-2">
-                        <Input
-                            startContent={<FaEnvelope size={15} className="text-muted-2x" />}
-                            label={tPending("emailAddressLabel")}
-                            type="text"
-                            placeholder={`${tPending("enter")} ${tPending("emailAddressLabel")}`}
-                            variant="bordered"
-                            size="md"
-                            labelPlacement="outside"
-                            defaultValue={action?.payload?.shipping_address?.email}
-                            {...requiredField}
-                            {...register("email", {
-                                required: {
-                                    value: true,
-                                    message: tPending("fieldRequired"),
-                                },
-                            })}
-                        />
-                        {errors?.email && <InvalidFeedback error={errors?.email?.message} />}
-                    </div>
-                )}
-
-                {action?.payload?.shipping_address?.first_name && (
-                    <div className="flex flex-col gap-2">
-                        <Input
-                            startContent={<RiUserFill size={15} className="text-muted-2x" />}
-                            label={tPending("firstNameLabel")}
-                            type="text"
-                            placeholder={`${tPending("enter")} ${tPending("firstNameLabel")}`}
-                            variant="bordered"
-                            size="md"
-                            labelPlacement="outside"
-                            defaultValue={action?.payload?.shipping_address?.first_name}
-                            {...requiredField}
-                            {...register("first_name", {
-                                required: {
-                                    value: true,
-                                    message: tPending("fieldRequired"),
-                                },
-                            })}
-                        />
-                        {errors?.first_name && <InvalidFeedback error={errors?.first_name?.message} />}
-                    </div>
-                )}
-                {action?.payload?.shipping_address?.first_name && (
-                    <div className="flex flex-col gap-2">
-                        <Input
-                            startContent={<RiUserFill size={15} className="text-muted-2x" />}
-                            label={tPending("lastNameLabel")}
-                            type="text"
-                            placeholder={`${tPending("enter")} ${tPending("lastNameLabel")}`}
-                            variant="bordered"
-                            size="md"
-                            labelPlacement="outside"
-                            defaultValue={action?.payload?.shipping_address?.last_name}
-                            {...requiredField}
-                            {...register("last_name", {
-                                required: {
-                                    value: true,
-                                    message: tPending("fieldRequired"),
-                                },
-                            })}
-                        />
-                        {errors?.last_name && <InvalidFeedback error={errors?.last_name?.message} />}
-                    </div>
-                )}
-
-                <div className="flex flex-col gap-2 lg:col-span-2">
-                    <Input
-                        startContent={<FaMobileButton size={15} className="text-muted-2x" />}
-                        label={tPending("phoneLabel")}
-                        type="text"
-                        placeholder={`${tPending("enter")} ${tPending("phoneLabel")}`}
-                        variant="bordered"
-                        size="md"
-                        labelPlacement="outside"
-                        defaultValue={action?.payload?.shipping_address?.phone}
-                        {...requiredField}
-                        {...register("phone", {
-                            required: {
-                                value: true,
-                                message: "This field is required",
-                            },
-                        })}
-                    />
-                    {errors?.phone && <InvalidFeedback error={errors?.phone?.message} />}
-                </div>
-
-                <div className="lg:col-span-2">
-                    <Button variant="flat" color="primary" size="md" fullWidth type="submit" isLoading={rowActionPostLoading}>
-                        {t("editOrder")}
-                    </Button>
-                </div>
-            </form>
-        </>
+  function submitCustomControlForm(data: FormValues) {
+    rowActionsPostHandler(
+      action?.method,
+      action?.url?.replace("/api", ""),
+      { id: action?.payload?.id, shipping_address: { ...data } },
+      action as EditPendingOrderAction & {
+        onSuccess?: string;
+        isBulk?: boolean;
+      }
     );
+  }
+
+  const renderField = (
+    fieldName: keyof ShippingAddress,
+    label: string,
+    placeholder: string,
+    icon: React.ReactNode,
+    spanFull?: boolean
+  ) => {
+    if (!shippingAddress[fieldName]) return null;
+
+    return (
+      <FormField
+        key={fieldName}
+        control={form.control}
+        name={fieldName as keyof FormValues}
+        render={({ field }) => (
+          <FormItem className={spanFull ? "lg:col-span-2" : ""}>
+            <FormLabel>
+              {label}
+              <span className="text-red-500">*</span>
+            </FormLabel>
+            <FormControl>
+              <div className="relative">
+                <div className="pointer-events-none absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                  {icon}
+                </div>
+                <Input
+                  type="text"
+                  placeholder={placeholder}
+                  className="ltr:pl-10 rtl:pr-10"
+                  {...field}
+                />
+              </div>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    );
+  };
+
+  return (
+    <>
+      <header className="pb-5 text-center">
+        <h5>{t("editOrder")}</h5>
+      </header>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(submitCustomControlForm)}
+          noValidate
+          className="pt-5 grid grid-cols-1 lg:grid-cols-2 gap-4"
+        >
+          {renderField(
+            "address1",
+            tPending("address1Label"),
+            `${tPending("enter")} ${tPending("address1Label")}`,
+            <FaMapMarkerAlt size={15} />
+          )}
+
+          {renderField(
+            "address2",
+            tPending("address2Label"),
+            `${tPending("enter")} ${tPending("address2Label")}`,
+            <FaMapMarkerAlt size={15} />
+          )}
+
+          {renderField(
+            "company",
+            tPending("companyLabel"),
+            `${tPending("enter")} ${tPending("companyLabel")}`,
+            <FaBuilding size={15} />
+          )}
+
+          {renderField(
+            "country",
+            tPending("countryLabel"),
+            `${tPending("enter")} ${tPending("countryLabel")}`,
+            <FaGlobeAsia size={15} />
+          )}
+
+          {renderField(
+            "country_code",
+            tPending("countryCodeLabel"),
+            `${tPending("enter")} ${tPending("countryCodeLabel")}`,
+            <FaGlobeAsia size={15} />
+          )}
+
+          {renderField(
+            "state",
+            tPending("stateLabel"),
+            `${tPending("enter")} ${tPending("stateLabel")}`,
+            <FaGlobeAsia size={15} />
+          )}
+
+          {renderField(
+            "state_code",
+            tPending("stateCodeLabel"),
+            `${tPending("enter")} ${tPending("stateCodeLabel")}`,
+            <FaGlobeAsia size={15} />
+          )}
+
+          {renderField(
+            "city",
+            tPending("cityLabel"),
+            `${tPending("enter")} ${tPending("cityLabel")}`,
+            <FaGlobeAsia size={15} />
+          )}
+
+          {renderField(
+            "zip",
+            tPending("postalCodeLabel"),
+            `${tPending("enter")} ${tPending("postalCodeLabel")}`,
+            <FaGlobeAsia size={15} />
+          )}
+
+          {renderField(
+            "email",
+            tPending("emailAddressLabel"),
+            `${tPending("enter")} ${tPending("emailAddressLabel")}`,
+            <FaEnvelope size={15} />
+          )}
+
+          {renderField(
+            "first_name",
+            tPending("firstNameLabel"),
+            `${tPending("enter")} ${tPending("firstNameLabel")}`,
+            <RiUserFill size={15} />
+          )}
+
+          {shippingAddress.first_name &&
+            renderField(
+              "last_name",
+              tPending("lastNameLabel"),
+              `${tPending("enter")} ${tPending("lastNameLabel")}`,
+              <RiUserFill size={15} />
+            )}
+
+          {renderField(
+            "phone",
+            tPending("phoneLabel"),
+            `${tPending("enter")} ${tPending("phoneLabel")}`,
+            <FaMobileButton size={15} />,
+            true
+          )}
+
+          <div className="lg:col-span-2">
+            <Button
+              variant="default"
+              size="md"
+              className="w-full"
+              type="submit"
+              disabled={rowActionPostLoading}
+            >
+              {rowActionPostLoading ? "Loading..." : t("editOrder")}
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </>
+  );
 }

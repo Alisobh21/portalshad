@@ -25,6 +25,8 @@ import LinkSlotToProduct from "./custom-controls/LinkSlotToProduct";
 import ModifyTote from "./custom-controls/ModifyTote";
 import AssignOrderToPicker from "./custom-controls/AssignOrderToPicker";
 import EditUser from "./custom-controls/EditUser";
+import EditPendingOrder from "./custom-controls/EditPendingOrder";
+import EditLineItems from "./custom-controls/EditLineItems";
 
 /**
  * Main component for managing all modal dialogs in the API tables system
@@ -144,6 +146,20 @@ function ApiTablesModals() {
         )}
         {customControlAction?.url?.api?.includes("assign-picker-to-order") && (
           <AssignOrderToPicker
+            action={customControlAction}
+            closeModal={handleCloseModal}
+          />
+        )}
+        {customControlAction?.url?.includes("pending-orders/update/") && (
+          <EditPendingOrder
+            action={customControlAction}
+            closeModal={handleCloseModal}
+          />
+        )}
+        {customControlAction?.url?.includes(
+          "pending-orders/update-products"
+        ) && (
+          <EditLineItems
             action={customControlAction}
             closeModal={handleCloseModal}
           />
