@@ -175,10 +175,14 @@ export default function Navbar() {
                       <RiUser4Fill size={16} />
                     </Button>
 
-                    <div className="text-sm font-medium">
-                      {user?.maskLogin
-                        ? `Mask Login - ${user?.name}`
-                        : user?.name}
+                    <div className="text-sm font-medium ">
+                      {user?.maskLogin ? (
+                        <span className="px-2 rounded-md text-[12px] bg-foreground text-background">
+                          {`Mask Login - ${user?.name || "..."} `}
+                        </span>
+                      ) : (
+                        user?.name
+                      )}
                       <div className="text-muted-foreground text-xs">
                         {user?.email}
                       </div>

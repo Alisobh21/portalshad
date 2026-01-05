@@ -23,6 +23,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
+import UserMaskLogin from "./custom-row-actions/UserMaskLogin";
 
 function TableRowActions({ row, col }: { row: any; col: any }) {
   const { selectedRows } = useSelector((state: any) => state?.tableColumns);
@@ -80,6 +81,8 @@ function TableRowActions({ row, col }: { row: any; col: any }) {
                       <ExternalRedirectRowActionElement action={action} />
                     ) : action?.action_type === "copy" ? (
                       <CopyTextRowActionElement action={action} />
+                    ) : action?.action_type === "mask_login" ? (
+                      <UserMaskLogin action={action} />
                     ) : (
                       <GeneralRowActionElement action={action} />
                     )}
