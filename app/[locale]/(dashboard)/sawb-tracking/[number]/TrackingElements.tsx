@@ -11,6 +11,7 @@ import axiosPrivate from "@/axios/axios";
 import { Spinner } from "@/components/ui/spinner";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertTitle } from "@/components/ui/alert";
+import { CopyButton } from "@/components/ui/shadcn-io/copy-button";
 
 interface TrackingStatus {
   code: string;
@@ -97,8 +98,15 @@ export default function TrackingElements({
               <p className="text-[15px] text-muted-foreground">
                 {t("trackingNumber")}
               </p>
-              <h1 className="text-3xl lg:text-6xl font-bold leading-none font-mono">
+              <h1 className="flex items-center gap-1 text-3xl lg:text-6xl font-bold leading-none font-mono">
                 {trackingInfo.tracking_number}
+
+                <CopyButton
+                  content={trackingInfo.tracking_number}
+                  variant="ghost"
+                  size="md"
+                  //   onCopy={() => console.log("Tracking number copied!")}
+                />
               </h1>
             </div>
             <Badge variant="secondary" className="px-4 py-1 w-fit">
