@@ -233,6 +233,7 @@ export default function PurchasedForm() {
             <Button
               size="md"
               type="button"
+              className="max-w-[200px] mb-2"
               variant="normal"
               onClick={() => setModalOpen(true)}
             >
@@ -288,6 +289,7 @@ export default function PurchasedForm() {
             <Button
               size="md"
               type="submit"
+              className="max-w-[200px]"
               disabled={loading || shippingProducts.length === 0}
             >
               {loading ? TModel("saving") : TModel("addingPurchaseOrder")}

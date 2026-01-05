@@ -27,6 +27,7 @@ const buttonVariants = cva(
           "bg-neutral-300 hover:bg-neutral-200 text-accent-foreground dark:bg-neutral-700 dark:hover:bg-neutral-600",
         modal:
           "bg-[#fbe4d6] text-[#a3480f] dark:bg-[#492d21] dark:text-[#f0c6ab]",
+
         green:
           "bg-[#d1f4e0] text-green-foreground dark:bg-[#123623] dark:text-[#15a554]",
         red: "bg-[#fdd0df] text-[#d44a7a] dark:bg-[#3e1122] dark:text-[#f8adac]",
@@ -40,7 +41,7 @@ const buttonVariants = cva(
         sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
         lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
         icon: "size-9",
-        md: "max-w-[200px] h-10 rounded-md px-6 has-[>svg]:px-4",
+        md: "h-10 rounded-md px-6 has-[>svg]:px-4",
         "icon-sm": "size-8",
         "icon-lg": "size-10",
       },
