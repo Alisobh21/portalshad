@@ -13,10 +13,10 @@ export default async function ShipmentsPage() {
   return (
     <Suspense fallback={<PageSkeleton />}>
       <CurrentPageFetcher page={t("shipments")} />
-      <TableCard className="overflow-visible static">
-        <PullShipments />
+      <PullShipments />
+      <Card className="p-4 mt-2">
         <ShippingLabelsTable />
-      </TableCard>
+      </Card>
     </Suspense>
   );
 }

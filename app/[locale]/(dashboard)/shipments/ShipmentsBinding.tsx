@@ -164,7 +164,7 @@ export default function ShipmentsBinding({
           {chartData &&
             Object.values(chartData).map((value, index) => (
               <div
-                className="flex flex-col gap-2 p-5 rounded-xl justify-between bg-content2/50"
+                className="flex flex-col gap-2 p-5 rounded-xl justify-between bg-neutral-200/20 dark:bg-neutral-700/20"
                 key={index}
               >
                 <div className="flex flex-col">

@@ -56,12 +56,10 @@ export default function ShippingLabelsTable() {
         tableStructureLoading={tableStructureLoading}
       >
         <div className="w-full mb-5">
-          <Card className="dark:bg-default-50/70 p-5">
-            <ShipmentsBinding
-              timeScope={timeScope}
-              setTimeScope={handleTimeScopeChange}
-            />
-          </Card>
+          <ShipmentsBinding
+            timeScope={timeScope}
+            setTimeScope={handleTimeScopeChange}
+          />
         </div>
       </ReactApiTable>
     </>
