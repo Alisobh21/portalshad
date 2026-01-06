@@ -2,7 +2,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AppProvider } from "@/store/AppProvider";
 import "../globals.css";
@@ -22,15 +22,17 @@ export function generateStaticParams() {
 
 export default async function LocaleLayout({
   children,
+  modals,
   params,
 }: {
   children: React.ReactNode;
+  modals: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
 
   // Ensure that the incoming `locale` is valid
-  if (!routing.locales.includes(locale as any)) {
+  if (!routing.locales.includes(locale as (typeof routing.locales)[number])) {
     notFound();
   }
 
@@ -53,7 +55,10 @@ export default async function LocaleLayout({
               themeProps={{ attribute: "class", defaultTheme: "dark" }}
             >
               <NextIntlClientProvider messages={messages}>
-                <ConditionalLayout>{children}</ConditionalLayout>
+                <ConditionalLayout>
+                  {children}
+                  {modals}
+                </ConditionalLayout>
                 <Toaster richColors closeButton expand position="top-center" />
               </NextIntlClientProvider>
             </Providers>
