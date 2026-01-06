@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useFormContext } from "react-hook-form";
 import Image from "next/image";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { LuSearch } from "react-icons/lu";
 import { BiSolidUserBadge } from "react-icons/bi";
+import { X } from "lucide-react";
 import {
   _setAddressInsertionType,
   _toggleGeoloactionLoaders,
@@ -90,8 +91,10 @@ export default function ShipperStep() {
 
   const dispatch = useDispatch();
   const methods = useFormContext();
+  const locale = useLocale();
   const [selectedAddress, setSelectedAddress] =
     useState<AddressWithDetails | null>(null);
+  const hasInitialized = useRef(false);
   const t = useTranslations("shippingAWBs");
   const tGeneral = useTranslations("General");
 
@@ -126,28 +129,43 @@ export default function ShipperStep() {
   }
 
   useEffect(() => {
-    if (addresses?.length > 0) {
+    if (addresses?.length > 0 && !hasInitialized.current && !selectedAddress) {
       const firstAddress = addresses[0] as AddressWithDetails;
       setSelectedAddress(firstAddress);
       setValue("shipper_address_id", firstAddress?.id);
       setValue("shipper_name", firstAddress?.name || "");
       setValue("shipper_company", firstAddress?.company_name || "");
       setValue("shipper_phone", firstAddress?.mobile_number || "");
+      hasInitialized.current = true;
     }
-  }, [addresses, setValue]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addresses]);
 
-  const filteredAddresses = addresses?.filter((address) => {
-    if (!addressSearchQuery) return true;
-    const searchLower = addressSearchQuery.toLowerCase();
-    const addressLabel = (address as AddressWithDetails)?.label || "";
-    const addressCity = (address as AddressWithDetails)?.city || "";
-    const fullAddress = (address as AddressWithDetails)?.full_address || "";
-    return (
-      addressLabel.toLowerCase().includes(searchLower) ||
-      addressCity.toLowerCase().includes(searchLower) ||
-      fullAddress.toLowerCase().includes(searchLower)
-    );
-  }) as AddressWithDetails[];
+  // Remove duplicates and filter addresses
+  const filteredAddresses = addresses
+    ?.filter((address, index, self) => {
+      // Remove duplicates by ID
+      return (
+        index ===
+        self.findIndex(
+          (a) =>
+            (a as AddressWithDetails)?.id ===
+            (address as AddressWithDetails)?.id
+        )
+      );
+    })
+    .filter((address) => {
+      if (!addressSearchQuery) return true;
+      const searchLower = addressSearchQuery.toLowerCase();
+      const addressLabel = (address as AddressWithDetails)?.label || "";
+      const addressCity = (address as AddressWithDetails)?.city || "";
+      const fullAddress = (address as AddressWithDetails)?.full_address || "";
+      return (
+        addressLabel.toLowerCase().includes(searchLower) ||
+        addressCity.toLowerCase().includes(searchLower) ||
+        fullAddress.toLowerCase().includes(searchLower)
+      );
+    }) as AddressWithDetails[];
 
   return (
     <>
@@ -160,202 +178,242 @@ export default function ShipperStep() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           {/* Address Select Box */}
           <div className="flex flex-col gap-2 lg:col-span-2">
+            {/* First Row: Label + Command + Two Icons */}
             <div className="flex flex-col gap-2">
-              <div className="flex flex-col lg:flex-row items-center gap-2">
-                <div className="flex gap-2 w-full">
-                  <div className="flex-1">
-                    <Label htmlFor="shipper_address_id">
-                      {t("shipperAddress")}
-                    </Label>
-                    <Popover
-                      open={addressPopoverOpen}
-                      onOpenChange={setAddressPopoverOpen}
-                    >
-                      <PopoverTrigger asChild>
-                        <Button
-                          id="shipper_address_id"
-                          variant="outline"
-                          role="combobox"
-                          aria-expanded={addressPopoverOpen}
-                          disabled={loaders?.getAddresses}
-                          className="w-full justify-between mt-2"
+              <Label htmlFor="shipper_address_id">{t("shipperAddress")}</Label>
+              <div className="flex items-start gap-2">
+                <div className="flex-1">
+                  <Popover
+                    open={addressPopoverOpen}
+                    onOpenChange={setAddressPopoverOpen}
+                  >
+                    <PopoverTrigger asChild>
+                      <Button
+                        id="shipper_address_id"
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={addressPopoverOpen}
+                        disabled={loaders?.getAddresses}
+                        className="w-full justify-between pr-2"
+                      >
+                        <span
+                          className={cn(
+                            "truncate flex-1",
+                            locale === "ar" ? "text-right" : "text-left"
+                          )}
                         >
                           {selectedAddress
                             ? `${selectedAddress?.label || ""} - ${
                                 selectedAddress?.city || ""
                               } ${selectedAddress?.full_address || ""}`
                             : t("shipperAddress")}
-                          <span className="ml-2">▼</span>
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-full p-0" align="start">
-                        <Command>
-                          <CommandInput
-                            placeholder={t("shipperAddress")}
-                            value={addressSearchQuery}
-                            onValueChange={setAddressSearchQuery}
-                          />
-                          <CommandList>
-                            {loaders?.getAddresses ? (
-                              <div className="flex items-center justify-center p-4">
-                                <span className="text-sm text-muted-foreground">
-                                  Loading...
-                                </span>
-                              </div>
-                            ) : (
-                              <>
-                                <CommandEmpty>No addresses found.</CommandEmpty>
-                                <CommandGroup>
-                                  {filteredAddresses?.map((address) => {
-                                    const addressText = `${
-                                      address?.label || ""
-                                    } - ${address?.city || ""} ${
-                                      address?.full_address || ""
-                                    }`;
-                                    return (
-                                      <CommandItem
-                                        key={address?.id}
-                                        value={addressText}
-                                        onSelect={() => {
-                                          setValue(
-                                            "shipper_address_id",
-                                            address?.id
-                                          );
-                                          setSelectedAddress(address);
-                                          setValue(
-                                            "shipper_name",
-                                            address?.name || ""
-                                          );
-                                          setValue(
-                                            "shipper_company",
-                                            address?.company_name || ""
-                                          );
-                                          setValue(
-                                            "shipper_phone",
-                                            address?.mobile_number || ""
-                                          );
-                                          dispatch(
-                                            _toggleGeoloactionLoaders({
-                                              key: "getConsigneeAddresses",
-                                              value: false,
-                                            })
-                                          );
-                                          clearErrors("shipper_address_id");
-                                          clearErrors("shipper_name");
-                                          clearErrors("shipper_company");
-                                          clearErrors("shipper_phone");
-                                          setAddressPopoverOpen(false);
-                                        }}
-                                      >
-                                        {addressText}
-                                      </CommandItem>
-                                    );
-                                  })}
-                                </CommandGroup>
-                              </>
-                            )}
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                    <input
-                      type="hidden"
-                      {...register("shipper_address_id", {
-                        required: {
-                          value: true,
-                          message: `${t("pleaseChoose")} ${t(
-                            "shipperAddress"
-                          )}`,
-                        },
-                      })}
-                    />
-                  </div>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="icon"
-                        className="mt-8"
-                      >
-                        <Link
-                          href="/search-addresses"
-                          onClick={() => {
-                            dispatch(_setAddressInsertionType("shipper"));
-                          }}
+                        </span>
+                        <div
+                          className={cn(
+                            "flex items-center gap-1 shrink-0",
+                            locale === "ar" ? "mr-2" : "ml-2"
+                          )}
                         >
-                          <LuSearch className="size-4" />
-                        </Link>
+                          {selectedAddress && (
+                            <button
+                              type="button"
+                              className="h-4 w-4 opacity-50 hover:opacity-100 flex items-center justify-center"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                // Only clear the selected address and form values
+                                // Keep all addresses in the list
+                                setSelectedAddress(null);
+                                setValue("shipper_address_id", "");
+                                setValue("shipper_name", "");
+                                setValue("shipper_company", "");
+                                setValue("shipper_phone", "");
+                                setAddressSearchQuery(""); // Clear search query to show all addresses
+                                clearErrors("shipper_address_id");
+                                clearErrors("shipper_name");
+                                clearErrors("shipper_company");
+                                clearErrors("shipper_phone");
+                                // Don't reset hasInitialized - we want to keep the list
+                              }}
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+                          )}
+                          <span>▼</span>
+                        </div>
                       </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Search your addresses</p>
-                    </TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        asChild
-                        variant="outline"
-                        className="mt-8 w-full lg:w-auto min-w-full lg:min-w-10 px-0"
-                      >
-                        <Link
-                          href="/addresses"
-                          onClick={() => {
-                            dispatch(_setAddressInsertionType("shipper"));
-                          }}
-                        >
-                          <FaMapMarkerAlt className="size-4 lg:mr-0 mr-2" />
-                          <span className="inline-block lg:hidden">
-                            {t("addNewAddress")}
-                          </span>
-                        </Link>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent className="hidden lg:block">
-                      <p>{t("addNewAddress")}</p>
-                    </TooltipContent>
-                  </Tooltip>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      className="w-full p-0"
+                      align={locale === "ar" ? "end" : "start"}
+                    >
+                      <Command>
+                        <CommandInput
+                          placeholder={t("shipperAddress")}
+                          value={addressSearchQuery}
+                          onValueChange={setAddressSearchQuery}
+                        />
+                        <CommandList>
+                          {loaders?.getAddresses ? (
+                            <div className="flex items-center justify-center p-4">
+                              <span className="text-sm text-muted-foreground">
+                                Loading...
+                              </span>
+                            </div>
+                          ) : (
+                            <>
+                              <CommandEmpty>No addresses found.</CommandEmpty>
+                              <CommandGroup>
+                                {filteredAddresses?.map((address) => {
+                                  const addressText = `${
+                                    address?.label || ""
+                                  } - ${address?.city || ""} ${
+                                    address?.full_address || ""
+                                  }`;
+                                  // Use unique value combining ID and text to prevent duplicates
+                                  const uniqueValue = `${address?.id}-${addressText}`;
+                                  return (
+                                    <CommandItem
+                                      key={address?.id}
+                                      value={uniqueValue}
+                                      onSelect={() => {
+                                        setValue(
+                                          "shipper_address_id",
+                                          address?.id
+                                        );
+                                        setSelectedAddress(address);
+                                        setValue(
+                                          "shipper_name",
+                                          address?.name || ""
+                                        );
+                                        setValue(
+                                          "shipper_company",
+                                          address?.company_name || ""
+                                        );
+                                        setValue(
+                                          "shipper_phone",
+                                          address?.mobile_number || ""
+                                        );
+                                        dispatch(
+                                          _toggleGeoloactionLoaders({
+                                            key: "getConsigneeAddresses",
+                                            value: false,
+                                          })
+                                        );
+                                        clearErrors("shipper_address_id");
+                                        clearErrors("shipper_name");
+                                        clearErrors("shipper_company");
+                                        clearErrors("shipper_phone");
+                                        setAddressPopoverOpen(false);
+                                      }}
+                                    >
+                                      {addressText}
+                                    </CommandItem>
+                                  );
+                                })}
+                              </CommandGroup>
+                            </>
+                          )}
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <input
+                    type="hidden"
+                    {...register("shipper_address_id", {
+                      required: {
+                        value: true,
+                        message: `${t("pleaseChoose")} ${t("shipperAddress")}`,
+                      },
+                    })}
+                  />
                 </div>
 
-                {!selectedAddress?.sa_short_address && (
-                  <Alert variant="warning" className="mt-2">
-                    <AlertTitle>{t("nationalAddressNotFound")}</AlertTitle>
-                    <AlertDescription>
-                      <div className="flex flex-col gap-3">
-                        <span>{t("SelectedNew")}</span>
-                        <Button
-                          className="max-w-[120px] self-start"
-                          variant="primary"
-                          size="md"
-                          onClick={() => {
-                            dispatch(_setAddressInsertionType("shipper"));
-                            // setIsUpdateModalOpen(true);
-                          }}
-                        >
-                          {t("updateAddress")}
-                        </Button>
-                      </div>
-                    </AlertDescription>
-                  </Alert>
-                )}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="icon"
+                      className="shrink-0"
+                    >
+                      <Link
+                        href="/search-addresses"
+                        onClick={() => {
+                          dispatch(_setAddressInsertionType("shipper"));
+                        }}
+                      >
+                        <LuSearch className="size-4" />
+                      </Link>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Search your addresses</p>
+                  </TooltipContent>
+                </Tooltip>
 
-                {errors?.shipper_address_id && (
-                  <InvalidFeedback
-                    error={errors?.shipper_address_id?.message as string}
-                  />
-                )}
-                <p className="text-[13px] bg-neutral-200/20 dark:bg-neutral-700/20 px-3 py-2 flex flex-wrap items-center gap-1 text-muted-foreground rounded-lg">
-                  {tGeneral("addressTipPrefix")}
-                  <LuSearch className="w-4 h-4" />
-                  {tGeneral("addressTipSearch") + " "}
-                  <FaMapMarkerAlt className="w-4 h-4" />
-                  {tGeneral("addressTipAdd")}
-                </p>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="icon"
+                      className="shrink-0"
+                    >
+                      <Link
+                        href="/addresses"
+                        onClick={() => {
+                          dispatch(_setAddressInsertionType("shipper"));
+                        }}
+                      >
+                        <FaMapMarkerAlt className="size-4" />
+                      </Link>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{t("addNewAddress")}</p>
+                  </TooltipContent>
+                </Tooltip>
               </div>
+
+              {errors?.shipper_address_id && (
+                <InvalidFeedback
+                  error={errors?.shipper_address_id?.message as string}
+                />
+              )}
+
+              {/* Second Row: Note/Tip */}
+              <p className="text-[13px] bg-neutral-200/20 dark:bg-neutral-700/20 px-3 py-2 flex flex-wrap items-center gap-1 text-muted-foreground rounded-lg">
+                {tGeneral("addressTipPrefix")}
+                <LuSearch className="w-4 h-4" />
+                {tGeneral("addressTipSearch") + " "}
+                <FaMapMarkerAlt className="w-4 h-4" />
+                {tGeneral("addressTipAdd")}
+              </p>
             </div>
+
+            {/* Third Row: Alert if no shortAddress (full width) */}
+            {!selectedAddress?.sa_short_address && (
+              <Alert variant="warning" className="lg:col-span-2">
+                <AlertTitle>{t("nationalAddressNotFound")}</AlertTitle>
+                <AlertDescription>
+                  <div className="flex flex-col gap-3">
+                    <span>{t("SelectedNew")}</span>
+                    <Button
+                      className="max-w-[120px] self-start"
+                      variant="primary"
+                      size="md"
+                      onClick={() => {
+                        dispatch(_setAddressInsertionType("shipper"));
+                        // setIsUpdateModalOpen(true);
+                      }}
+                    >
+                      {t("updateAddress")}
+                    </Button>
+                  </div>
+                </AlertDescription>
+              </Alert>
+            )}
           </div>
 
           {/* Shipper Name */}
@@ -371,7 +429,10 @@ export default function ShipperStep() {
               })}
               value={watch("shipper_name") || ""}
               placeholder={t("shipperName")}
-              onChange={() => trigger("shipper_name")}
+              onChange={(e) => {
+                setValue("shipper_name", e.target.value);
+                trigger("shipper_name");
+              }}
             />
             {errors?.shipper_name && (
               <InvalidFeedback
@@ -393,7 +454,10 @@ export default function ShipperStep() {
               })}
               value={watch("shipper_company") || ""}
               placeholder={t("companyName")}
-              onChange={() => trigger("shipper_company")}
+              onChange={(e) => {
+                setValue("shipper_company", e.target.value);
+                trigger("shipper_company");
+              }}
             />
             {errors?.shipper_company && (
               <InvalidFeedback
@@ -406,7 +470,12 @@ export default function ShipperStep() {
           <div className="flex flex-col lg:col-span-2 gap-2">
             <Label htmlFor="shipper_phone">{t("shipperPhone")}</Label>
             <div className="relative">
-              <div className="absolute left-1 top-1/2 -translate-y-1/2 flex items-center justify-center gap-2 rounded-md bg-neutral-200/20 dark:bg-neutral-700/20 py-1 px-4 w-[80px]">
+              <div
+                className={cn(
+                  "absolute top-1/2 -translate-y-1/2 flex items-center justify-center gap-2 rounded-md bg-neutral-200/20 dark:bg-neutral-700/20 py-1 px-4 w-[80px]",
+                  locale === "ar" ? "right-1" : "left-1"
+                )}
+              >
                 <Image
                   src="https://flagcdn.com/w20/sa.png"
                   alt="Saudi Arabia flag"
@@ -418,7 +487,7 @@ export default function ShipperStep() {
               </div>
               <Input
                 id="shipper_phone"
-                className="pl-[90px]"
+                className={cn(locale === "ar" ? "pr-[90px]" : "pl-[90px]")}
                 {...register("shipper_phone", {
                   ...validatePhoneNumber(
                     `${t("pleaseEnter")} ${t("shipperPhone")}`,
@@ -429,7 +498,11 @@ export default function ShipperStep() {
                 value={watch("shipper_phone") || ""}
                 placeholder={t("shipperPhone")}
                 type="tel"
-                onChange={() => trigger("shipper_phone")}
+                dir={locale === "ar" ? "rtl" : "ltr"}
+                onChange={(e) => {
+                  setValue("shipper_phone", e.target.value);
+                  trigger("shipper_phone");
+                }}
               />
             </div>
             {errors?.shipper_phone && (

@@ -156,10 +156,11 @@
     "shortAddress": "National Address (Shortened)",
     "shortAddressPlaceholder": "e.g. RAGI2929",
     "shortAddressPattern": "Must be 4 letters followed by 4 digits (e.g. RAGI2929)",
-    "shortAddressNote": "Optional for now, but starting from 01/01/2026 it will be mandatory and no shipments will be processed without it.",
+    "shortAddressNote": "National Address is mandatory starting  31/12/2025 (Transport General Authority Decision No. 1/46/196).",
     "shortAddressMax": "National address must not exceed 8 characters",
     "shortAddressMin": "The national address must be 8 characters like (4 letters + 4 digits)",
-    "shortAddressRequired": "National address is required"
+    "shortAddressRequired": "National address is required",
+    "fieldNote": "If a valid National Address Short Code is entered, this field will be automatically filled based on the National Address information and cannot be edited."
   },
   "CreateProduct": {
     "createProduct": "Create Product",
@@ -323,7 +324,6 @@
     "store": "Store",
     "statusCanceled": "Canceled",
     "statusFulfilled": "Fulfilled",
-    "highPriority": "High Priority",
     "inPreparation": "inPreparation",
     "statusOutstanding": "Outstanding",
     "statusPending": "Pending",
@@ -414,9 +414,7 @@
     "canceled": "Canceled",
     "canceledDescription": "All canceled purchase orders.",
     "viewPurchaseOrders": "View Purchased Orders",
-    "view": "View",
-    "noteAddedSuccess": "Note added successfully",
-    "updateFailed": "Update failed"
+    "view": "View"
   },
   "PurchaseOrdersColumns": {
     "purchaseOrderNumber": "Purchase Order Number",
@@ -503,8 +501,7 @@
     "noShareLink": "No share link",
     "addressTipPrefix": "Tip: Use the",
     "addressTipSearch": "icon to find an address, or the",
-    "addressTipAdd": "icon to create a new one.",
-    "loading": "⏳ Loading..."
+    "addressTipAdd": "icon to create a new one."
   },
   "ShowOrder": {
     "paymentStatus": "Payment Status",
@@ -825,15 +822,17 @@
     "redirecting": "Redirecting to the report page....",
     "nationalAddressNotFound": "The national (shortened) address was not found",
     "selectedAddressHasNoNational": "The selected address does not contain a national address. Please choose another address that includes a national address or enter a new one.",
-    "shortAddressNote": "Optional for now, but starting from 01/01/2026 it will be mandatory and no shipments will be processed without it.",
+    "SelectedNew": "To ensure shipment compatibility with all shipping carriers, please use the National Short Address when issuing the shipping label, in order to avoid any errors that may occur during the issuance process with some carriers.",
+    "shortAddressNote": "mandatory starting  31/12/2025 (Transport General Authority Decision No. 1/46/196).",
     "addressLabel": "Address",
+    "fieldNote": "If a valid National Address Short Code is entered, this field will be automatically filled based on the National Address information and cannot be edited.",
     "addressPlaceholder": "Enter address",
     "addressRequired": "Address is required",
     "nationalAddressLabel": "National Address (Shortened)",
     "nationalAddressPlaceholder": "Example: RRRD2929",
     "nationalAddressRequired": "National address is required",
     "nationalAddressLength": "National address must be 8 characters",
-    "nationalAddressPattern": "National address must contain only letters and numbers",
+    "nationalAddressPattern": "Must be 4 letters followed by 4 digits (e.g. RAGI2929)",
     "updateAddress": "Update Address"
   },
   "Shipments": {
@@ -894,7 +893,7 @@
     "nationalAddressPlaceholder": "Example: RRRD2929",
     "nationalAddressRequired": "National address is required",
     "nationalAddressLength": "National address must be 8 characters",
-    "nationalAddressPattern": "National address must contain only letters and numbers",
+    "nationalAddressPattern": "Must be 4 letters followed by 4 digits (e.g. RAGI2929)",
     "searchingNationalAddress": "Searching for national address data",
     "updateAddress": "Update Address"
   },
