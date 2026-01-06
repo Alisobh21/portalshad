@@ -99,7 +99,7 @@ export default function ReturnAwbsTable() {
                     fetchReturnData();
                   }}
                   asChild
-                  variant="primary"
+                  variant="modal"
                   className="px-5"
                 >
                   <Link
