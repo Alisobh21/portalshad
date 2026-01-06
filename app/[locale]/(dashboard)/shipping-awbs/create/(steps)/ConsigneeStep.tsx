@@ -1,15 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useFormContext } from "react-hook-form";
 import Image from "next/image";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { LuSearch } from "react-icons/lu";
 import { BiSolidUserAccount } from "react-icons/bi";
-import { _setAddressInsertionType } from "@/store/slices/geolocationSlice";
+import { X } from "lucide-react";
+import { RiArrowUpSLine, RiArrowDownSLine } from "react-icons/ri";
+import {
+  _setAddressInsertionType,
+  _toggleGeoloactionLoaders,
+} from "@/store/slices/geolocationSlice";
 import {
   _setConsigneeStepValue,
   _setCurrentStep,
@@ -100,8 +105,10 @@ export default function ConsigneeStep() {
   const { wizardCurrentStep } = useSelector((state: RootState) => state.awbs);
   const dispatch = useDispatch();
   const methods = useFormContext();
+  const locale = useLocale();
   const [selectedAddress, setSelectedAddress] =
     useState<AddressWithDetails | null>(null);
+  const hasInitialized = useRef(false);
   // const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [addressPopoverOpen, setAddressPopoverOpen] = useState(false);
   const [addressSearchQuery, setAddressSearchQuery] = useState("");
@@ -142,7 +149,11 @@ export default function ConsigneeStep() {
   }
 
   useEffect(() => {
-    if (consigneeAddresses?.length > 0) {
+    if (
+      consigneeAddresses?.length > 0 &&
+      !hasInitialized.current &&
+      !selectedAddress
+    ) {
       const firstAddress = consigneeAddresses[0] as AddressWithDetails;
       setSelectedAddress(firstAddress);
       setValue("consignee_address_id", firstAddress?.id);
@@ -150,21 +161,36 @@ export default function ConsigneeStep() {
       setValue("consignee_company", firstAddress?.company_name || "");
       setValue("consignee_phone", firstAddress?.mobile_number || "");
       setValue("consignee_email", firstAddress?.email || "");
+      hasInitialized.current = true;
     }
-  }, [consigneeAddresses, setValue]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [consigneeAddresses]);
 
-  const filteredAddresses = consigneeAddresses?.filter((address) => {
-    if (!addressSearchQuery) return true;
-    const searchLower = addressSearchQuery.toLowerCase();
-    const addressLabel = (address as AddressWithDetails)?.label || "";
-    const addressCity = (address as AddressWithDetails)?.city || "";
-    const fullAddress = (address as AddressWithDetails)?.full_address || "";
-    return (
-      addressLabel.toLowerCase().includes(searchLower) ||
-      addressCity.toLowerCase().includes(searchLower) ||
-      fullAddress.toLowerCase().includes(searchLower)
-    );
-  }) as AddressWithDetails[];
+  // Remove duplicates and filter addresses
+  const filteredAddresses = consigneeAddresses
+    ?.filter((address, index, self) => {
+      // Remove duplicates by ID
+      return (
+        index ===
+        self.findIndex(
+          (a) =>
+            (a as AddressWithDetails)?.id ===
+            (address as AddressWithDetails)?.id
+        )
+      );
+    })
+    .filter((address) => {
+      if (!addressSearchQuery) return true;
+      const searchLower = addressSearchQuery.toLowerCase();
+      const addressLabel = (address as AddressWithDetails)?.label || "";
+      const addressCity = (address as AddressWithDetails)?.city || "";
+      const fullAddress = (address as AddressWithDetails)?.full_address || "";
+      return (
+        addressLabel.toLowerCase().includes(searchLower) ||
+        addressCity.toLowerCase().includes(searchLower) ||
+        fullAddress.toLowerCase().includes(searchLower)
+      );
+    }) as AddressWithDetails[];
 
   return (
     <>
@@ -177,51 +203,120 @@ export default function ConsigneeStep() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           {/* Address Select Box */}
           <div className="flex flex-col gap-2 lg:col-span-2">
+            {/* First Row: Label + Command + Two Icons */}
             <div className="flex flex-col gap-2">
-              <div className="flex flex-col lg:flex-row items-center gap-2">
-                <div className="flex gap-2 w-full">
-                  <div className="flex-1">
-                    <Label htmlFor="consignee_address_id">
-                      {t("consigneeAddress")}
-                    </Label>
-                    <Popover
-                      open={addressPopoverOpen}
-                      onOpenChange={setAddressPopoverOpen}
-                    >
-                      <PopoverTrigger asChild>
-                        <Button
-                          id="consignee_address_id"
-                          variant="outline"
-                          role="combobox"
-                          aria-expanded={addressPopoverOpen}
-                          disabled={loaders?.getConsigneeAddresses}
-                          className="w-full justify-between mt-2"
+              <Label htmlFor="consignee_address_id">
+                {t("consigneeAddress")}
+              </Label>
+              <div className="flex items-start gap-2">
+                <div className="flex-1 min-w-0">
+                  <Popover
+                    open={addressPopoverOpen}
+                    onOpenChange={setAddressPopoverOpen}
+                  >
+                    <PopoverTrigger asChild>
+                      <Button
+                        id="consignee_address_id"
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={addressPopoverOpen}
+                        disabled={loaders?.getConsigneeAddresses}
+                        className="w-full justify-between pr-2 min-w-0"
+                      >
+                        <span
+                          className={cn(
+                            "truncate flex-1 min-w-0 overflow-hidden",
+                            locale === "ar" ? "text-right" : "text-left"
+                          )}
                         >
                           {selectedAddress
                             ? `${selectedAddress?.label || ""} - ${
                                 selectedAddress?.city || ""
                               } ${selectedAddress?.full_address || ""}`
-                            : t("consigneeAdddress")}
-                          <span className="ml-2">▼</span>
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-full p-0" align="start">
-                        <Command>
-                          <CommandInput
-                            placeholder={t("consigneeAdddress")}
-                            value={addressSearchQuery}
-                            onValueChange={setAddressSearchQuery}
-                          />
-                          <CommandList>
-                            {loaders?.getConsigneeAddresses ? (
-                              <div className="flex items-center justify-center p-4">
-                                <span className="text-sm text-muted-foreground">
-                                  Loading...
-                                </span>
-                              </div>
-                            ) : (
-                              <>
+                            : t("consigneeAddress")}
+                        </span>
+                        <div
+                          className={cn(
+                            "flex items-center gap-1 shrink-0",
+                            locale === "ar" ? "mr-2" : "ml-2"
+                          )}
+                        >
+                          {selectedAddress && (
+                            <div
+                              role="button"
+                              tabIndex={0}
+                              className="h-4 w-4 opacity-50 hover:opacity-100 flex items-center justify-center cursor-pointer"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                // Only clear the selected address and form values
+                                // Keep all addresses in the list
+                                setSelectedAddress(null);
+                                setValue("consignee_address_id", "");
+                                setValue("consignee_name", "");
+                                setValue("consignee_company", "");
+                                setValue("consignee_phone", "");
+                                setValue("consignee_email", "");
+                                setAddressSearchQuery(""); // Clear search query to show all addresses
+                                clearErrors("consignee_address_id");
+                                clearErrors("consignee_name");
+                                clearErrors("consignee_company");
+                                clearErrors("consignee_phone");
+                                clearErrors("consignee_email");
+                                // Don't reset hasInitialized - we want to keep the list
+                              }}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  setSelectedAddress(null);
+                                  setValue("consignee_address_id", "");
+                                  setValue("consignee_name", "");
+                                  setValue("consignee_company", "");
+                                  setValue("consignee_phone", "");
+                                  setValue("consignee_email", "");
+                                  setAddressSearchQuery("");
+                                  clearErrors("consignee_address_id");
+                                  clearErrors("consignee_name");
+                                  clearErrors("consignee_company");
+                                  clearErrors("consignee_phone");
+                                  clearErrors("consignee_email");
+                                }
+                              }}
+                            >
+                              <X className="h-4 w-4" />
+                            </div>
+                          )}
+                          {addressPopoverOpen ? (
+                            <RiArrowUpSLine className="h-4 w-4" />
+                          ) : (
+                            <RiArrowDownSLine className="h-4 w-4" />
+                          )}
+                        </div>
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      className="w-full p-0"
+                      align={locale === "ar" ? "end" : "start"}
+                    >
+                      <Command shouldFilter={false}>
+                        <CommandInput
+                          placeholder={t("consigneeAddress")}
+                          value={addressSearchQuery}
+                          onValueChange={setAddressSearchQuery}
+                        />
+                        <CommandList>
+                          {loaders?.getConsigneeAddresses ? (
+                            <div className="flex items-center justify-center p-4">
+                              <span className="text-sm text-muted-foreground">
+                                Loading...
+                              </span>
+                            </div>
+                          ) : (
+                            <>
+                              {filteredAddresses?.length === 0 ? (
                                 <CommandEmpty>No addresses found.</CommandEmpty>
+                              ) : (
                                 <CommandGroup>
                                   {filteredAddresses?.map((address) => {
                                     const addressText = `${
@@ -229,10 +324,12 @@ export default function ConsigneeStep() {
                                     } - ${address?.city || ""} ${
                                       address?.full_address || ""
                                     }`;
+                                    // Use unique value combining ID and text to prevent duplicates
+                                    const uniqueValue = `${address?.id}-${addressText}`;
                                     return (
                                       <CommandItem
                                         key={address?.id}
-                                        value={addressText}
+                                        value={uniqueValue}
                                         onSelect={() => {
                                           setValue(
                                             "consignee_address_id",
@@ -255,10 +352,17 @@ export default function ConsigneeStep() {
                                             "consignee_phone",
                                             address?.mobile_number || ""
                                           );
+                                          dispatch(
+                                            _toggleGeoloactionLoaders({
+                                              key: "getConsigneeAddresses",
+                                              value: false,
+                                            })
+                                          );
                                           clearErrors("consignee_address_id");
+                                          clearErrors("consignee_name");
                                           clearErrors("consignee_company");
-                                          clearErrors("consignee_email");
                                           clearErrors("consignee_phone");
+                                          clearErrors("consignee_email");
                                           setAddressPopoverOpen(false);
                                         }}
                                       >
@@ -267,111 +371,111 @@ export default function ConsigneeStep() {
                                     );
                                   })}
                                 </CommandGroup>
-                              </>
-                            )}
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                    <input
-                      type="hidden"
-                      {...register("consignee_address_id", {
-                        required: {
-                          value: true,
-                          message: `${t("pleaseEnter")} ${t(
-                            "consigneeAddress"
-                          )}`,
-                        },
-                      })}
-                    />
-                  </div>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="icon"
-                        className="mt-8"
-                      >
-                        <Link
-                          href="/search-addresses"
-                          onClick={() => {
-                            dispatch(_setAddressInsertionType("consignee"));
-                          }}
-                        >
-                          <LuSearch className="size-4" />
-                        </Link>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Search your addresses</p>
-                    </TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        asChild
-                        variant="outline"
-                        className="mt-8 w-full lg:w-auto min-w-full lg:min-w-10 px-0"
-                      >
-                        <Link
-                          href="/addresses"
-                          onClick={() => {
-                            dispatch(_setAddressInsertionType("consignee"));
-                          }}
-                        >
-                          <FaMapMarkerAlt className="size-4 lg:mr-0 mr-2" />
-                          <span className="inline-block lg:hidden">
-                            {t("addNewAddress")}
-                          </span>
-                        </Link>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent className="hidden lg:block">
-                      <p>{t("addNewAddress")}</p>
-                    </TooltipContent>
-                  </Tooltip>
+                              )}
+                            </>
+                          )}
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <input
+                    type="hidden"
+                    {...register("consignee_address_id", {
+                      required: {
+                        value: true,
+                        message: `${t("pleaseChoose")} ${t(
+                          "consigneeAddress"
+                        )}`,
+                      },
+                    })}
+                  />
                 </div>
 
-                {errors?.consignee_address_id && (
-                  <InvalidFeedback
-                    error={errors?.consignee_address_id?.message as string}
-                  />
-                )}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="icon"
+                      className="shrink-0"
+                    >
+                      <Link
+                        href="/search-addresses"
+                        onClick={() => {
+                          dispatch(_setAddressInsertionType("consignee"));
+                        }}
+                      >
+                        <LuSearch className="size-4" />
+                      </Link>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Search your addresses</p>
+                  </TooltipContent>
+                </Tooltip>
 
-                {!selectedAddress?.sa_short_address && (
-                  <Alert variant="warning" className="mt-2">
-                    <AlertTitle>{t("nationalAddressNotFound")}</AlertTitle>
-                    <AlertDescription>
-                      <div className="flex flex-col gap-3">
-                        <span>{t("SelectedNew")}</span>
-                        <Button
-                          className="max-w-[120px] self-start"
-                          variant="primary"
-                          size="md"
-                          onClick={() => {
-                            dispatch(_setAddressInsertionType("consignee"));
-                            // setIsUpdateModalOpen(true);
-                          }}
-                        >
-                          {t("updateAddress")}
-                        </Button>
-                      </div>
-                    </AlertDescription>
-                  </Alert>
-                )}
-
-                <p className="text-[13px] bg-neutral-200/20 dark:bg-neutral-700/20 px-3 py-2 flex flex-wrap items-center gap-1 text-muted-foreground rounded-lg">
-                  {tGeneral("addressTipPrefix")}
-                  <LuSearch className="w-4 h-4" />
-                  {tGeneral("addressTipSearch") + " "}
-                  <FaMapMarkerAlt className="w-4 h-4" />
-                  {tGeneral("addressTipAdd")}
-                </p>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="icon"
+                      className="shrink-0"
+                    >
+                      <Link
+                        href="/addresses"
+                        onClick={() => {
+                          dispatch(_setAddressInsertionType("consignee"));
+                        }}
+                      >
+                        <FaMapMarkerAlt className="size-4" />
+                      </Link>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{t("addNewAddress")}</p>
+                  </TooltipContent>
+                </Tooltip>
               </div>
+
+              {errors?.consignee_address_id && (
+                <InvalidFeedback
+                  error={errors?.consignee_address_id?.message as string}
+                />
+              )}
+
+              {/* Second Row: Note/Tip */}
+              <p className="text-[13px] bg-neutral-200/20 dark:bg-neutral-700/20 px-3 py-2 flex flex-wrap items-center gap-1 text-muted-foreground rounded-lg">
+                {tGeneral("addressTipPrefix")}
+                <LuSearch className="w-4 h-4" />
+                {tGeneral("addressTipSearch") + " "}
+                <FaMapMarkerAlt className="w-4 h-4" />
+                {tGeneral("addressTipAdd")}
+              </p>
             </div>
+
+            {/* Third Row: Alert if no shortAddress (full width) */}
+            {!selectedAddress?.sa_short_address && selectedAddress && (
+              <Alert variant="warning" className="lg:col-span-2">
+                <AlertTitle>{t("nationalAddressNotFound")}</AlertTitle>
+                <AlertDescription>
+                  <div className="flex flex-col gap-3">
+                    <span>{t("SelectedNew")}</span>
+                    <Button
+                      className="max-w-[120px] self-start"
+                      variant="primary"
+                      size="md"
+                      onClick={() => {
+                        dispatch(_setAddressInsertionType("consignee"));
+                        // setIsUpdateModalOpen(true);
+                      }}
+                    >
+                      {t("updateAddress")}
+                    </Button>
+                  </div>
+                </AlertDescription>
+              </Alert>
+            )}
           </div>
 
           {/* Consignee Name */}
@@ -387,7 +491,10 @@ export default function ConsigneeStep() {
               })}
               value={watch("consignee_name") || ""}
               placeholder={t("consigneeName")}
-              onChange={() => trigger("consignee_name")}
+              onChange={(e) => {
+                setValue("consignee_name", e.target.value);
+                trigger("consignee_name");
+              }}
             />
             {errors?.consignee_name && (
               <InvalidFeedback
@@ -409,7 +516,10 @@ export default function ConsigneeStep() {
               })}
               value={watch("consignee_company") || ""}
               placeholder={t("companyName")}
-              onChange={() => trigger("consignee_company")}
+              onChange={(e) => {
+                setValue("consignee_company", e.target.value);
+                trigger("consignee_company");
+              }}
             />
             {errors?.consignee_company && (
               <InvalidFeedback
@@ -422,7 +532,12 @@ export default function ConsigneeStep() {
           <div className="flex flex-col gap-2">
             <Label htmlFor="consignee_phone">{t("consigneePhone")}</Label>
             <div className="relative">
-              <div className="absolute left-1 top-1/2 -translate-y-1/2 flex items-center justify-center gap-2 rounded-md bg-neutral-200/20 dark:bg-neutral-700/20 py-1 px-4 w-[80px]">
+              <div
+                className={cn(
+                  "absolute top-1/2 -translate-y-1/2 flex items-center justify-center gap-2 rounded-md bg-neutral-200/20 dark:bg-neutral-700/20 py-1 px-4 w-[80px]",
+                  locale === "ar" ? "right-1" : "left-1"
+                )}
+              >
                 <Image
                   src="https://flagcdn.com/w20/sa.png"
                   alt="Saudi Arabia flag"
@@ -434,7 +549,7 @@ export default function ConsigneeStep() {
               </div>
               <Input
                 id="consignee_phone"
-                className="pl-[90px]"
+                className={cn(locale === "ar" ? "pr-[90px]" : "pl-[90px]")}
                 {...register("consignee_phone", {
                   ...validatePhoneNumber(
                     `${t("pleaseEnter")} ${t("consigneePhone")}`,
@@ -445,7 +560,11 @@ export default function ConsigneeStep() {
                 value={watch("consignee_phone") || ""}
                 placeholder={t("consigneePhone")}
                 type="tel"
-                onChange={() => trigger("consignee_phone")}
+                dir={locale === "ar" ? "rtl" : "ltr"}
+                onChange={(e) => {
+                  setValue("consignee_phone", e.target.value);
+                  trigger("consignee_phone");
+                }}
               />
             </div>
             {errors?.consignee_phone && (
@@ -469,7 +588,10 @@ export default function ConsigneeStep() {
               value={watch("consignee_email") || ""}
               placeholder={t("emailAddress")}
               type="email"
-              onChange={() => trigger("consignee_email")}
+              onChange={(e) => {
+                setValue("consignee_email", e.target.value);
+                trigger("consignee_email");
+              }}
             />
             {errors?.consignee_email && (
               <InvalidFeedback
