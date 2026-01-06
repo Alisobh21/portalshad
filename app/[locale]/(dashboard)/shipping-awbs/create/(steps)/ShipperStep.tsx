@@ -10,6 +10,7 @@ import { FaMapMarkerAlt } from "react-icons/fa";
 import { LuSearch } from "react-icons/lu";
 import { BiSolidUserBadge } from "react-icons/bi";
 import { X } from "lucide-react";
+import { RiArrowUpSLine, RiArrowDownSLine } from "react-icons/ri";
 import {
   _setAddressInsertionType,
   _toggleGeoloactionLoaders,
@@ -182,7 +183,7 @@ export default function ShipperStep() {
             <div className="flex flex-col gap-2">
               <Label htmlFor="shipper_address_id">{t("shipperAddress")}</Label>
               <div className="flex items-start gap-2">
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <Popover
                     open={addressPopoverOpen}
                     onOpenChange={setAddressPopoverOpen}
@@ -194,11 +195,11 @@ export default function ShipperStep() {
                         role="combobox"
                         aria-expanded={addressPopoverOpen}
                         disabled={loaders?.getAddresses}
-                        className="w-full justify-between pr-2"
+                        className="w-full justify-between pr-2 min-w-0"
                       >
                         <span
                           className={cn(
-                            "truncate flex-1",
+                            "truncate flex-1 min-w-0 overflow-hidden",
                             locale === "ar" ? "text-right" : "text-left"
                           )}
                         >
@@ -215,9 +216,10 @@ export default function ShipperStep() {
                           )}
                         >
                           {selectedAddress && (
-                            <button
-                              type="button"
-                              className="h-4 w-4 opacity-50 hover:opacity-100 flex items-center justify-center"
+                            <div
+                              role="button"
+                              tabIndex={0}
+                              className="h-4 w-4 opacity-50 hover:opacity-100 flex items-center justify-center cursor-pointer"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 e.preventDefault();
@@ -235,11 +237,31 @@ export default function ShipperStep() {
                                 clearErrors("shipper_phone");
                                 // Don't reset hasInitialized - we want to keep the list
                               }}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  setSelectedAddress(null);
+                                  setValue("shipper_address_id", "");
+                                  setValue("shipper_name", "");
+                                  setValue("shipper_company", "");
+                                  setValue("shipper_phone", "");
+                                  setAddressSearchQuery("");
+                                  clearErrors("shipper_address_id");
+                                  clearErrors("shipper_name");
+                                  clearErrors("shipper_company");
+                                  clearErrors("shipper_phone");
+                                }
+                              }}
                             >
                               <X className="h-4 w-4" />
-                            </button>
+                            </div>
                           )}
-                          <span>▼</span>
+                          {addressPopoverOpen ? (
+                            <RiArrowUpSLine className="h-4 w-4" />
+                          ) : (
+                            <RiArrowDownSLine className="h-4 w-4" />
+                          )}
                         </div>
                       </Button>
                     </PopoverTrigger>
@@ -247,7 +269,7 @@ export default function ShipperStep() {
                       className="w-full p-0"
                       align={locale === "ar" ? "end" : "start"}
                     >
-                      <Command>
+                      <Command shouldFilter={false}>
                         <CommandInput
                           placeholder={t("shipperAddress")}
                           value={addressSearchQuery}
@@ -262,56 +284,59 @@ export default function ShipperStep() {
                             </div>
                           ) : (
                             <>
-                              <CommandEmpty>No addresses found.</CommandEmpty>
-                              <CommandGroup>
-                                {filteredAddresses?.map((address) => {
-                                  const addressText = `${
-                                    address?.label || ""
-                                  } - ${address?.city || ""} ${
-                                    address?.full_address || ""
-                                  }`;
-                                  // Use unique value combining ID and text to prevent duplicates
-                                  const uniqueValue = `${address?.id}-${addressText}`;
-                                  return (
-                                    <CommandItem
-                                      key={address?.id}
-                                      value={uniqueValue}
-                                      onSelect={() => {
-                                        setValue(
-                                          "shipper_address_id",
-                                          address?.id
-                                        );
-                                        setSelectedAddress(address);
-                                        setValue(
-                                          "shipper_name",
-                                          address?.name || ""
-                                        );
-                                        setValue(
-                                          "shipper_company",
-                                          address?.company_name || ""
-                                        );
-                                        setValue(
-                                          "shipper_phone",
-                                          address?.mobile_number || ""
-                                        );
-                                        dispatch(
-                                          _toggleGeoloactionLoaders({
-                                            key: "getConsigneeAddresses",
-                                            value: false,
-                                          })
-                                        );
-                                        clearErrors("shipper_address_id");
-                                        clearErrors("shipper_name");
-                                        clearErrors("shipper_company");
-                                        clearErrors("shipper_phone");
-                                        setAddressPopoverOpen(false);
-                                      }}
-                                    >
-                                      {addressText}
-                                    </CommandItem>
-                                  );
-                                })}
-                              </CommandGroup>
+                              {filteredAddresses?.length === 0 ? (
+                                <CommandEmpty>No addresses found.</CommandEmpty>
+                              ) : (
+                                <CommandGroup>
+                                  {filteredAddresses?.map((address) => {
+                                    const addressText = `${
+                                      address?.label || ""
+                                    } - ${address?.city || ""} ${
+                                      address?.full_address || ""
+                                    }`;
+                                    // Use unique value combining ID and text to prevent duplicates
+                                    const uniqueValue = `${address?.id}-${addressText}`;
+                                    return (
+                                      <CommandItem
+                                        key={address?.id}
+                                        value={uniqueValue}
+                                        onSelect={() => {
+                                          setValue(
+                                            "shipper_address_id",
+                                            address?.id
+                                          );
+                                          setSelectedAddress(address);
+                                          setValue(
+                                            "shipper_name",
+                                            address?.name || ""
+                                          );
+                                          setValue(
+                                            "shipper_company",
+                                            address?.company_name || ""
+                                          );
+                                          setValue(
+                                            "shipper_phone",
+                                            address?.mobile_number || ""
+                                          );
+                                          dispatch(
+                                            _toggleGeoloactionLoaders({
+                                              key: "getConsigneeAddresses",
+                                              value: false,
+                                            })
+                                          );
+                                          clearErrors("shipper_address_id");
+                                          clearErrors("shipper_name");
+                                          clearErrors("shipper_company");
+                                          clearErrors("shipper_phone");
+                                          setAddressPopoverOpen(false);
+                                        }}
+                                      >
+                                        {addressText}
+                                      </CommandItem>
+                                    );
+                                  })}
+                                </CommandGroup>
+                              )}
                             </>
                           )}
                         </CommandList>
