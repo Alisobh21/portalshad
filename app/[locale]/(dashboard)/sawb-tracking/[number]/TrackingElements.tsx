@@ -98,7 +98,7 @@ export default function TrackingElements({
               <p className="text-[15px] text-muted-foreground">
                 {t("trackingNumber")}
               </p>
-              <h1 className="flex items-center gap-1 text-3xl lg:text-6xl font-bold leading-none font-mono">
+              <h1 className="flex items-center gap-1 text-3xl lg:text-5xl font-bold leading-none font-mono">
                 {trackingInfo.tracking_number}
 
                 <CopyButton

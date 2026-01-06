@@ -273,7 +273,7 @@ function SidebarInner({ variant }: { variant: SidebarVariant }) {
                   >
                     {link.icon}
                     <span
-                      className={`${
+                      className={`text-nowrap ${
                         activeRoute === link.key ? activeChildClass : ""
                       } ${
                         expandSidebar
@@ -303,7 +303,7 @@ function SidebarInner({ variant }: { variant: SidebarVariant }) {
                 {link.children?.map((childLink) => (
                   <DropdownMenuItem
                     key={childLink.key}
-                    className={`${
+                    className={`text-nowrap ${
                       activeSubRoute === childLink.key
                         ? "pointer-events-none opacity-60"
                         : ""

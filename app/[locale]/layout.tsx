@@ -10,10 +10,6 @@ import { ibmPlex, rubik } from "@/config/fonts";
 import ConditionalLayout from "./ConditionalLayout";
 import { Providers } from "./provider";
 import { Toaster } from "@/components/ui/sonner";
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -49,7 +45,7 @@ export default async function LocaleLayout({
       suppressHydrationWarning
     >
       <body
-        className={`${rubik.variable} bg-background ${rubik.variable} ${ibmPlex.variable} font-rubik rtl:font-ibmPlex  antialiased`}
+        className={`${rubik.variable} bg-background ${rubik.variable} ${ibmPlex.variable} font-rubik rtl:font-ibmPlex  antialiased ${geistMono.variable}`}
       >
         <ThemeProvider>
           <AppProvider>
