@@ -496,7 +496,7 @@ function TableFilters({
                                 </Button>
                               </PopoverTrigger>
                               <PopoverContent
-                                className="w-auto p-0"
+                                className="w-auto p-0 z-[9999]"
                                 align="start"
                               >
                                 <Calendar
@@ -726,7 +726,7 @@ function TableFilters({
               <Button
                 form="tb_filters_form"
                 type="submit"
-                variant="primary-opac"
+                // variant="ghost"
                 className="px-5 w-full"
                 disabled={!isSubmitEnabled}
               >

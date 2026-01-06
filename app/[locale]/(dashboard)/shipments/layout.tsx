@@ -26,7 +26,7 @@ export default function ShipmentsLayout({
     <section className="py-[10px]">
       <Card className="mb-4">
         <CardContent className="p-[30px] relative z-[20] backdrop-blur-sm">
-          <PageHeader hideBreadcrumb={true} />
+          <PageHeader />
         </CardContent>
       </Card>
 

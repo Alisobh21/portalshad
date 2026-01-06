@@ -1,7 +1,7 @@
 "use client";
 
 import { axiosTable } from "@/axios/axios";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useLocale } from "next-intl";
 import { _getTableData } from "../table-providers/slices/tableCoreSlice";
 import { useDispatch } from "react-redux";
@@ -50,23 +50,26 @@ export default function useTableStructure() {
    *
    * @param params - Object containing table name and optional parameters
    */
-  const getTableStructure = async ({ table, params }: TableStructureParams) => {
-    setTableStructureLoading(true);
-    dispatch(_getTableData([]));
-    try {
-      const response = await axiosTable.get<TableStructureResponse>(table, {
-        headers: {
-          ...(locale && { ln: locale }),
-        },
-      });
-      setTableStructure(response?.data);
-      setTableStructureLoading(false);
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setTableStructureLoading(false);
-    }
-  };
+  const getTableStructure = useCallback(
+    async ({ table, params }: TableStructureParams) => {
+      setTableStructureLoading(true);
+      dispatch(_getTableData([]));
+      try {
+        const response = await axiosTable.get<TableStructureResponse>(table, {
+          headers: {
+            ...(locale && { ln: locale }),
+          },
+        });
+        setTableStructure(response?.data);
+        setTableStructureLoading(false);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setTableStructureLoading(false);
+      }
+    },
+    [dispatch, locale]
+  );
 
   return { getTableStructure, tableStructure, tableStructureLoading };
 }
