@@ -296,7 +296,10 @@ export default function ShipmentStep() {
                   },
                 })}
                 value={watch("price") || ""}
-                onChange={() => trigger("price")}
+                onChange={(e) => {
+                  setValue("price", e.target.value);
+                  trigger("price");
+                }}
               />
               {errors?.price && (
                 <InvalidFeedback error={errors?.price?.message as string} />
@@ -323,7 +326,10 @@ export default function ShipmentStep() {
                 },
               })}
               value={watch("store_name") || ""}
-              onChange={() => trigger("store_name")}
+              onChange={(e) => {
+                setValue("store_name", e.target.value);
+                trigger("store_name");
+              }}
             />
             {errors?.store_name && (
               <InvalidFeedback error={errors?.store_name?.message as string} />
@@ -349,7 +355,10 @@ export default function ShipmentStep() {
                 },
               })}
               value={watch("order_number") || ""}
-              onChange={() => trigger("order_number")}
+              onChange={(e) => {
+                setValue("order_number", e.target.value);
+                trigger("order_number");
+              }}
             />
             {errors?.order_number && (
               <InvalidFeedback
@@ -371,7 +380,10 @@ export default function ShipmentStep() {
                 },
               })}
               value={watch("description") || ""}
-              onChange={() => trigger("description")}
+              onChange={(e) => {
+                setValue("description", e.target.value);
+                trigger("description");
+              }}
             />
             {errors?.description && (
               <InvalidFeedback error={errors?.description?.message as string} />
@@ -400,7 +412,10 @@ export default function ShipmentStep() {
                 },
               })}
               value={watch("weight") || ""}
-              onChange={() => trigger("weight")}
+              onChange={(e) => {
+                setValue("weight", e.target.value);
+                trigger("weight");
+              }}
             />
             {errors?.weight && (
               <InvalidFeedback error={errors?.weight?.message as string} />
@@ -429,7 +444,10 @@ export default function ShipmentStep() {
                 },
               })}
               value={watch("number_of_pieces") || ""}
-              onChange={() => trigger("number_of_pieces")}
+              onChange={(e) => {
+                setValue("number_of_pieces", e.target.value);
+                trigger("number_of_pieces");
+              }}
             />
             {errors?.number_of_pieces && (
               <InvalidFeedback
