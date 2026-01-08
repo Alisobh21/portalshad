@@ -25,7 +25,7 @@ export default function AddressesModal() {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="z-[9999] max-w-3xl max-h-[90vh] overflow-y-auto p-4">
+      <DialogContent className="z-[9999] lg:min-w-3xl max-h-[90vh] overflow-y-auto p-4">
         <DialogHeader className="flex text-[24px] flex-col items-center gap-1">
           <DialogTitle>{t("title")}</DialogTitle>
         </DialogHeader>

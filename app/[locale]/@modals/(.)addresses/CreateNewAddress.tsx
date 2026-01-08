@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
@@ -11,6 +10,8 @@ import { RiUser6Fill } from "react-icons/ri";
 import { RiBuildingFill } from "react-icons/ri";
 import { HiMiniEnvelope } from "react-icons/hi2";
 import { MdAssignmentAdd } from "react-icons/md";
+import { FaMapMarkerAlt } from "react-icons/fa";
+import { RiArrowDownSLine } from "react-icons/ri";
 import InvalidFeedback from "@/components/InvalidFeedback";
 import { insertAddress } from "@/helpers/asyncUtils";
 import {
@@ -45,6 +46,7 @@ import type { City, Address } from "@/store/slices/geolocationSlice";
 import axiosPrivate from "@/axios/axios";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { useForm, Controller } from "react-hook-form";
 
 /* ================= Types ================= */
 
@@ -122,6 +124,7 @@ export default function CreateNewAddress() {
   const {
     handleSubmit,
     register,
+    control,
     watch,
     setValue,
     formState: { errors },
@@ -219,6 +222,7 @@ export default function CreateNewAddress() {
     setSearchCityQuery(value);
 
     if (value.length < 3) {
+      // Preserve initial city if it exists
       if (initialCity) {
         setSearchCityResult([initialCity]);
       } else {
@@ -236,9 +240,11 @@ export default function CreateNewAddress() {
         term: value,
       });
 
-      const data = await response.data;
+      const data = response?.data;
+      const cities = data?.data || [];
 
-      const uniqueCities = data?.data?.reduce(
+      // Remove duplicates based on city ID
+      const uniqueCities = cities.reduce(
         (acc: CitySearchResult[], current: CitySearchResult) => {
           const x = acc.find((item) => item.id === current.id);
           if (!x) {
@@ -250,6 +256,7 @@ export default function CreateNewAddress() {
         []
       );
 
+      // Merge with initial city if it exists and not already in results
       if (initialCity) {
         const hasInitialCity = uniqueCities.some(
           (city) => city.id === initialCity.id
@@ -262,8 +269,9 @@ export default function CreateNewAddress() {
       } else {
         setSearchCityResult(uniqueCities);
       }
-    } catch {
-      console.error("Error searching cities");
+    } catch (err) {
+      console.error("Error searching cities:", err);
+      // Preserve initial city if it exists
       if (initialCity) {
         setSearchCityResult([initialCity]);
       } else {
@@ -346,6 +354,19 @@ export default function CreateNewAddress() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shortAddressValue]);
 
+  // Reset search query when popover opens
+  useEffect(() => {
+    if (cityPopoverOpen) {
+      const currentCity = watch("city");
+      if (currentCity) {
+        setSearchCityQuery(currentCity as string);
+      } else {
+        setSearchCityQuery("");
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cityPopoverOpen]);
+
   return (
     <div className="relative">
       <form
@@ -355,19 +376,22 @@ export default function CreateNewAddress() {
       >
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           {/* Short Address*/}
-          <div className="flex flex-col lg:col-span-2 gap-1">
+          <div className="flex flex-col lg:col-span-2 gap-2">
             <Label htmlFor="sa_short_address">
               {t("nationalAddressLabel")}
             </Label>
             <div className="relative">
               <TbTextCaption
-                className="absolute left-3 top-1/2 -translate-y-1/2 size-[18px] text-muted-foreground"
+                className={cn(
+                  "absolute top-1/2 -translate-y-1/2 size-[18px] text-muted-foreground",
+                  locale === "ar" ? "right-3" : "left-3"
+                )}
                 size={18}
               />
               <Input
                 id="sa_short_address"
                 autoComplete="no-complete"
-                className="pl-10"
+                className={cn(locale === "ar" ? "pr-10" : "pl-10")}
                 placeholder={t("nationalAddressPlaceholder")}
                 maxLength={8}
                 value={watch("sa_short_address") ?? ""}
@@ -406,28 +430,33 @@ export default function CreateNewAddress() {
           <div
             className={cn(
               !shortAddress && "pointer-events-none opacity-50",
-              "flex flex-col lg:col-span-2 gap-1"
+              "flex flex-col lg:col-span-2 gap-2"
             )}
           >
             <Label htmlFor="label">{t("addressLabel")}</Label>
             <div className="relative">
               <TbTextCaption
-                className="absolute left-3 top-1/2 -translate-y-1/2 size-[18px] text-muted-foreground"
+                className={cn(
+                  "absolute top-1/2 -translate-y-1/2 size-[18px] text-muted-foreground",
+                  locale === "ar" ? "right-3" : "left-3"
+                )}
                 size={18}
               />
               <Input
                 id="label"
                 autoComplete="no-complete"
-                className="pl-10"
+                className={cn(locale === "ar" ? "pr-10" : "pl-10")}
                 placeholder={t("addressLabelPlaceholder")}
                 value={watch("label") ?? ""}
                 {...register("label", {
-                  onChange: (e) => setValue("label", e.target.value),
                   required: {
                     value: true,
                     message: t("addressLabelRequired"),
                   },
                 })}
+                onChange={(e) => {
+                  setValue("label", e.target.value);
+                }}
               />
             </div>
             {errors?.label && (
@@ -439,19 +468,22 @@ export default function CreateNewAddress() {
           <div
             className={cn(
               !shortAddress && "pointer-events-none opacity-50",
-              "flex flex-col gap-1"
+              "flex flex-col gap-2"
             )}
           >
             <Label htmlFor="name">{t("fullName")}</Label>
             <div className="relative">
               <RiUser6Fill
-                className="absolute left-3 top-1/2 -translate-y-1/2 size-[18px] text-muted-foreground"
+                className={cn(
+                  "absolute top-1/2 -translate-y-1/2 size-[18px] text-muted-foreground",
+                  locale === "ar" ? "right-3" : "left-3"
+                )}
                 size={18}
               />
               <Input
                 id="name"
                 autoComplete="no-complete"
-                className="pl-10"
+                className={cn(locale === "ar" ? "pr-10" : "pl-10")}
                 placeholder={t("fullNamePlaceholder")}
                 {...register("name", {
                   required: {
@@ -470,19 +502,22 @@ export default function CreateNewAddress() {
           <div
             className={cn(
               !shortAddress && "pointer-events-none opacity-50",
-              "flex flex-col gap-1"
+              "flex flex-col gap-2"
             )}
           >
             <Label htmlFor="company_name">{t("companyName")}</Label>
             <div className="relative">
               <RiBuildingFill
-                className="absolute left-3 top-1/2 -translate-y-1/2 size-[18px] text-muted-foreground"
+                className={cn(
+                  "absolute top-1/2 -translate-y-1/2 size-[18px] text-muted-foreground",
+                  locale === "ar" ? "right-3" : "left-3"
+                )}
                 size={18}
               />
               <Input
                 id="company_name"
                 autoComplete="no-complete"
-                className="pl-10"
+                className={cn(locale === "ar" ? "pr-10" : "pl-10")}
                 placeholder={t("companyNamePlaceholder")}
                 {...register("company_name", {
                   required: {
@@ -508,7 +543,12 @@ export default function CreateNewAddress() {
           >
             <Label htmlFor="mobile_number">{t("phoneNumber")}</Label>
             <div className="relative">
-              <div className="absolute left-1 top-1/2 -translate-y-1/2 flex items-center justify-center gap-2 rounded-md bg-neutral-200/20 dark:bg-neutral-700/20 py-1 px-4 w-[80px]">
+              <div
+                className={cn(
+                  "absolute top-1/2 -translate-y-1/2 flex items-center justify-center gap-2 rounded-md bg-neutral-200/20 dark:bg-neutral-700/20 py-1 px-4 w-[80px]",
+                  locale === "ar" ? "right-1" : "left-1"
+                )}
+              >
                 <Image
                   src="https://flagcdn.com/w20/sa.png"
                   alt="Saudi Arabia flag"
@@ -521,9 +561,10 @@ export default function CreateNewAddress() {
               <Input
                 id="mobile_number"
                 autoComplete="no-complete"
-                className="pl-[90px]"
+                className={cn(locale === "ar" ? "pr-[90px]" : "pl-[90px]")}
                 placeholder={t("phoneNumberPlaceholder")}
                 type="tel"
+                dir={locale === "ar" ? "rtl" : "ltr"}
                 {...register("mobile_number", {
                   ...validatePhoneNumber(
                     t("phoneNumberRequired"),
@@ -550,13 +591,16 @@ export default function CreateNewAddress() {
             <Label htmlFor="email">{t("emailAddress")}</Label>
             <div className="relative">
               <HiMiniEnvelope
-                className="absolute left-3 top-1/2 -translate-y-1/2 size-[18px] text-muted-foreground"
+                className={cn(
+                  "absolute top-1/2 -translate-y-1/2 size-[18px] text-muted-foreground",
+                  locale === "ar" ? "right-3" : "left-3"
+                )}
                 size={18}
               />
               <Input
                 id="email"
                 autoComplete="no-complete"
-                className="pl-10"
+                className={cn(locale === "ar" ? "pr-10" : "pl-10")}
                 placeholder={t("emailAddressPlaceholder")}
                 type="email"
                 {...register("email", {
@@ -572,109 +616,139 @@ export default function CreateNewAddress() {
             )}
           </div>
 
-          {/* City */}
           <div className="flex flex-col gap-2 lg:col-span-2">
-            <Label htmlFor="city">{t("city")}</Label>
-            <Popover open={cityPopoverOpen} onOpenChange={setCityPopoverOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={cityPopoverOpen}
-                  className="w-full justify-between"
-                >
-                  {(watch("city") as string) ||
-                    t("typeThreeLettersPlaceholder")}
-                  <span className="ml-2">▼</span>
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-full p-0" align="start">
-                <Command>
-                  <CommandInput
-                    placeholder={t("typeThreeLettersPlaceholder")}
-                    value={searchCityQuery}
-                    onValueChange={(value: string) => {
-                      setSearchCityQuery(value);
-                      setValue("city", value);
-                      handleCitySearch(value);
-                    }}
-                  />
-                  <CommandList>
-                    {searchCityLoading ? (
-                      <div className="flex items-center justify-center p-4">
-                        <Spinner />
-                      </div>
-                    ) : (
-                      <>
-                        <CommandEmpty>
-                          {String(t("typeThreeLettersPlaceholder"))}
-                        </CommandEmpty>
-                        <CommandGroup>
-                          {searchCityResult.map((city) => {
-                            const cityName = String(
-                              city[
-                                `name_${locale}` as keyof CitySearchResult
-                              ] || ""
-                            );
-                            return (
-                              <CommandItem
-                                key={city.id}
-                                value={cityName}
-                                onSelect={() => {
-                                  setValue("city", cityName);
-                                  setCityPopoverOpen(false);
-                                }}
-                              >
-                                {cityName}
-                              </CommandItem>
-                            );
-                          })}
-                        </CommandGroup>
-                      </>
-                    )}
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
-            <input
-              type="hidden"
-              {...register("city", {
+            <Label>{t("city")}</Label>
+
+            <Controller
+              name="city"
+              control={control}
+              rules={{
                 required: {
                   value: true,
                   message: t("cityRequired"),
                 },
-              })}
+              }}
+              render={({ field }) => (
+                <Popover
+                  open={cityPopoverOpen}
+                  onOpenChange={setCityPopoverOpen}
+                >
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      className="w-full justify-between"
+                    >
+                      <span
+                        className={cn(
+                          "truncate flex-1",
+                          locale === "ar" ? "text-right" : "text-left"
+                        )}
+                      >
+                        {watch("city") || (
+                          <span className="text-muted-foreground">
+                            {t("typeThreeLettersPlaceholder")}
+                          </span>
+                        )}
+                      </span>
+                      <RiArrowDownSLine
+                        className={cn(
+                          "h-4 w-4 shrink-0",
+                          locale === "ar" ? "mr-2" : "ml-2"
+                        )}
+                      />
+                    </Button>
+                  </PopoverTrigger>
+
+                  <PopoverContent
+                    className="min-w-[var(--radix-popover-trigger-width)] p-0 z-[10000]"
+                    align={locale === "ar" ? "end" : "start"}
+                  >
+                    <Command shouldFilter={false}>
+                      <CommandInput
+                        placeholder=""
+                        value={searchCityQuery}
+                        onValueChange={(value) => {
+                          setSearchCityQuery(value);
+                          handleCitySearch(value);
+                        }}
+                      />
+
+                      <CommandList>
+                        {searchCityLoading ? (
+                          <div className="flex items-center justify-center p-4">
+                            <Spinner />
+                          </div>
+                        ) : searchCityResult.length === 0 ? (
+                          <CommandEmpty>
+                            {t("typeThreeLettersPlaceholder")}
+                          </CommandEmpty>
+                        ) : (
+                          <CommandGroup>
+                            {searchCityResult.map((city) => {
+                              const cityName = String(
+                                city[
+                                  `name_${locale}` as keyof CitySearchResult
+                                ] || ""
+                              );
+
+                              return (
+                                <CommandItem
+                                  key={city.id}
+                                  value={cityName}
+                                  onSelect={() => {
+                                    field.onChange(cityName);
+                                    setSearchCityQuery(cityName);
+                                    setCityPopoverOpen(false);
+                                  }}
+                                >
+                                  {cityName}
+                                </CommandItem>
+                              );
+                            })}
+                          </CommandGroup>
+                        )}
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              )}
             />
+
             {errors?.city && (
-              <InvalidFeedback error={errors?.city?.message as string} />
+              <InvalidFeedback error={errors.city.message as string} />
             )}
           </div>
-
           <div
             className={cn(
               !shortAddress && "pointer-events-none opacity-50",
-              "flex flex-col lg:col-span-2 gap-1"
+              "flex flex-col lg:col-span-2 gap-2"
             )}
           >
             <Label htmlFor="address_line_1">{t("addressLabel1")}</Label>
             <div className="relative">
-              <TbTextCaption
-                className="absolute left-3 top-1/2 -translate-y-1/2 size-[18px] text-muted-foreground"
+              <FaMapMarkerAlt
+                className={cn(
+                  "absolute top-1/2 -translate-y-1/2 size-[18px] text-muted-foreground",
+                  locale === "ar" ? "right-3" : "left-3"
+                )}
                 size={18}
               />
               <Input
                 id="address_line_1"
                 autoComplete="no-complete"
-                className="pl-10"
+                className={cn(locale === "ar" ? "pr-10" : "pl-10")}
                 placeholder={t("addressPlaceholder")}
                 value={watch("address_line_1") ?? ""}
                 {...register("address_line_1", {
-                  onChange: (e) => setValue("address_line_1", e.target.value),
                   required: {
                     value: true,
                     message: t("addressRequired"),
                   },
                 })}
+                onChange={(e) => {
+                  setValue("address_line_1", e.target.value);
+                }}
               />
             </div>
             {errors?.address_line_1 && (
@@ -712,7 +786,7 @@ export default function CreateNewAddress() {
               type="submit"
               size="md"
               className="w-full"
-              variant="primary"
+              variant="modal"
               disabled={loaders?.insertingAddress}
             >
               {loaders?.insertingAddress ? (
