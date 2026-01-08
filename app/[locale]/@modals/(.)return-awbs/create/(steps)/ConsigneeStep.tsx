@@ -1,0 +1,761 @@
+"use client";
+
+import { useEffect, useState, useRef, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import { useFormContext } from "react-hook-form";
+import Image from "next/image";
+import { FaMapMarkerAlt } from "react-icons/fa";
+import { LuSearch } from "react-icons/lu";
+import { PiUserCircleDashedFill } from "react-icons/pi";
+import { X } from "lucide-react";
+import { RiArrowUpSLine, RiArrowDownSLine } from "react-icons/ri";
+import { _setAddressInsertionType } from "@/store/slices/geolocationSlice";
+import {
+  _setConsigneeStepValue,
+  _setCurrentStep,
+} from "@/store/slices/awbsSlice";
+import InvalidFeedback from "@/components/InvalidFeedback";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { RootState } from "@/store/store";
+import type { Address } from "@/store/slices/geolocationSlice";
+import { cn } from "@/lib/utils";
+import UpdateAddressModal from "@/components/UpdateAddressModal";
+
+/* ================= Types ================= */
+
+interface AddressWithDetails extends Address {
+  name?: string;
+  company_name?: string;
+  mobile_number?: string | number;
+  email?: string;
+  label?: string;
+  city?: string;
+  full_address?: string;
+  sa_short_address?: string;
+  pairable_addresses?: Address[];
+  selected?: boolean;
+  identifier?: string;
+  [key: string]: unknown;
+}
+
+interface Warehouse {
+  id?: string;
+  identifier?: string;
+  name?: string;
+}
+
+/* ================= Validation Helpers ================= */
+
+function validateEmail(
+  requiredMsg: string,
+  invalidMsg: string
+): {
+  required: { value: boolean; message: string };
+  pattern: { value: RegExp; message: string };
+} {
+  return {
+    required: { value: true, message: requiredMsg },
+    pattern: {
+      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+      message: invalidMsg,
+    },
+  };
+}
+
+function validatePhoneNumber(
+  requiredMsg: string,
+  invalidStartMsg: string,
+  invalidLengthMsg: string
+) {
+  return {
+    required: { value: true, message: requiredMsg },
+    validate: (value: string | undefined) => {
+      if (!value) return requiredMsg;
+      if (!value.startsWith("5")) return invalidStartMsg;
+      if (value.length !== 9) return invalidLengthMsg;
+      return true;
+    },
+  };
+}
+
+/* ================= Component ================= */
+
+export default function ConsigneeStep() {
+  const { returnConsigneeAddresses, loaders } = useSelector(
+    (state: RootState) => state.geolocation
+  );
+  const { wizardCurrentStep, defaultReturnConsigneeOpt } = useSelector(
+    (state: RootState) => state.awbs
+  );
+  const { warehousesList: rawWarehouses } = useSelector(
+    (state: RootState) => state.app
+  );
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [addressPopoverOpen, setAddressPopoverOpen] = useState(false);
+  const [addressSearchQuery, setAddressSearchQuery] = useState("");
+  const [consigneeType, setConsigneeType] = useState<string>("");
+
+  const dispatch = useDispatch();
+  const methods = useFormContext();
+  const locale = useLocale();
+  const [selectedAddress, setSelectedAddress] =
+    useState<AddressWithDetails | null>(null);
+  const hasInitialized = useRef(false);
+  const t = useTranslations("shippingAWBs");
+  const tGeneral = useTranslations("General");
+
+  const {
+    register,
+    watch,
+    setValue,
+    trigger,
+    clearErrors,
+    resetField,
+    formState: { errors },
+  } = methods;
+
+  useEffect(() => {
+    setConsigneeType(defaultReturnConsigneeOpt || "");
+  }, [defaultReturnConsigneeOpt]);
+
+  const warehouses = useMemo(() => {
+    return (rawWarehouses as Warehouse[])?.map((warehouse) => ({
+      id: warehouse?.identifier,
+      identifier: warehouse?.name,
+    }));
+  }, [rawWarehouses]);
+
+  function handleConsigneeType(value: string) {
+    setConsigneeType(value);
+    clearErrors("consignee_address_id");
+  }
+
+  useEffect(() => {
+    if (watch("consignee_address_id")) {
+      clearErrors("consignee_address_id");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watch("consignee_address_id")]);
+
+  async function submitConsigneeStep() {
+    const isValid = await trigger([
+      "consignee_address_id",
+      "consignee_name",
+      "consignee_company",
+      "consignee_phone",
+      "consignee_email",
+    ]);
+    if (isValid) {
+      if (consigneeType === "warehouses") {
+        dispatch(
+          _setConsigneeStepValue({
+            return_dest_type: "ss-repository",
+            warehouse_id: watch("consignee_address_id"),
+            consignee_address_id: watch("consignee_address_id"),
+          })
+        );
+      } else if (consigneeType === "consigneeAddress") {
+        dispatch(
+          _setConsigneeStepValue({
+            consignee_full_address: selectedAddress,
+            consignee_address_id: selectedAddress?.id,
+            return_dest_type: "user-address",
+            consignee_name: watch("consignee_name"),
+            consignee_company: watch("consignee_company"),
+            consignee_phone: watch("consignee_phone"),
+            consignee_email: watch("consignee_email"),
+          })
+        );
+      }
+      dispatch(_setCurrentStep(3));
+    }
+  }
+
+  useEffect(() => {
+    if (
+      (returnConsigneeAddresses as AddressWithDetails[])?.length > 0 &&
+      consigneeType === "consigneeAddress"
+    ) {
+      const firstAddress = (
+        returnConsigneeAddresses as AddressWithDetails[]
+      )?.[0];
+      setSelectedAddress(firstAddress);
+      setValue("consignee_address_id", firstAddress?.id);
+      setValue("consignee_name", firstAddress?.name || "");
+      setValue("consignee_company", firstAddress?.company_name || "");
+      setValue("consignee_email", firstAddress?.email || "");
+      setValue("consignee_phone", firstAddress?.mobile_number || "");
+      hasInitialized.current = true;
+    } else if (warehouses?.length > 0 && consigneeType === "warehouses") {
+      setValue("consignee_address_id", warehouses?.[0]?.id || "");
+      resetField("consignee_name");
+      resetField("consignee_company");
+      resetField("consignee_email");
+      resetField("consignee_phone");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [returnConsigneeAddresses, consigneeType, warehouses, wizardCurrentStep]);
+
+  // Reset search query when popover opens if no address is selected
+  useEffect(() => {
+    if (addressPopoverOpen && !selectedAddress) {
+      setAddressSearchQuery("");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addressPopoverOpen]);
+
+  // Remove duplicates and filter addresses
+  const filteredAddresses = (returnConsigneeAddresses as AddressWithDetails[])
+    ?.filter((address, index, self) => {
+      return (
+        index ===
+        self.findIndex(
+          (a) =>
+            (a as AddressWithDetails)?.id ===
+            (address as AddressWithDetails)?.id
+        )
+      );
+    })
+    .filter((address) => {
+      if (!addressSearchQuery) return true;
+      const searchLower = addressSearchQuery.toLowerCase();
+      const addressLabel = address?.label || "";
+      const addressCity = address?.city || "";
+      const fullAddress = address?.full_address || "";
+      return (
+        addressLabel.toLowerCase().includes(searchLower) ||
+        addressCity.toLowerCase().includes(searchLower) ||
+        fullAddress.toLowerCase().includes(searchLower)
+      );
+    }) as AddressWithDetails[];
+
+  return (
+    <>
+      <div className={cn("w-full", wizardCurrentStep === 2 ? "" : "hidden")}>
+        <div className="flex items-center gap-3 mb-5">
+          <PiUserCircleDashedFill size={22} className="shrink-0" />
+          <h2 className="text-xl font-bold">{t("consigneeInfo")}</h2>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          {/* Tabs for Consignee Type */}
+          <div className="lg:col-span-2">
+            <Tabs
+              value={consigneeType}
+              onValueChange={handleConsigneeType}
+              className="w-full"
+            >
+              <TabsList className="w-full">
+                <TabsTrigger value="warehouses" className="flex-1">
+                  {t("returnAWBS.warehouses")}
+                </TabsTrigger>
+                <TabsTrigger value="consigneeAddress" className="flex-1">
+                  {t("returnAWBS.anotherConsigneeAddress")}
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
+
+          {/* Warehouses Selection */}
+          {consigneeType === "warehouses" && (
+            <div className="flex flex-col gap-2 lg:col-span-2">
+              <Label htmlFor="consignee_address_id">
+                {t("returnAWBS.warehouses")}
+              </Label>
+              <Select
+                value={watch("consignee_address_id") || ""}
+                onValueChange={(value) => {
+                  setValue("consignee_address_id", value);
+                  clearErrors("consignee_address_id");
+                }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder={t("returnAWBS.chooseWarehouse")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {warehouses?.map((warehouse) => (
+                    <SelectItem key={warehouse?.id} value={warehouse?.id || ""}>
+                      {warehouse?.identifier}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <input
+                type="hidden"
+                {...register("consignee_address_id", {
+                  required: {
+                    value: true,
+                    message: `${t("pleaseChoose")} ${t(
+                      "returnAWBS.warehouse"
+                    )}`,
+                  },
+                })}
+              />
+              {errors?.consignee_address_id && (
+                <InvalidFeedback
+                  error={errors?.consignee_address_id?.message as string}
+                />
+              )}
+            </div>
+          )}
+
+          {/* Consignee Address Selection */}
+          {consigneeType === "consigneeAddress" && (
+            <>
+              {/* Address Select Box */}
+              <div className="flex flex-col gap-2 lg:col-span-2">
+                {/* First Row: Label + Command + Two Icons */}
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="consignee_address_id">
+                    {t("consigneeAddress")}
+                  </Label>
+                  <div className="flex items-start gap-2">
+                    <div className="flex-1 min-w-0">
+                      <Popover
+                        open={addressPopoverOpen}
+                        onOpenChange={setAddressPopoverOpen}
+                      >
+                        <PopoverTrigger asChild>
+                          <Button
+                            id="consignee_address_id"
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={addressPopoverOpen}
+                            disabled={loaders?.getConsigneeAddresses}
+                            className="w-full justify-between pr-2 min-w-0"
+                          >
+                            <span
+                              className={cn(
+                                "truncate flex-1 min-w-0 overflow-hidden",
+                                locale === "ar" ? "text-right" : "text-left"
+                              )}
+                            >
+                              {selectedAddress
+                                ? `${selectedAddress?.label || ""} - ${
+                                    selectedAddress?.city || ""
+                                  } ${selectedAddress?.full_address || ""}`
+                                : t("consigneeAddress")}
+                            </span>
+                            <div
+                              className={cn(
+                                "flex items-center gap-1 shrink-0",
+                                locale === "ar" ? "mr-2" : "ml-2"
+                              )}
+                            >
+                              {selectedAddress && (
+                                <div
+                                  role="button"
+                                  tabIndex={0}
+                                  className="h-4 w-4 opacity-50 hover:opacity-100 flex items-center justify-center cursor-pointer"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    setSelectedAddress(null);
+                                    setValue("consignee_address_id", "");
+                                    setValue("consignee_name", "");
+                                    setValue("consignee_company", "");
+                                    setValue("consignee_phone", "");
+                                    setValue("consignee_email", "");
+                                    setAddressSearchQuery("");
+                                    clearErrors("consignee_address_id");
+                                    clearErrors("consignee_name");
+                                    clearErrors("consignee_company");
+                                    clearErrors("consignee_phone");
+                                    clearErrors("consignee_email");
+                                  }}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter" || e.key === " ") {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      setSelectedAddress(null);
+                                      setValue("consignee_address_id", "");
+                                      setValue("consignee_name", "");
+                                      setValue("consignee_company", "");
+                                      setValue("consignee_phone", "");
+                                      setValue("consignee_email", "");
+                                      setAddressSearchQuery("");
+                                      clearErrors("consignee_address_id");
+                                      clearErrors("consignee_name");
+                                      clearErrors("consignee_company");
+                                      clearErrors("consignee_phone");
+                                      clearErrors("consignee_email");
+                                    }
+                                  }}
+                                >
+                                  <X className="h-4 w-4" />
+                                </div>
+                              )}
+                              {addressPopoverOpen ? (
+                                <RiArrowUpSLine className="h-4 w-4" />
+                              ) : (
+                                <RiArrowDownSLine className="h-4 w-4" />
+                              )}
+                            </div>
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent
+                          className="w-full p-0"
+                          align={locale === "ar" ? "end" : "start"}
+                        >
+                          <Command shouldFilter={false}>
+                            <CommandInput
+                              placeholder={t("consigneeAddress")}
+                              value={addressSearchQuery}
+                              onValueChange={setAddressSearchQuery}
+                            />
+                            <CommandList>
+                              {loaders?.getConsigneeAddresses ? (
+                                <div className="flex items-center justify-center p-4">
+                                  <span className="text-sm text-muted-foreground">
+                                    Loading...
+                                  </span>
+                                </div>
+                              ) : (
+                                <>
+                                  {filteredAddresses?.length === 0 ? (
+                                    <CommandEmpty>
+                                      No addresses found.
+                                    </CommandEmpty>
+                                  ) : (
+                                    <CommandGroup>
+                                      {filteredAddresses?.map((address) => {
+                                        const addressText = `${
+                                          address?.label || ""
+                                        } - ${address?.city || ""} ${
+                                          address?.full_address || ""
+                                        }`;
+                                        const uniqueValue = `${address?.id}-${addressText}`;
+                                        return (
+                                          <CommandItem
+                                            key={address?.id}
+                                            value={uniqueValue}
+                                            onSelect={() => {
+                                              setValue(
+                                                "consignee_address_id",
+                                                address?.id
+                                              );
+                                              setSelectedAddress(address);
+                                              setValue(
+                                                "consignee_name",
+                                                address?.name || ""
+                                              );
+                                              setValue(
+                                                "consignee_company",
+                                                address?.company_name || ""
+                                              );
+                                              setValue(
+                                                "consignee_email",
+                                                address?.email || ""
+                                              );
+                                              setValue(
+                                                "consignee_phone",
+                                                address?.mobile_number || ""
+                                              );
+                                              clearErrors(
+                                                "consignee_address_id"
+                                              );
+                                              clearErrors("consignee_name");
+                                              clearErrors("consignee_company");
+                                              clearErrors("consignee_phone");
+                                              clearErrors("consignee_email");
+                                              setAddressPopoverOpen(false);
+                                            }}
+                                          >
+                                            {addressText}
+                                          </CommandItem>
+                                        );
+                                      })}
+                                    </CommandGroup>
+                                  )}
+                                </>
+                              )}
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      <input
+                        type="hidden"
+                        {...register("consignee_address_id", {
+                          required: {
+                            value: true,
+                            message: `${t("pleaseChoose")} ${t(
+                              "consigneeAddress"
+                            )}`,
+                          },
+                        })}
+                      />
+                    </div>
+
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          asChild
+                          variant="outline"
+                          size="icon"
+                          className="shrink-0"
+                        >
+                          <Link
+                            href="/search-addresses"
+                            onClick={() => {
+                              dispatch(_setAddressInsertionType("consignee"));
+                            }}
+                          >
+                            <LuSearch className="size-4" />
+                          </Link>
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Search your addresses</p>
+                      </TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          asChild
+                          variant="normal"
+                          size="icon"
+                          className="shrink-0"
+                        >
+                          <Link
+                            href="/addresses"
+                            onClick={() => {
+                              dispatch(_setAddressInsertionType("consignee"));
+                            }}
+                          >
+                            <FaMapMarkerAlt className="size-4" />
+                          </Link>
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{t("addNewAddress")}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+
+                  {errors?.consignee_address_id && (
+                    <InvalidFeedback
+                      error={errors?.consignee_address_id?.message as string}
+                    />
+                  )}
+
+                  {/* Second Row: Note/Tip */}
+                  <p className="text-[13px] bg-neutral-200/20 dark:bg-neutral-700/20 px-3 py-2 flex flex-wrap items-center gap-1 text-muted-foreground rounded-lg">
+                    {tGeneral("addressTipPrefix")}
+                    <LuSearch className="w-4 h-4" />
+                    {tGeneral("addressTipSearch") + " "}
+                    <FaMapMarkerAlt className="w-4 h-4" />
+                    {tGeneral("addressTipAdd")}
+                  </p>
+                </div>
+
+                {/* Third Row: Alert if no shortAddress (full width) */}
+                {!selectedAddress?.sa_short_address && selectedAddress && (
+                  <Alert variant="warning" className="lg:col-span-2">
+                    <AlertTitle>{t("nationalAddressNotFound")}</AlertTitle>
+                    <AlertDescription>
+                      <div className="flex flex-col gap-3">
+                        <span>{t("SelectedNew")}</span>
+                        <Button
+                          className="max-w-[120px] self-start"
+                          variant="wizard"
+                          size="md"
+                          onClick={() => {
+                            dispatch(_setAddressInsertionType("consignee"));
+                            setIsUpdateModalOpen(true);
+                          }}
+                        >
+                          {t("updateAddress")}
+                        </Button>
+                      </div>
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </div>
+
+              {/* Consignee Name */}
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="consignee_name">{t("consigneeName")}</Label>
+                <Input
+                  id="consignee_name"
+                  {...register("consignee_name", {
+                    required: {
+                      value: true,
+                      message: `${t("pleaseEnter")} ${t("consigneeName")}`,
+                    },
+                  })}
+                  value={watch("consignee_name") || ""}
+                  placeholder={t("consigneeName")}
+                  onChange={(e) => {
+                    setValue("consignee_name", e.target.value);
+                    trigger("consignee_name");
+                  }}
+                />
+                {errors?.consignee_name && (
+                  <InvalidFeedback
+                    error={errors?.consignee_name?.message as string}
+                  />
+                )}
+              </div>
+
+              {/* Company Name */}
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="consignee_company">{t("companyName")}</Label>
+                <Input
+                  id="consignee_company"
+                  {...register("consignee_company", {
+                    required: {
+                      value: true,
+                      message: `${t("pleaseEnter")} ${t("companyName")}`,
+                    },
+                  })}
+                  value={watch("consignee_company") || ""}
+                  placeholder={t("companyName")}
+                  onChange={(e) => {
+                    setValue("consignee_company", e.target.value);
+                    trigger("consignee_company");
+                  }}
+                />
+                {errors?.consignee_company && (
+                  <InvalidFeedback
+                    error={errors?.consignee_company?.message as string}
+                  />
+                )}
+              </div>
+
+              {/* Consignee Phone */}
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="consignee_phone">{t("consigneePhone")}</Label>
+                <div className="relative">
+                  <div
+                    className={cn(
+                      "absolute top-1/2 -translate-y-1/2 flex items-center justify-center gap-2 rounded-md bg-neutral-200/20 dark:bg-neutral-700/20 py-1 px-4 w-[80px]",
+                      locale === "ar" ? "right-1" : "left-1"
+                    )}
+                  >
+                    <Image
+                      src="https://flagcdn.com/w20/sa.png"
+                      alt="Saudi Arabia flag"
+                      width={20}
+                      height={20}
+                      className="size-5"
+                    />
+                    <span className="text-[13px] opacity-65">+996</span>
+                  </div>
+                  <Input
+                    id="consignee_phone"
+                    className={cn(locale === "ar" ? "pr-[90px]" : "pl-[90px]")}
+                    {...register("consignee_phone", {
+                      ...validatePhoneNumber(
+                        `${t("pleaseEnter")} ${t("consigneePhone")}`,
+                        t("phoneStartNotValidation"),
+                        t("phoneLengthValidation")
+                      ),
+                    })}
+                    value={watch("consignee_phone") || ""}
+                    placeholder={t("consigneePhone")}
+                    type="tel"
+                    dir={locale === "ar" ? "rtl" : "ltr"}
+                    onChange={(e) => {
+                      setValue("consignee_phone", e.target.value);
+                      trigger("consignee_phone");
+                    }}
+                  />
+                </div>
+                {errors?.consignee_phone && (
+                  <InvalidFeedback
+                    error={errors?.consignee_phone?.message as string}
+                  />
+                )}
+              </div>
+
+              {/* Email Address */}
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="consignee_email">{t("emailAddress")}</Label>
+                <Input
+                  id="consignee_email"
+                  {...register("consignee_email", {
+                    ...validateEmail(
+                      `${t("pleaseEnter")} ${t("emailAddress")}`,
+                      t("emailAddressPatternValidation")
+                    ),
+                  })}
+                  value={watch("consignee_email") || ""}
+                  placeholder={t("emailAddress")}
+                  type="email"
+                  onChange={(e) => {
+                    setValue("consignee_email", e.target.value);
+                    trigger("consignee_email");
+                  }}
+                />
+                {errors?.consignee_email && (
+                  <InvalidFeedback
+                    error={errors?.consignee_email?.message as string}
+                  />
+                )}
+              </div>
+            </>
+          )}
+
+          {/* Navigation */}
+          <div className="lg:col-span-2 grid grid-cols-1 lg:grid-cols-2 gap-2">
+            <Button
+              className="w-full"
+              variant="outline"
+              onClick={() => dispatch(_setCurrentStep(1))}
+            >
+              {t("prev")}
+            </Button>
+            <Button
+              className="w-full"
+              variant="modal"
+              disabled={
+                !selectedAddress?.sa_short_address &&
+                consigneeType === "consigneeAddress"
+              }
+              onClick={submitConsigneeStep}
+            >
+              {t("next")}
+            </Button>
+          </div>
+        </div>
+        <UpdateAddressModal
+          isOpen={isUpdateModalOpen}
+          onClose={() => setIsUpdateModalOpen(false)}
+          address={selectedAddress || undefined}
+        />
+      </div>
+    </>
+  );
+}
