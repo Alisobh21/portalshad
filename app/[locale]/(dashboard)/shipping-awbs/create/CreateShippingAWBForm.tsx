@@ -45,7 +45,7 @@ interface FormData {
 export default function CreateShippingAWBForm() {
   const { wizardCurrentStep } = useSelector((state: RootState) => state.awbs);
   const methods = useForm<FormData>({
-    mode: "onChange",
+    mode: "onSubmit",
   });
   const dispatch = useDispatch();
   const t = useTranslations("shippingAWBs");

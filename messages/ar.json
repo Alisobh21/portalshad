@@ -821,6 +821,8 @@
     "descriptionPlaceholder": " وصف الشحنة",
     "weightPlaceholder": " وزن الشحنة بالكيلوجرام",
     "createAWB": "إصدار بوليصة الشحن",
+    "mustBeAtLeast": "يجب أن يكون على الأقل",
+    "characters": "أحرف",
     "shipmentMaxWeightValidation": "الحد الأقصى لوزن الشحنة هو 25 كجم",
     "numberOfPiecesValidation": "عدد الطرود يجب أن يكون أكبر من 0 وأقل من 6",
     "createAWBSuccess": "تم إصدار بوليصة الشحن بنجاح",
