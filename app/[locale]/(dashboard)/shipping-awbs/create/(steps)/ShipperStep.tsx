@@ -45,6 +45,7 @@ import {
 import type { RootState } from "@/store/store";
 import type { Address } from "@/store/slices/geolocationSlice";
 import { cn } from "@/lib/utils";
+import UpdateAddressModal from "@/components/UpdateAddressModal";
 // import UpdateAddressModal from "@/components/UpdateAddressModal";
 
 /* ================= Types ================= */
@@ -86,7 +87,7 @@ export default function ShipperStep() {
     (state: RootState) => state.geolocation
   );
   const { wizardCurrentStep } = useSelector((state: RootState) => state.awbs);
-  // const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [addressPopoverOpen, setAddressPopoverOpen] = useState(false);
   const [addressSearchQuery, setAddressSearchQuery] = useState("");
 
@@ -381,7 +382,7 @@ export default function ShipperStep() {
                   <TooltipTrigger asChild>
                     <Button
                       asChild
-                      variant="outline"
+                      variant="normal"
                       size="icon"
                       className="shrink-0"
                     >
@@ -420,17 +421,19 @@ export default function ShipperStep() {
             {/* Third Row: Alert if no shortAddress (full width) */}
             {!selectedAddress?.sa_short_address && (
               <Alert variant="warning" className="lg:col-span-2">
-                <AlertTitle>{t("nationalAddressNotFound")}</AlertTitle>
+                <AlertTitle className="dark:text-black">
+                  {t("nationalAddressNotFound")}
+                </AlertTitle>
                 <AlertDescription>
                   <div className="flex flex-col gap-3">
-                    <span>{t("SelectedNew")}</span>
+                    <span className="dark:text-black">{t("SelectedNew")}</span>
                     <Button
                       className="max-w-[120px] self-start"
-                      variant="primary"
+                      variant="wizard"
                       size="md"
                       onClick={() => {
                         dispatch(_setAddressInsertionType("shipper"));
-                        // setIsUpdateModalOpen(true);
+                        setIsUpdateModalOpen(true);
                       }}
                     >
                       {t("updateAddress")}
@@ -542,18 +545,18 @@ export default function ShipperStep() {
             <Button
               disabled={loaders?.getAddresses}
               className="w-full"
-              variant="primary"
+              variant="modal"
               onClick={submitShipperStep}
             >
               {t("next")}
             </Button>
           </div>
         </div>
-        {/* <UpdateAddressModal
+        <UpdateAddressModal
           isOpen={isUpdateModalOpen}
           onClose={() => setIsUpdateModalOpen(false)}
-          address={selectedAddress}
-        /> */}
+          address={selectedAddress || undefined}
+        />
       </div>
     </>
   );

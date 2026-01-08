@@ -45,6 +45,7 @@ import {
 import type { RootState } from "@/store/store";
 import type { Address } from "@/store/slices/geolocationSlice";
 import { cn } from "@/lib/utils";
+import UpdateAddressModal from "@/components/UpdateAddressModal";
 // import UpdateAddressModal from "@/components/UpdateAddressModal";
 
 /* ================= Types ================= */
@@ -112,6 +113,7 @@ export default function ConsigneeStep() {
   // const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [addressPopoverOpen, setAddressPopoverOpen] = useState(false);
   const [addressSearchQuery, setAddressSearchQuery] = useState("");
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
   const t = useTranslations("shippingAWBs");
   const tGeneral = useTranslations("General");
@@ -418,7 +420,7 @@ export default function ConsigneeStep() {
                   <TooltipTrigger asChild>
                     <Button
                       asChild
-                      variant="outline"
+                      variant="normal"
                       size="icon"
                       className="shrink-0"
                     >
@@ -463,11 +465,11 @@ export default function ConsigneeStep() {
                     <span>{t("SelectedNew")}</span>
                     <Button
                       className="max-w-[120px] self-start"
-                      variant="primary"
+                      variant="wizard"
                       size="md"
                       onClick={() => {
                         dispatch(_setAddressInsertionType("consignee"));
-                        // setIsUpdateModalOpen(true);
+                        setIsUpdateModalOpen(true);
                       }}
                     >
                       {t("updateAddress")}
@@ -612,18 +614,18 @@ export default function ConsigneeStep() {
             <Button
               disabled={loaders?.getConsigneeAddresses}
               className="w-full"
-              variant="primary"
+              variant="modal"
               onClick={submitConsigneeStep}
             >
               {t("next")}
             </Button>
           </div>
         </div>
-        {/* <UpdateAddressModal
+        <UpdateAddressModal
           isOpen={isUpdateModalOpen}
           onClose={() => setIsUpdateModalOpen(false)}
-          address={selectedAddress}
-        /> */}
+          address={selectedAddress || undefined}
+        />
       </div>
     </>
   );

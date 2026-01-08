@@ -91,7 +91,7 @@ export default function CreateShippingAWBForm() {
       stepNo: 3,
       key: "shipment",
       label: t("ShipmentInformation"),
-      icon: <BsFillBoxSeamFill size={19} />,
+      icon: <BsFillBoxSeamFill size={21} />,
     },
   ];
 
@@ -107,12 +107,10 @@ export default function CreateShippingAWBForm() {
                     <div
                       key={step?.key}
                       className={cn(
-                        "bg-neutral-200/20 dark:bg-neutral-700/20 pointer-events-none p-3",
-                        step?.stepNo > wizardCurrentStep
-                          ? "opacity-50"
-                          : step?.stepNo <= wizardCurrentStep
-                          ? "bg-primary/10 dark:bg-primary-100/10 text-primary-600"
-                          : ""
+                        "pointer-events-none p-3 transition-colors",
+                        step?.stepNo <= wizardCurrentStep
+                          ? "bg-orange-50 dark:bg-orange-950/20 text-orange-800 dark:text-orange-400"
+                          : "bg-neutral-200/20 dark:bg-neutral-700/20 opacity-50"
                       )}
                     >
                       <div className="flex items-center gap-2">
@@ -121,9 +119,8 @@ export default function CreateShippingAWBForm() {
                         <GoCheckCircleFill
                           size={18}
                           className={cn(
-                            "text-primary-600",
                             step?.stepNo < wizardCurrentStep
-                              ? "opacity-100"
+                              ? "text-orange-800 dark:text-orange-400 opacity-100"
                               : "opacity-0"
                           )}
                         />

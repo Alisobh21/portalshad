@@ -14,7 +14,7 @@ export default function InvalidFeedback({
   return (
     <Badge
       variant="danger"
-      className={`max-w-full w-full whitespace-normal break-words px-2 py-1 ${
+      className={`max-w-full w-full whitespace-normal break-words px-2 ${
         className || ""
       }`}
     >

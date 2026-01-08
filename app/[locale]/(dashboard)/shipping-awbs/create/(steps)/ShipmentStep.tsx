@@ -467,7 +467,7 @@ export default function ShipmentStep() {
             </Button>
             <Button
               className="w-full"
-              variant="primary"
+              variant="modal"
               disabled={
                 !watch("shipping_company") || watch("shipping_company") === ""
               }
