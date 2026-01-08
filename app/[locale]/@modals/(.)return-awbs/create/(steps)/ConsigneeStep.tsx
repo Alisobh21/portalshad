@@ -149,6 +149,15 @@ export default function ConsigneeStep() {
     setConsigneeType(defaultReturnConsigneeOpt || "");
   }, [defaultReturnConsigneeOpt]);
 
+  const hasInitializedConsigneeType = useRef(false);
+
+  useEffect(() => {
+    if (!hasInitializedConsigneeType.current) {
+      setConsigneeType("warehouses");
+      hasInitializedConsigneeType.current = true;
+    }
+  }, []);
+
   const warehouses = useMemo(() => {
     return (rawWarehouses as Warehouse[])?.map((warehouse) => ({
       id: warehouse?.identifier,
@@ -275,6 +284,7 @@ export default function ConsigneeStep() {
               value={consigneeType}
               onValueChange={handleConsigneeType}
               className="w-full"
+              defaultValue="warehouses"
             >
               <TabsList className="w-full">
                 <TabsTrigger value="warehouses" className="flex-1">
@@ -303,7 +313,11 @@ export default function ConsigneeStep() {
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder={t("returnAWBS.chooseWarehouse")} />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent
+                  position="popper"
+                  // side="top"
+                  className="z-[9999]"
+                >
                   {warehouses?.map((warehouse) => (
                     <SelectItem key={warehouse?.id} value={warehouse?.id || ""}>
                       {warehouse?.identifier}

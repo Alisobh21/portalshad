@@ -114,7 +114,7 @@ export default function CreateReturnAWBForm() {
     <>
       <Dialog open={open} onOpenChange={handleClose}>
         <DialogContent
-          className="z-[9999] max-w-4xl max-h-[90vh] overflow-y-auto p-4"
+          className="z-[9999] lg:max-w-4xl max-h-[90vh] overflow-y-auto p-4"
           showCloseButton={true}
         >
           <DialogHeader className="flex text-[24px] flex-col items-center gap-1">
