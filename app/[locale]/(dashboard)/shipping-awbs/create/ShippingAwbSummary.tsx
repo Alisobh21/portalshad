@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useTranslations } from "next-intl";
+import { useFormContext } from "react-hook-form";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import type { RootState } from "@/store/store";
@@ -28,18 +29,82 @@ export default function ShippingAwbSummary() {
   const { shipperStepValues, consigneeStepValues, wizardCurrentStep } =
     useSelector((state: RootState) => state.awbs);
   const t = useTranslations("shippingAWBs");
+  
+  // Get form context to watch live form values
+  const formMethods = useFormContext();
+  const { watch } = formMethods || { watch: () => "" };
+
+  // Watch form values in real-time
+  const shipperAddressId = watch("shipper_address_id");
+  const shipperName = watch("shipper_name");
+  const shipperCompany = watch("shipper_company");
+  const shipperPhone = watch("shipper_phone");
+  
+  const consigneeAddressId = watch("consignee_address_id");
+  const consigneeName = watch("consignee_name");
+  const consigneeCompany = watch("consignee_company");
+  const consigneePhone = watch("consignee_phone");
+  const consigneeEmail = watch("consignee_email");
 
   const shipperAddress = useMemo(() => {
-    return addresses?.find(
-      (address) => address?.id === shipperStepValues?.shipper_address_id
+    const addressId = shipperAddressId || shipperStepValues?.shipper_address_id;
+    const foundAddress = addresses?.find(
+      (address) => address?.id === addressId
     ) as AddressWithDetails | undefined;
-  }, [shipperStepValues?.shipper_address_id, addresses]);
+    
+    // Return address with live form values if available
+    if (foundAddress) {
+      return {
+        ...foundAddress,
+        name: shipperName || foundAddress?.name || shipperStepValues?.shipper_name || "",
+        company_name: shipperCompany || foundAddress?.company_name || shipperStepValues?.shipper_company || "",
+        mobile_number: shipperPhone || foundAddress?.mobile_number || shipperStepValues?.shipper_phone || "",
+      };
+    }
+    // If address not found but we have form values, return a minimal address object
+    if (addressId && (shipperName || shipperCompany || shipperPhone)) {
+      return {
+        id: addressId,
+        full_address: shipperStepValues?.shipper_full_address?.full_address || "",
+        name: shipperName || shipperStepValues?.shipper_name || "",
+        company_name: shipperCompany || shipperStepValues?.shipper_company || "",
+        mobile_number: shipperPhone || shipperStepValues?.shipper_phone || "",
+      } as AddressWithDetails;
+    }
+    return undefined;
+  }, [shipperAddressId, shipperStepValues?.shipper_address_id, addresses, shipperName, shipperCompany, shipperPhone, shipperStepValues]);
 
   const consigneeAddress = useMemo(() => {
-    return consigneeAddresses?.find(
-      (address) => address?.id === consigneeStepValues?.consignee_address_id
+    const addressId = consigneeAddressId || consigneeStepValues?.consignee_address_id;
+    const foundAddress = consigneeAddresses?.find(
+      (address) => address?.id === addressId
     ) as AddressWithDetails | undefined;
-  }, [consigneeStepValues?.consignee_address_id, consigneeAddresses]);
+    
+    // Return address with live form values if available
+    if (foundAddress) {
+      return {
+        ...foundAddress,
+        name: consigneeName || foundAddress?.name || consigneeStepValues?.consignee_name || "",
+        company_name: consigneeCompany || foundAddress?.company_name || consigneeStepValues?.consignee_company || "",
+        mobile_number: consigneePhone || foundAddress?.mobile_number || consigneeStepValues?.consignee_phone || "",
+        phone: consigneePhone || foundAddress?.phone || consigneeStepValues?.consignee_phone || "",
+        email: consigneeEmail || foundAddress?.email || consigneeStepValues?.consignee_email || "",
+      };
+    }
+    // If address not found but we have form values, return a minimal address object
+    if (addressId && (consigneeName || consigneeCompany || consigneePhone || consigneeEmail)) {
+      return {
+        id: addressId,
+        full_address: consigneeStepValues?.consignee_full_address?.full_address || "",
+        name: consigneeName || consigneeStepValues?.consignee_name || "",
+        company_name: consigneeCompany || consigneeStepValues?.consignee_company || "",
+        mobile_number: consigneePhone || consigneeStepValues?.consignee_phone || "",
+        phone: consigneePhone || consigneeStepValues?.consignee_phone || "",
+        email: consigneeEmail || consigneeStepValues?.consignee_email || "",
+      } as AddressWithDetails;
+    }
+    return undefined;
+  }, [consigneeAddressId, consigneeStepValues?.consignee_address_id, consigneeAddresses, consigneeName, consigneeCompany, consigneePhone, consigneeEmail, consigneeStepValues]);
 
   return (
     <Card className="dark:bg-default-50/70 h-full p-5 lg:p-7 hidden xl:flex flex-col gap-3">
@@ -50,7 +115,7 @@ export default function ShippingAwbSummary() {
         </div>
 
         <div className="flex flex-col">
-          {Object.keys(shipperStepValues)?.length === 0 && (
+          {!shipperAddressId && Object.keys(shipperStepValues)?.length === 0 && (
             <Image
               width={350}
               height={350}
@@ -60,7 +125,7 @@ export default function ShippingAwbSummary() {
             />
           )}
 
-          {Object.keys(shipperStepValues)?.length > 0 &&
+          {(shipperAddressId || Object.keys(shipperStepValues)?.length > 0) &&
             wizardCurrentStep >= 1 && (
               <div className="relative">
                 <div className="absolute top-0 start-[-6px]">
@@ -102,7 +167,7 @@ export default function ShippingAwbSummary() {
             )}
 
           {/* Consignee Information */}
-          {Object.keys(consigneeStepValues)?.length > 0 &&
+          {(consigneeAddressId || Object.keys(consigneeStepValues)?.length > 0) &&
             wizardCurrentStep >= 2 && (
               <div className="relative">
                 <div className="absolute top-0 start-[-6px]">

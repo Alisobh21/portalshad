@@ -24,7 +24,7 @@ import { SuccessToast } from "@/components/Toasts";
 import type { RootState } from "@/store/store";
 import axiosPrivate from "@/axios/axios";
 import { cn } from "@/lib/utils";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 const Player = dynamic(
   () => import("@lottiefiles/react-lottie-player").then((mod) => mod.Player),
@@ -89,7 +89,8 @@ export default function CreateScreen() {
       );
 
       if (response?.data?.success) {
-        toast(<SuccessToast msg={t("createAWBSuccess")} />);
+        toast.success(t("createAWBSuccess"));
+        // toast(<SuccessToast msg={t("createAWBSuccess")} />);
         setCreateSuccess(true);
         reset();
         dispatch(_resetWizardSteps());
