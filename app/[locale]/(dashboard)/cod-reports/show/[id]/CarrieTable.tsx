@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ChangeEvent } from "react";
+import { useState, type ChangeEvent, Fragment } from "react";
 import { useSelector } from "react-redux";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -183,10 +183,12 @@ const CarrierTable = ({
       <div className="overflow-auto p-5">
         <Table className="text-sm text-center p-5 lg:p-7 z-0 min-w-[600px]">
           <TableHeader>
-            <TableHead className="text-center">{t("carrier")}</TableHead>
-            <TableHead className="text-center">{t("validation")}</TableHead>
-            <TableHead className="text-center">{t("processed")}</TableHead>
-            <TableHead className="text-center">{t("file")}</TableHead>
+            <TableRow>
+              <TableHead className="text-center">{t("carrier")}</TableHead>
+              <TableHead className="text-center">{t("validation")}</TableHead>
+              <TableHead className="text-center">{t("processed")}</TableHead>
+              <TableHead className="text-center">{t("file")}</TableHead>
+            </TableRow>
           </TableHeader>
 
           <TableBody>
@@ -225,8 +227,8 @@ const CarrierTable = ({
                   const showStats = file?.validating_status === "Valid";
 
                   return (
-                    <>
-                      <TableRow key={key}>
+                    <Fragment key={key}>
+                      <TableRow>
                         <TableCell>
                           <div className="flex flex-col items-center justify-center gap-1">
                             {file?.url && (
@@ -362,7 +364,7 @@ const CarrierTable = ({
                           </TableCell>
                         </TableRow>
                       )}
-                    </>
+                    </Fragment>
                   );
                 })
             )}
