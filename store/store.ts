@@ -11,6 +11,7 @@ import orderSlice from "./slices/orderSlice";
 import inventorySlice from "./slices/inventorySlice";
 import productsSlice from "./slices/productsSlice";
 import purchaseSlice from "./slices/purchaseSlice";
+import reportSlice from "./slices/reportSlice";
 export const store = configureStore({
   reducer: {
     app: appReducer,
@@ -25,6 +26,7 @@ export const store = configureStore({
     inventory: inventorySlice,
     products: productsSlice,
     purchase: purchaseSlice,
+    reports: reportSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
