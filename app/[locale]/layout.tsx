@@ -10,6 +10,7 @@ import { ibmPlex, rubik } from "@/config/fonts";
 import ConditionalLayout from "./ConditionalLayout";
 import { Providers } from "./provider";
 import { Toaster } from "@/components/ui/sonner";
+import ZohoChat from "@/components/ZohoChat";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -58,6 +59,7 @@ export default async function LocaleLayout({
                 <ConditionalLayout>
                   {children}
                   {modals}
+                  <ZohoChat />
                 </ConditionalLayout>
                 <Toaster richColors closeButton expand position="top-center" />
               </NextIntlClientProvider>

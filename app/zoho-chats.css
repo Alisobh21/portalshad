@@ -1,0 +1,35 @@
+/* Change the chat icon */
+#zsiq_float {
+  transform: scale(0.77) !important;
+  border-radius: 50% !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+  background-color: #ea7831 !important; /* Your brand color */
+}
+/* Change the chat icon */
+#zsiq_float .zsiq_flt_rel {
+  background-color: #ea7831 !important;
+}
+
+/* Change the icon image */
+#zsiq_float img {
+  filter: brightness(0) invert(1) !important;
+  width: 30px !important;
+  height: 30px !important;
+}
+
+/* Change the badge styling */
+#zsiq_float .badge {
+  background: #ef4444 !important;
+  font-size: 12px !important;
+}
+
+/* Position adjustments */
+#zsiq_float {
+  right: 20px !important;
+  bottom: 20px !important;
+}
+
+/* 
+transform: scale(0.75) !important;
+box-shadow: 0 2px 9px rgba(0, 0, 0, 0.2) !important;
+background-color: #ea7831 !important; */
