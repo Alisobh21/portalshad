@@ -13,11 +13,9 @@ export default function ReportTable() {
     });
   }, []);
   return (
-    <Card className="p-5">
-      <ReactApiTable
-        table={tableStructure}
-        tableStructureLoading={tableStructureLoading}
-      />
-    </Card>
+    <ReactApiTable
+      table={tableStructure}
+      tableStructureLoading={tableStructureLoading}
+    />
   );
 }

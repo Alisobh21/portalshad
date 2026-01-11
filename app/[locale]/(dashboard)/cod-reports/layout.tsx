@@ -25,7 +25,7 @@ export default function CodReportsLayout({
   return (
     <section className="py-[10px]">
       <Card className="mb-4 dark:bg-default-50/80 backdrop-blur-sm">
-        <CardContent className="p-[30px] relative z-20">
+        <CardContent className="relative z-20">
           <PageHeader />
         </CardContent>
       </Card>

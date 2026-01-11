@@ -49,11 +49,8 @@ export default function BreadCrumb({
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
 
-  useEffect(() => {
-    if (currentPage) {
-      dispatch(_getCurrentPage(currentPage));
-    }
-  }, [currentPage, dispatch]);
+  // Don't dispatch currentPage here as it will overwrite the object structure
+  // The CurrentPageFetcher component handles setting the page state
 
   return (
     <Breadcrumb

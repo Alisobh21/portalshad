@@ -34,12 +34,14 @@ export default function PageHeader({ hideBreadcrumb }: PageHeaderProps) {
     typeof currentPage === "string" ? undefined : currentPage.customContent;
 
   return (
-    <div className="max-h-4 flex flex-col gap-2 justify-center">
+    <div className="flex flex-col gap-2 justify-center">
       <div>{!hideBreadcrumb && <BreadCrumb currentPage={title} />}</div>
 
       <h1 className="font-black">{title}</h1>
       {subtitle && <p className="">{subtitle}</p>}
-      {subheading && <p className="text-muted">{subheading}</p>}
+      {subheading && (
+        <p className="text-gray-500 dark:text-gray-400">{subheading}</p>
+      )}
       {customContent && customContent}
     </div>
   );
