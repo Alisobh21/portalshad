@@ -13,8 +13,8 @@ export default async function PendingOrdersLayout({
   const t = await getTranslations("Orders");
   return (
     <section className="py-[10px]">
-      <Card className="dark:bg-default-50/80 mb-5 backdrop-blur-sm">
-        <CardContent className="p-[30px] relative z-20">
+      <Card className="dark:bg-default-50/80 backdrop-blur-sm">
+        <CardContent className="relative z-20">
           <div className="mb-3">
             <BreadCrumb />
           </div>

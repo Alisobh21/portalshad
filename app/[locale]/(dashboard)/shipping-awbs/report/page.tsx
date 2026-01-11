@@ -6,7 +6,7 @@ export default async function ShippingAWBsReportPage() {
   const t = await getTranslations("shippingAWBs");
 
   return (
-    <div className="p-4">
+    <div>
       <CurrentPageFetcher page={t("reportHeading")} />
       <ShippingAwbsTable />
     </div>
