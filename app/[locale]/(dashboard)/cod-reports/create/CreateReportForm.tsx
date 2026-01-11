@@ -11,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ErrorToast, SuccessToast } from "@/components/Toasts";
 import axiosPrivate from "@/axios/axios";
 import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
@@ -78,7 +77,7 @@ const CreateReportForm = (): ReactElement => {
 
     try {
       if (!file) {
-        toast.error(<ErrorToast msg={t("nofile")} />);
+        toast.error(t("nofile") || "No file selected");
         setLoading(false);
         return;
       }
@@ -117,9 +116,8 @@ const CreateReportForm = (): ReactElement => {
           }
           setProgress(Math.round(((i + 1) / totalChunks) * 100));
         } catch (err) {
-          toast.error(
-            <ErrorToast msg={`${t("chunckfail")}, ${i}, ${String(err)}`} />
-          );
+          toast.error(`${t("chunckfail")}, ${i}, ${String(err)}`);
+
           setLoading(false);
           return;
         }
@@ -136,20 +134,16 @@ const CreateReportForm = (): ReactElement => {
           payload
         );
         if (response?.data?.success) {
-          toast.success(<SuccessToast msg={t("reportSuccess")} />);
+          toast.success(t("reportSuccess") || "Report processed successfully");
           router.push("/cod-reports");
         }
       } catch (err) {
         console.error("Failed to send month and year", err);
-        toast.error(
-          <ErrorToast msg={t("reportError") || "Error processing report"} />
-        );
+        toast.error(t("reportError") || "Error processing report");
       }
     } catch (e) {
       console.error("Error uploading report", e);
-      toast.error(
-        <ErrorToast msg={t("uploadError") || "Error uploading report"} />
-      );
+      toast.error(t("uploadError") || "Error uploading report");
     } finally {
       setLoading(false);
       setProgress(0);
