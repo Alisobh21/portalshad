@@ -12,8 +12,8 @@ export default async function PendingOrdersLayout({
 }: PendingOrdersLayoutProps): Promise<ReactElement> {
   const t = await getTranslations("Orders");
   return (
-    <section className="py-[10px]">
-      <Card className="dark:bg-default-50/80 backdrop-blur-sm">
+    <section className="">
+      <Card className="mb-4 dark:bg-default-50/80 backdrop-blur-sm">
         <CardContent className="relative z-20">
           <div className="mb-3">
             <BreadCrumb />

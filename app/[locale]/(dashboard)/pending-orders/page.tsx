@@ -5,7 +5,7 @@ import PendingOrdersTable from "./PendingOrdersTable";
 export default async function PendingOrdersPage() {
   const t = await getTranslations("Orders");
   return (
-    <div className="p-4">
+    <div>
       <CurrentPageFetcher page={t("pendingOrders")} />
       <PendingOrdersTable />
     </div>
