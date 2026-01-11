@@ -82,7 +82,7 @@ export default function WelcomeCard(): ReactElement {
   return (
     <>
       {/* Welcome Header */}
-      <Card className="mb-2 backdrop-blur-sm bg-white/90 dark:bg-neutral-900/80 flex flex-col items-center text-center">
+      <Card className="mb-2 flex flex-col items-center text-center ">
         <CardContent className="p-[30px] flex flex-col items-center text-center">
           <div className="flex flex-col lg:flex-row lg:justify-between gap-2 w-full">
             <div>
@@ -99,7 +99,7 @@ export default function WelcomeCard(): ReactElement {
       </Card>
 
       {/* Cards + Table */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-2 items-start">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-start">
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
           {cards.map((card) => (
             <Card
@@ -140,7 +140,7 @@ export default function WelcomeCard(): ReactElement {
           ))}
         </div>
 
-        <div className="flex-1">
+        <div className="flex-1 ">
           <TableWeek />
         </div>
       </div>
