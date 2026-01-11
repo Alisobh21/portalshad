@@ -37,7 +37,6 @@ import {
 import { Loader2, Eraser, Search } from "lucide-react";
 
 import HeaderForm from "@/components/HeaderForm";
-import { SuccessToast } from "@/components/Toasts";
 import axiosPrivate from "@/axios/axios";
 import { getProductsQry } from "@/helpers/queryFunctions";
 import {

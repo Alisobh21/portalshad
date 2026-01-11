@@ -21,7 +21,6 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
-import { ErrorToast, SuccessToast } from "@/components/Toasts";
 import axiosPrivate from "@/axios/axios";
 import type { RootState } from "@/store/store";
 import type { CarrierData } from "@/store/slices/reportSlice";
@@ -100,7 +99,7 @@ const CarrierTable = ({
     const selectedFile = fileInputs[key]?.file;
 
     if (!selectedFile) {
-      toast.error(<ErrorToast msg={t("nofile")} />);
+      toast.error(t("nofile") || "No file selected");
       return;
     }
 
@@ -150,15 +149,13 @@ const CarrierTable = ({
       );
 
       if (response?.data?.success) {
-        toast.success(<SuccessToast msg={t("reportSuccess")} />);
+        toast.success(t("reportSuccess") || "Report processed successfully");
         fetchReport();
       } else {
-        toast.error(
-          <ErrorToast msg={t("processingFailed") || "Processing failed"} />
-        );
+        toast.error(t("processingFailed") || "Processing failed");
       }
     } catch {
-      toast.error(<ErrorToast msg={t("uploadFailed") || "Upload failed"} />);
+      toast.error(t("uploadFailed") || "Upload failed");
     } finally {
       setUploadingKey(null);
       setProgress(0);
@@ -173,25 +170,17 @@ const CarrierTable = ({
 
   return (
     <div className="relative">
-      <div className="absolute top-[-5px] end-[-5px] z-10">
-        <Button
-          size="icon"
-          variant="ghost"
-          disabled={refreshing}
+      <div className="absolute top-[-15px] end-[5px] z-10">
+        <IoReloadCircleSharp
           onClick={handleRefresh}
-          className="text-primary focus:outline-none focus:ring-0 p-0 data-[hover=true]:bg-transparent"
-          aria-label={t("refresh") || "Refresh"}
-        >
-          <IoReloadCircleSharp
-            size={28}
-            className={`transition-transform ${
-              refreshing ? "animate-spin" : ""
-            }`}
-          />
-        </Button>
+          size={28}
+          className={`transition-transform cursor-pointer text-[#ea7831] focus:outline-none focus:ring-0 p-0 data-[hover=true]:bg-transparent ${
+            refreshing ? "animate-spin" : ""
+          }`}
+        />
       </div>
 
-      <div className="overflow-auto">
+      <div className="overflow-auto p-5">
         <Table className="text-sm text-center p-5 lg:p-7 z-0 min-w-[600px]">
           <TableHeader>
             <TableHead className="text-center">{t("carrier")}</TableHead>

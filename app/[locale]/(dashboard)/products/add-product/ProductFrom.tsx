@@ -27,7 +27,6 @@ import { MdClose, MdCreateNewFolder } from "react-icons/md";
 
 /* Components */
 import HeaderForm from "@/components/HeaderForm";
-import { ErrorToast } from "@/components/Toasts";
 
 /* ---------------- Types ---------------- */
 
@@ -148,11 +147,11 @@ export default function ProductForm() {
         toast.success(t("successMsg"));
         router.push("/products");
       } else {
-        toast(<ErrorToast msg={t("errorMsg")} />);
+        toast.error(t("errorMsg") || "Error adding product");
       }
     } catch (error) {
       console.error(error);
-      toast(<ErrorToast msg={t("errorMsg")} />);
+      toast.error(t("errorMsg") || "Error adding product");
     } finally {
       setLoading(false);
     }

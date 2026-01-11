@@ -22,7 +22,6 @@ import {
   _toggleGeoloactionLoaders,
 } from "@/store/slices/geolocationSlice";
 import { _setDefConsigneeOpt } from "@/store/slices/awbsSlice";
-import { SuccessToast } from "@/components/Toasts";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -381,23 +380,31 @@ export default function UpdateAddressModal({
             dispatch(_insertReturnConsigneeAddress([addressData]));
             dispatch(_setDefConsigneeOpt("consigneeAddress"));
           }
-          toast(<SuccessToast msg={"Address updated successfully"} />);
+          toast.success(
+            t("addressUpdatedSuccess") || "Address updated successfully"
+          );
           onClose();
           router?.back();
         } else {
           if (addressInsertionType === "shipper") {
             dispatch(_insertNewAddress([addressData]));
-            toast(<SuccessToast msg={"Address updated successfully"} />);
+            toast.success(
+              t("addressUpdatedSuccess") || "Address updated successfully"
+            );
             onClose();
             router?.back();
           } else if (addressInsertionType === "consignee") {
             dispatch(_insertNewConsigneeAddress([addressData]));
-            toast(<SuccessToast msg={"Address updated successfully"} />);
+            toast.success(
+              t("addressUpdatedSuccess") || "Address updated successfully"
+            );
             onClose();
             router?.back();
           }
         }
-        toast(<SuccessToast msg={"Address updated successfully"} />);
+        toast.success(
+          t("addressUpdatedSuccess") || "Address updated successfully"
+        );
         onClose();
       },
       undefined,

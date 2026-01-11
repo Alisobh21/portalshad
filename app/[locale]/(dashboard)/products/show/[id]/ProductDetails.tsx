@@ -19,7 +19,6 @@ import { BiEditAlt } from "react-icons/bi";
 import { MdClose, MdCreateNewFolder } from "react-icons/md";
 
 /* components */
-import { ErrorToast } from "@/components/Toasts";
 import { Label } from "@radix-ui/react-label";
 
 /* ---------------- Types ---------------- */
@@ -117,11 +116,7 @@ const ProductDetails: React.FC<Props> = ({ fetchProduct, id }) => {
     });
 
     if (oversized.length) {
-      toast(
-        <ErrorToast
-          msg={`${tGeneral("imageTooLarge")}: ${oversized.join(" | ")}`}
-        />
-      );
+      toast.error(`${tGeneral("imageTooLarge")}: ${oversized.join(" | ")}`);
     }
   };
   const handleRemoveImage = (index: number) => {

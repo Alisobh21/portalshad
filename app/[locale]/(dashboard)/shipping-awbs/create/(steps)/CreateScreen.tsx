@@ -20,7 +20,6 @@ import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import Popup from "@/components/Popup";
-import { SuccessToast } from "@/components/Toasts";
 import type { RootState } from "@/store/store";
 import axiosPrivate from "@/axios/axios";
 import { cn } from "@/lib/utils";
@@ -90,7 +89,6 @@ export default function CreateScreen() {
 
       if (response?.data?.success) {
         toast.success(t("createAWBSuccess"));
-        // toast(<SuccessToast msg={t("createAWBSuccess")} />);
         setCreateSuccess(true);
         reset();
         dispatch(_resetWizardSteps());

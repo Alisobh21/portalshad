@@ -896,7 +896,9 @@
     "nationalAddressLength": "National address must be 8 characters",
     "nationalAddressPattern": "Must be 4 letters followed by 4 digits (e.g. RAGI2929)",
     "searchingNationalAddress": "Searching for national address data",
-    "updateAddress": "Update Address"
+    "updateAddress": "Update Address",
+    "addressInsertedSuccess": "Address inserted successfully",
+    "addressUpdatedSuccess": "Address updated successfully"
   },
   "Maintenance": {
     "heading": "We've got something special just for you—hang tight, it's worth the wait",

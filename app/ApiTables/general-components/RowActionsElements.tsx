@@ -102,7 +102,7 @@ export const RedirectRowActionElement = ({ action }: any) => {
     >
       <Link
         className="inline-flex items-center gap-1"
-        href={action?.redirect_routes?.api?.replace(/^\/api/, "")}
+        href={action?.redirect_routes?.web?.replace(/^\/api/, "")}
       >
         <MdInsertLink />
         {fired ? "Redirecting..." : action?.button?.label}
