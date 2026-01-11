@@ -1,0 +1,27 @@
+import BreadCrumb from "@/components/Breadcrumb";
+import { Card, CardContent } from "@/components/ui/card";
+import { getTranslations } from "next-intl/server";
+import type { ReactElement, ReactNode } from "react";
+
+interface PendingOrdersLayoutProps {
+  children: ReactNode;
+}
+
+export default async function PendingOrdersLayout({
+  children,
+}: PendingOrdersLayoutProps): Promise<ReactElement> {
+  const t = await getTranslations("Orders");
+  return (
+    <section className="py-[10px]">
+      <Card className="dark:bg-default-50/80 mb-5 backdrop-blur-sm">
+        <CardContent className="p-[30px] relative z-20">
+          <div className="mb-3">
+            <BreadCrumb />
+          </div>
+          <h1 className="font-normal text-2xl">{t("pendingOrders")}</h1>
+        </CardContent>
+      </Card>
+      {children}
+    </section>
+  );
+}

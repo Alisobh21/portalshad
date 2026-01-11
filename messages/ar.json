@@ -367,7 +367,8 @@
     "edite": "تعديل",
     "enterNewSku": "أدخل رمز SKU الجديد",
     "productNotFound": "المنتج غير موجود",
-    "productAlreadyExists": "هذا المنتج مضاف بالفعل"
+    "productAlreadyExists": "هذا المنتج مضاف بالفعل",
+    "noItems": "لا توجد عناصر"
   },
   "TableProduct": {
     "product": "اسم المنتج",

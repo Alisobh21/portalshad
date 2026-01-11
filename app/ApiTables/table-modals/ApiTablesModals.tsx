@@ -119,7 +119,7 @@ function ApiTablesModals() {
       <Popup
         status={customControlAction}
         closeModal={handleCloseModal}
-        containerClass={`max-w-2xl`}
+        containerClass={`min-w-3xl`}
         isVisible={!!customControlAction}
       >
         {customControlAction?.url?.api?.includes(

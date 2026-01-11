@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface ShippingAddress {
   address1?: string;
@@ -204,14 +205,16 @@ export default function EditPendingOrder({ action }: EditPendingOrderProps) {
 
   return (
     <>
-      <header className="pb-5 text-center">
-        <h5>{t("editOrder")}</h5>
-      </header>
+      <DialogHeader className="pb-5">
+        <DialogTitle className="text-center text-lg font-semibold">
+          {t("editOrder")}
+        </DialogTitle>
+      </DialogHeader>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(submitCustomControlForm)}
           noValidate
-          className="pt-5 grid grid-cols-1 lg:grid-cols-2 gap-4"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-4"
         >
           {renderField(
             "address1",
@@ -306,9 +309,9 @@ export default function EditPendingOrder({ action }: EditPendingOrderProps) {
             true
           )}
 
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 pt-2">
             <Button
-              variant="default"
+              variant="modal"
               size="md"
               className="w-full"
               type="submit"

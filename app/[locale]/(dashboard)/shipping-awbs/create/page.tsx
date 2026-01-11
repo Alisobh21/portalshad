@@ -11,7 +11,7 @@ export default async function CreateShippingAWBPage() {
     <>
       <Suspense fallback={<PageSkeleton />}>
         <CurrentPageFetcher page={t("createShippingAwb")} />
-        <CreateShippingAWBForm />
+            <CreateShippingAWBForm />
       </Suspense>
     </>
   );

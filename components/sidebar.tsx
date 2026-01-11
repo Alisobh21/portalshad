@@ -248,7 +248,10 @@ function SidebarInner({ variant }: { variant: SidebarVariant }) {
 
           return (
             <DropdownMenu key={link.key}>
-              <DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger
+                asChild
+                className="border-none focus:ring-0! focus:ring-offset-0!"
+              >
                 <Button
                   variant="ghost"
                   className={`w-full text-wrap px-3 h-auto ${

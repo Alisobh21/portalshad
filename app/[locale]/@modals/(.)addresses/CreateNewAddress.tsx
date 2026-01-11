@@ -633,12 +633,12 @@ export default function CreateNewAddress() {
                   open={cityPopoverOpen}
                   onOpenChange={setCityPopoverOpen}
                 >
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className="w-full justify-between"
-                    >
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  className="w-full justify-between"
+                >
                       <span
                         className={cn(
                           "truncate flex-1",
@@ -657,61 +657,61 @@ export default function CreateNewAddress() {
                           locale === "ar" ? "mr-2" : "ml-2"
                         )}
                       />
-                    </Button>
-                  </PopoverTrigger>
+                </Button>
+              </PopoverTrigger>
 
                   <PopoverContent
                     className="min-w-[var(--radix-popover-trigger-width)] p-0 z-[10000]"
                     align={locale === "ar" ? "end" : "start"}
                   >
                     <Command shouldFilter={false}>
-                      <CommandInput
+                  <CommandInput
                         placeholder=""
-                        value={searchCityQuery}
+                    value={searchCityQuery}
                         onValueChange={(value) => {
-                          setSearchCityQuery(value);
-                          handleCitySearch(value);
-                        }}
-                      />
+                      setSearchCityQuery(value);
+                      handleCitySearch(value);
+                    }}
+                  />
 
-                      <CommandList>
-                        {searchCityLoading ? (
-                          <div className="flex items-center justify-center p-4">
-                            <Spinner />
-                          </div>
+                  <CommandList>
+                    {searchCityLoading ? (
+                      <div className="flex items-center justify-center p-4">
+                        <Spinner />
+                      </div>
                         ) : searchCityResult.length === 0 ? (
-                          <CommandEmpty>
+                        <CommandEmpty>
                             {t("typeThreeLettersPlaceholder")}
-                          </CommandEmpty>
+                        </CommandEmpty>
                         ) : (
-                          <CommandGroup>
-                            {searchCityResult.map((city) => {
-                              const cityName = String(
-                                city[
-                                  `name_${locale}` as keyof CitySearchResult
-                                ] || ""
-                              );
+                        <CommandGroup>
+                          {searchCityResult.map((city) => {
+                            const cityName = String(
+                              city[
+                                `name_${locale}` as keyof CitySearchResult
+                              ] || ""
+                            );
 
-                              return (
-                                <CommandItem
-                                  key={city.id}
-                                  value={cityName}
-                                  onSelect={() => {
+                            return (
+                              <CommandItem
+                                key={city.id}
+                                value={cityName}
+                                onSelect={() => {
                                     field.onChange(cityName);
                                     setSearchCityQuery(cityName);
-                                    setCityPopoverOpen(false);
-                                  }}
-                                >
-                                  {cityName}
-                                </CommandItem>
-                              );
-                            })}
-                          </CommandGroup>
-                        )}
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
+                                  setCityPopoverOpen(false);
+                                }}
+                              >
+                                {cityName}
+                              </CommandItem>
+                            );
+                          })}
+                        </CommandGroup>
+                    )}
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
               )}
             />
 

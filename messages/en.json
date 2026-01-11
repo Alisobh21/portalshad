@@ -305,7 +305,8 @@
     "edite": "Edite",
     "enterNewSku": "Enter the new SKU",
     "productNotFound": "Product not found",
-    "productAlreadyExists": "This product is already added"
+    "productAlreadyExists": "This product is already added",
+    "noItems": "No items found"
   },
   "OrderColumns": {
     "orderNumber": "Order Number",

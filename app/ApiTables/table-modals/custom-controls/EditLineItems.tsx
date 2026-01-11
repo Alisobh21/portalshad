@@ -194,7 +194,7 @@ export default function EditLineItems({ action }: EditLineItemsProps) {
                   <TableCell>{item?.sku || "-"}</TableCell>
                   <TableCell>
                     <Button
-                      variant="outline"
+                      variant="normal"
                       size="sm"
                       type="button"
                       onClick={() => handleEditClick(index, item?.sku)}
@@ -218,7 +218,7 @@ export default function EditLineItems({ action }: EditLineItemsProps) {
         </Table>
 
         {editRowIndex !== null && (
-          <div className="absolute inset-0 flex items-center justify-center flex-col z-[99] bg-background/90 rounded-xl p-5 border shadow-md">
+          <div className="absolute inset-0 flex items-center justify-center flex-col z-9999 bg-background rounded-xl p-5 border shadow-md">
             <IoMdCloseCircle
               size={22}
               className="absolute ltr:top-2 ltr:right-2 rtl:top-2 rtl:left-2 cursor-pointer"
@@ -235,7 +235,7 @@ export default function EditLineItems({ action }: EditLineItemsProps) {
                 className="flex-1"
               />
               <Button
-                variant="default"
+                variant="closeModal"
                 size="sm"
                 type="button"
                 onClick={handleSearch}
@@ -258,7 +258,7 @@ export default function EditLineItems({ action }: EditLineItemsProps) {
         )}
 
         <Button
-          variant="default"
+          variant="modal"
           size="md"
           className="w-full"
           type="submit"
