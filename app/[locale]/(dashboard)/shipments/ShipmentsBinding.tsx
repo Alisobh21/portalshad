@@ -112,7 +112,7 @@ export default function ShipmentsBinding({
     <div className="flex flex-col gap-5">
       <div className="flex pb-5">
         <Tabs value={timeScope} onValueChange={setTimeScope}>
-          <TabsList className="bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600/50">
+          <TabsList className="bg-[#f4f4f5]  dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600/50 border-none">
             <TabsTrigger value="current_month" className="px-5">
               {tShipments("currentMonthShipments")}
             </TabsTrigger>
