@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import type { ReactNode } from "react";
 
 type Carrier = string;
 type Country = { id: string | number; name: string };
@@ -8,8 +9,15 @@ type ShippingMethod = { id: string | number; name: string };
 type AppEnums = Record<string, unknown> | null;
 type AppNavigator = "web" | "mobile" | string;
 
+interface CurrentPage {
+  title: string;
+  subtitle?: string;
+  subheading?: string;
+  customContent?: ReactNode;
+}
+
 interface AppState {
-  currentPage: string | null;
+  currentPage: string | CurrentPage | null;
   countries: Country[];
   carriers: Carrier[];
   suppliers: Supplier[];
@@ -60,7 +68,10 @@ const appSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
-    _getCurrentPage: (state, action: PayloadAction<string | null>) => {
+    _getCurrentPage: (
+      state,
+      action: PayloadAction<string | CurrentPage | null>
+    ) => {
       state.currentPage = action.payload;
     },
     _getAppEnums: (state, action: PayloadAction<AppEnums>) => {

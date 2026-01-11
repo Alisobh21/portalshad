@@ -7,8 +7,15 @@ import { usePathname } from "@/i18n/navigation";
 import { _getCurrentPage } from "@/store/slices/appSlice";
 import type { AppDispatch } from "@/store/store";
 
+interface CurrentPage {
+  title: string;
+  subtitle?: string;
+  subheading?: string;
+  customContent?: React.ReactNode;
+}
+
 interface CurrentPageFetcherProps {
-  page: string | null;
+  page: string | CurrentPage | null;
 }
 
 export default function CurrentPageFetcher({
