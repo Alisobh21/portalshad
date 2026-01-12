@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import "../styles/zoho-chat.css";
 
 export default function ZohoChat(): null {
   useEffect(() => {

@@ -726,3 +726,28 @@ button[data-testid*="expander-button"] {
   transition-timing-function: cubic-bezier(0.4, 0, 1, 1) !important;
   margin-inline-start: 0.75rem !important;
 }
+
+/* Zoho Chat Widget Styles */
+#zsiq_float {
+  transform: scale(0.77) !important;
+  border-radius: 50% !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+  background-color: #ea7831 !important;
+  right: 20px !important;
+  bottom: 20px !important;
+}
+
+#zsiq_float .zsiq_flt_rel {
+  background-color: #ea7831 !important;
+}
+
+#zsiq_float img {
+  filter: brightness(0) invert(1) !important;
+  width: 30px !important;
+  height: 30px !important;
+}
+
+#zsiq_float .badge {
+  background: #ef4444 !important;
+  font-size: 12px !important;
+}
