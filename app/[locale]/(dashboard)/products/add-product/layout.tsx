@@ -22,7 +22,7 @@ export default function AddProductLayout({
   return (
     <section className="py-[10px]">
       <Card className="mb-4">
-        <CardContent className="p-[30px] relative z-[20] backdrop-blur-sm">
+        <CardContent className="px-[30px] relative z-[20] backdrop-blur-sm">
           <PageHeader />
         </CardContent>
       </Card>

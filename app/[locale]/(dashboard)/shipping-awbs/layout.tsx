@@ -36,7 +36,7 @@ export default async function ShippingAWBsLayout({
     <>
       <section className="py-[10px]">
         <Card className="dark:bg-default-50/80 mb-4 backdrop-blur-sm">
-          <CardContent className="p-[30px] relative z-[20] backdrop-blur-sm">
+          <CardContent className="px-[30px] relative z-[20] backdrop-blur-sm">
             <PageHeader />
           </CardContent>
         </Card>
