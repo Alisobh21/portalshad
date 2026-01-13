@@ -83,7 +83,7 @@ export default function WelcomeCard(): ReactElement {
     <>
       {/* Welcome Header */}
       <Card className="mb-2 flex flex-col items-center text-center ">
-        <CardContent className="p-[30px] flex flex-col items-center text-center">
+        <CardContent className="px-[30px] flex flex-col items-center text-center">
           <div className="flex flex-col lg:flex-row lg:justify-between gap-2 w-full">
             <div>
               <p className="text-[20px]">{t("welcomeHeading2")}</p>
