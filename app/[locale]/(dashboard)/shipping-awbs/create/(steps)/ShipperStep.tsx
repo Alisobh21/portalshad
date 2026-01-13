@@ -97,6 +97,7 @@ export default function ShipperStep() {
   const [selectedAddress, setSelectedAddress] =
     useState<AddressWithDetails | null>(null);
   const hasInitialized = useRef(false);
+  const previousAddressesLength = useRef(0);
   const t = useTranslations("shippingAWBs");
   const tGeneral = useTranslations("General");
 
@@ -131,14 +132,37 @@ export default function ShipperStep() {
   }
 
   useEffect(() => {
-    if (addresses?.length > 0 && !hasInitialized.current && !selectedAddress) {
+    if (addresses?.length > 0) {
+      const currentLength = addresses.length;
       const firstAddress = addresses[0] as AddressWithDetails;
-      setSelectedAddress(firstAddress);
-      setValue("shipper_address_id", firstAddress?.id);
-      setValue("shipper_name", firstAddress?.name || "");
-      setValue("shipper_company", firstAddress?.company_name || "");
-      setValue("shipper_phone", firstAddress?.mobile_number || "");
-      hasInitialized.current = true;
+      
+      // Auto-select on initial load
+      if (!hasInitialized.current && !selectedAddress) {
+        setSelectedAddress(firstAddress);
+        setValue("shipper_address_id", firstAddress?.id);
+        setValue("shipper_name", firstAddress?.name || "");
+        setValue("shipper_company", firstAddress?.company_name || "");
+        setValue("shipper_phone", firstAddress?.mobile_number || "");
+        hasInitialized.current = true;
+      }
+      // Auto-select newly added address from search modal
+      else if (
+        currentLength > previousAddressesLength.current &&
+        firstAddress &&
+        (!selectedAddress || selectedAddress?.id !== firstAddress?.id)
+      ) {
+        setSelectedAddress(firstAddress);
+        setValue("shipper_address_id", firstAddress?.id);
+        setValue("shipper_name", firstAddress?.name || "");
+        setValue("shipper_company", firstAddress?.company_name || "");
+        setValue("shipper_phone", firstAddress?.mobile_number || "");
+        clearErrors("shipper_address_id");
+        clearErrors("shipper_name");
+        clearErrors("shipper_company");
+        clearErrors("shipper_phone");
+      }
+      
+      previousAddressesLength.current = currentLength;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addresses]);
@@ -321,7 +345,7 @@ export default function ShipperStep() {
                                           );
                                           dispatch(
                                             _toggleGeoloactionLoaders({
-                                              key: "getConsigneeAddresses",
+                                              key: "getAddresses",
                                               value: false,
                                             })
                                           );
@@ -419,14 +443,12 @@ export default function ShipperStep() {
             </div>
 
             {/* Third Row: Alert if no shortAddress (full width) */}
-            {!selectedAddress?.sa_short_address && (
+            {!selectedAddress?.sa_short_address && selectedAddress && (
               <Alert variant="warning" className="lg:col-span-2">
-                <AlertTitle className="dark:text-black">
-                  {t("nationalAddressNotFound")}
-                </AlertTitle>
+                <AlertTitle>{t("nationalAddressNotFound")}</AlertTitle>
                 <AlertDescription>
                   <div className="flex flex-col gap-3">
-                    <span className="dark:text-black">{t("SelectedNew")}</span>
+                    <span>{t("SelectedNew")}</span>
                     <Button
                       className="max-w-[120px] self-start"
                       variant="wizard"

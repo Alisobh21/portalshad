@@ -110,6 +110,7 @@ export default function ConsigneeStep() {
   const [selectedAddress, setSelectedAddress] =
     useState<AddressWithDetails | null>(null);
   const hasInitialized = useRef(false);
+  const previousAddressesLength = useRef(0);
   // const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [addressPopoverOpen, setAddressPopoverOpen] = useState(false);
   const [addressSearchQuery, setAddressSearchQuery] = useState("");
@@ -151,19 +152,40 @@ export default function ConsigneeStep() {
   }
 
   useEffect(() => {
-    if (
-      consigneeAddresses?.length > 0 &&
-      !hasInitialized.current &&
-      !selectedAddress
-    ) {
+    if (consigneeAddresses?.length > 0) {
+      const currentLength = consigneeAddresses.length;
       const firstAddress = consigneeAddresses[0] as AddressWithDetails;
-      setSelectedAddress(firstAddress);
-      setValue("consignee_address_id", firstAddress?.id);
-      setValue("consignee_name", firstAddress?.name || "");
-      setValue("consignee_company", firstAddress?.company_name || "");
-      setValue("consignee_phone", firstAddress?.mobile_number || "");
-      setValue("consignee_email", firstAddress?.email || "");
-      hasInitialized.current = true;
+      
+      // Auto-select on initial load
+      if (!hasInitialized.current && !selectedAddress) {
+        setSelectedAddress(firstAddress);
+        setValue("consignee_address_id", firstAddress?.id);
+        setValue("consignee_name", firstAddress?.name || "");
+        setValue("consignee_company", firstAddress?.company_name || "");
+        setValue("consignee_phone", firstAddress?.mobile_number || "");
+        setValue("consignee_email", firstAddress?.email || "");
+        hasInitialized.current = true;
+      }
+      // Auto-select newly added address from search modal
+      else if (
+        currentLength > previousAddressesLength.current &&
+        firstAddress &&
+        (!selectedAddress || selectedAddress?.id !== firstAddress?.id)
+      ) {
+        setSelectedAddress(firstAddress);
+        setValue("consignee_address_id", firstAddress?.id);
+        setValue("consignee_name", firstAddress?.name || "");
+        setValue("consignee_company", firstAddress?.company_name || "");
+        setValue("consignee_phone", firstAddress?.mobile_number || "");
+        setValue("consignee_email", firstAddress?.email || "");
+        clearErrors("consignee_address_id");
+        clearErrors("consignee_name");
+        clearErrors("consignee_company");
+        clearErrors("consignee_phone");
+        clearErrors("consignee_email");
+      }
+      
+      previousAddressesLength.current = currentLength;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [consigneeAddresses]);
